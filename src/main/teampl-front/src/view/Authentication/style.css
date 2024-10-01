@@ -19,18 +19,30 @@
     background-color: rgba(255,255,255,1);
 }
 .auth-top-logo-container{
-    width: 160px;
     height: 50px;
     display: flex;
     align-items: center;
     gap: 16px;
+}
+.auth-top-logo{
+    width: 50px;
+    height: 50px;
+    background-image: url("../../asset/main_logo.png");
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+.auth-top-tool-name{
+    font-size: 36px;
+    font-weight: 600;
+    font-family: Karla;
 }
 .auth-top-container{
     width: 100%;
     height: 795px;
     display: flex;
     justify-content: center;
-    background-color: bisque;
+    background-color: rgba(226, 245, 233, 1);
 }
 
 .auth-top-contents-container{
@@ -40,15 +52,14 @@
     justify-content: center;
 }
 
-.auth-top-content-flex{
-    flex: 1;
-}
+
 .auth-top-signIn-card{
     height: calc(795px - 60px);
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 60px;
+    flex: 1;
 }
 .auth-top-slide{
     height: calc(795px - 60px);
@@ -56,6 +67,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 60px;
+    flex: 1;
 }
 .auth-middle-container{
     width: 100%;
@@ -71,6 +83,8 @@
 
     /*폰트관련*/
     font-size: 36px;
+    white-space: pre-wrap;
+    text-align: center;
 }
 
 
@@ -80,7 +94,7 @@
     display: flex;
     justify-content: center;
 
-    background-color: bisque;
+    background-color: rgba(226, 245, 233, 1);
 }
 .auth-bottom-content-container{
     width: 1200px;
@@ -88,8 +102,137 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+#sign-in-card-wrapper{
+    width: 400px;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255,255,255,1);
+    border-radius: 16px;
+}
+.sign-in-top-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.sign-in-top-logo-container{
+    height: 55px;
+    width: 175px;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+}
+.sign-in-top-logo{
+    font-family: "Yellowtail", cursive;
+    font-size: 36px;
+    font-weight: 400;
+}
+.sign-in-top-input-container{
+    width: 100%;
+    margin-top: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 
 }
 
+.sign-in-top-login-button-container{
+    margin-top: 25px;
+    width: 100%;
+    height: 32px;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sign-in-top-login-button{
+    width: 260px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
+    background-color: rgba(33,161,89,255);
+    border-radius: 7px;
+
+    font-weight: 500;
+    color: rgba(255,255,255,1);
+    cursor: pointer;
+}
+.sign-in-bottom-container{
+    width: 100%;
+    margin-top: 20px;
+}
+.sign-in-bottom-other-login-container{
+    width: 100%;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.sign-in-bottom-other-login-divider {
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    height: 0px;
+    width: 145px;
+}
+
+.sign-in-bottom-social-button-container{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.sign-in-bottom-social-button{
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.sign-in-bottom-social-button-description{
+    color: rgba(0,0,0,0.5);
+    font-size: 14px;
+    font-weight: 600;
+}
+.sign-in-bottom-other-login-divider2-container{
+    width: 100%;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sign-in-bottom-other-login-divider2{
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    height: 0px;
+    margin-top: 20px;
+    width: 340px ;
+}
+
+.sign-in-bottom-etc{
+    margin-top: 30px;
+    width: 100%;
+    height: 115px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.sign-in-bottom-etc-question-style{
+    font-size: 12px;
+    color: rgba(0,0,0,0.4);
+}
