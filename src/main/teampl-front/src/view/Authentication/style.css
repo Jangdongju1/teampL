@@ -1,0 +1,95 @@
+#auth-wrapper{
+    width: 100%;
+    /*가운데 정렬*/
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+}
+.auth-top-fixed-bar-container{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(255,255,255,1);
+    position: fixed;
+}
+.auth-top-fixed-bar{
+    width: 1200px;
+    height: 60px;
+    background-color: rgba(255,255,255,1);
+}
+.auth-top-logo-container{
+    width: 160px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.auth-top-container{
+    width: 100%;
+    height: 795px;
+    display: flex;
+    justify-content: center;
+    background-color: bisque;
+}
+
+.auth-top-contents-container{
+    width: 1200px;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-top-content-flex{
+    flex: 1;
+}
+.auth-top-signIn-card{
+    height: calc(795px - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+.auth-top-slide{
+    height: calc(795px - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+.auth-middle-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.auth-middle-advertising-comment-container{
+    width: 1200px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /*폰트관련*/
+    font-size: 36px;
+}
+
+
+.auth-bottom-container{
+    width: 100%;
+    height: 1400px;
+    display: flex;
+    justify-content: center;
+
+    background-color: bisque;
+}
+.auth-bottom-content-container{
+    width: 1200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+
+
+

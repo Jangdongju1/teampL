@@ -1,26 +1,20 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {Navigate, Route, Routes} from "react-router-dom";
+import Container from "./layout/container";
+import {AUTH_PATH} from "./constant";
+import Authentication from "./view/Authentication";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Routes>
+            <Route element={<Container/>}>
+                <Route path={AUTH_PATH()} element={<Authentication/>}/>
+                <Route path={"/"} element={<Navigate to={"/auth"}/>}/> {/* 루트페이지에 대한 네비게이트 */}
+            </Route>
+        </Routes>
+    );
 }
 
 export default App;

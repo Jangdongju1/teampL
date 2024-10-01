@@ -1,0 +1,47 @@
+.flow-chart{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 64px 0 16px 0;
+}
+
+.flow-chart-picture-adjust{
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.flow-chart-detail-adjust{
+    display: flex;
+    align-items: center;
+}
+
+.flow-chart-content{
+    flex: 1;
+    height: 100%;
+}
+.flow-chart-detail{
+    width: 100%;
+    height: 155px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.flow-chart-detail-title{
+    height: 45px;
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+}
+.flow-chart-detail-divider{
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.4);
+}
+.flow-chart-detail-content{
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    margin-top: 25px;
+    white-space: pre-wrap;
+}
