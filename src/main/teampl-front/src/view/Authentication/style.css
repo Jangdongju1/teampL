@@ -1,41 +1,14 @@
+#auth-test{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 #auth-wrapper{
     width: 100%;
     /*가운데 정렬*/
     display: flex;
     flex-direction: column;
     /*justify-content: center;*/
-}
-.auth-top-fixed-bar-container{
-    width: 100%;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    background-color: rgba(255,255,255,1);
-    position: fixed;
-}
-.auth-top-fixed-bar{
-    width: 1200px;
-    height: 60px;
-    background-color: rgba(255,255,255,1);
-}
-.auth-top-logo-container{
-    height: 50px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-.auth-top-logo{
-    width: 50px;
-    height: 50px;
-    background-image: url("../../asset/main_logo.png");
-
-    background-position: 50% 50%;
-    background-size: 100% 100%;
-}
-.auth-top-tool-name{
-    font-size: 36px;
-    font-weight: 600;
-    font-family: Karla;
 }
 .auth-top-container{
     width: 100%;
@@ -53,7 +26,7 @@
 }
 
 
-.auth-top-signIn-card{
+.auth-top-sign-in-card{
     height: calc(795px - 60px);
     display: flex;
     justify-content: center;
@@ -123,10 +96,10 @@
 }
 .sign-in-top-logo-container{
     height: 55px;
-    width: 175px;
     margin-top: 25px;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .sign-in-top-logo{
     font-family: "Yellowtail", cursive;
@@ -208,6 +181,7 @@
     color: rgba(0,0,0,0.5);
     font-size: 14px;
     font-weight: 600;
+    font-family: "Noto Sans KR Sans KR";
 }
 .sign-in-bottom-other-login-divider2-container{
     width: 100%;
@@ -234,5 +208,166 @@
 }
 .sign-in-bottom-etc-question-style{
     font-size: 12px;
+    font-family: "Noto Sans KR Sans KR";
     color: rgba(0,0,0,0.4);
+}
+
+.sign-up-top-logo-container{
+    height: 55px;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.sign-up-top-logo{
+    width: 26px;
+    height: 26px;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+.sign-up-top-tool-name{
+    font-size: 28px;
+    font-weight: 500;
+}
+.sign-up-top-comment-box1{
+    margin-top: 8px;
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR", system-ui;
+    font-weight: 600;
+}
+.sign-up-top-input-box{
+    margin-top: 22px;
+}
+.sign-up-top-comment-box2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+}
+.sign-up-top-comment2{
+    width: 260px;
+    white-space: pre-wrap;
+    font-size: 12px;
+    font-family: "Noto Sans KR Sans KR";
+}
+.terms-and-conditions-emphasis{
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration:underline;
+    color: blue;
+}
+.sign-up-top-button-box{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 17px;
+}
+.sign-up-button{
+    width: 260px;
+    height: 40px;
+
+    color: rgba(255,255,255,1);
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(33,161,89,255);
+
+}
+/*sign-up-middle*/
+.sign-up-middle-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sign-up-bottom-other-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+.sign-up-bottom-other-divider{
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    height: 0px;
+    width: 120px;
+}
+.other-comment{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    color: rgba(0,0,0,0.6);
+}
+
+/* social sign-up button*/
+.sign-up-middle-other-button-box{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+.sign-up-middle-social-button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+}
+.social-sign-up-button{
+    width: 260px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+.social-sign-up-button-content-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+}
+.social-sign-up-icon{
+    width: 20px;
+    height: 20px;
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+.social-sign-up-name{
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Karla;
+}
+.social-sign-up-google-font-color{
+   color: rgba(0,0,0,0.4);
+}
+.social-sign-up-button:hover{
+    background-color: rgba(0,0,0,0.06);
+}
+/*sign-up-bottom*/
+
+.sign-up-bottom-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sign-up-bottom-to-sign-in-card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sign-up-bottom-to-sign-in-card-comment{
+    font-size: 12px;
+    font-family: "Noto Sans KR Sans KR";
+    margin-top: 20px;
 }

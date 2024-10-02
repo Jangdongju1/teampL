@@ -1,0 +1,69 @@
+#image-slide-wrapper{
+    width: 100%;
+    height: 100%;
+    border: 1px solid blue;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.image-slide-view-port-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    width: 100%;
+    margin-top: 95px;
+}
+.image-slide-view-port{
+    width: 90%;
+    height: 360px;
+    border: 1px solid blue;
+    /*display: flex;
+    justify-content: center;
+    align-items: center;*/
+    position: relative;
+    overflow: hidden;
+}
+.image-slide-hidden-view{
+    position: absolute;
+    height: 100%;
+    border: 1px solid red;
+
+}
+.image-slide-detail-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.image-slide-detail{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.image-slide-detail-title{
+    display: flex;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    font-size: 16px;
+}
+.image-slide-detail-content{
+    display: flex;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+}
+.image-slide-button-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.image-slide-button{
+    margin-top: 50px;
+}

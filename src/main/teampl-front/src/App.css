@@ -1,3 +1,4 @@
+
 .icon-button {
     width: 24px;
     height: 24px;
@@ -39,4 +40,11 @@
 }
 .google-icon{
     background-image: url("https://cdn-icons-png.flaticon.com/128/300/300221.png");
+}
+.tool-logo{
+    background-image: url("asset/main_logo.png");
+}
+/*왜 뜨는지 모르겟네?*/
+.fixed-bar-container{
+    margin-top: -8px;
 }
