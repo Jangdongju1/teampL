@@ -1,7 +1,7 @@
 
 .icon-button {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -47,4 +47,10 @@
 /*왜 뜨는지 모르겟네?*/
 .fixed-bar-container{
     margin-top: -8px;
+}
+.slide-left-button{
+    background-image: url("asset/expand-left-light-icon.png");
+}
+.slide-right-button{
+    background-image: url("asset/expand-right-light-icon.png");
 }

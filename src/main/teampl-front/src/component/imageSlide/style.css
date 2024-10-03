@@ -1,7 +1,6 @@
 #image-slide-wrapper{
     width: 100%;
     height: 100%;
-    border: 1px solid blue;
 
     display: flex;
     flex-direction: column;
@@ -11,14 +10,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid black;
+;
     width: 100%;
     margin-top: 95px;
 }
 .image-slide-view-port{
     width: 90%;
     height: 360px;
-    border: 1px solid blue;
     /*display: flex;
     justify-content: center;
     align-items: center;*/
@@ -28,8 +26,12 @@
 .image-slide-hidden-view{
     position: absolute;
     height: 100%;
-    border: 1px solid red;
-
+    display: flex;
+}
+.image-slide-item{
+    height: 100%;
+    background-position: 50% 50%;
+    background-size: 100% 100%;
 }
 .image-slide-detail-container{
     width: 100%;
@@ -66,4 +68,40 @@
 }
 .image-slide-button{
     margin-top: 50px;
+    display: flex;
+}
+.slide-button-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*gap:10px;*/
+}
+.slide-list-button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.slide-list-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+.slide-list{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+.slide-list > div{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.slide-list-disable{
+    background-color: rgba(255,255,255,1);
+}
+.slide-list-active{
+    background-color: blue;
 }

@@ -1,5 +1,7 @@
 import flowChartDataListMock from "./flowChartDataList.mock";
+import imageSlide_1DataListMock from "./imageSlide_1DataList.mock";
 
 export{
-    flowChartDataListMock
+    flowChartDataListMock,
+    imageSlide_1DataListMock
 }

@@ -8,6 +8,10 @@ import {getSpaceUntilMaxLength} from "@testing-library/user-event/dist/utils";
 import {Simulate} from "react-dom/test-utils";
 import contextMenu = Simulate.contextMenu;
 import ImageSlide from "../../component/imageSlide";
+import {signUpRequest} from "../../api";
+import {SignUpRequest} from "../../interface/request";
+import {ResponseDto, SignUpResponse} from "../../interface/response";
+import ResponseCode from "../../common/responseCode";
 
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
@@ -143,6 +147,22 @@ export default function Authentication() {
             setLogInCardState(!logInCardState);
         }
 
+        // function : 회원가입 응답 처리함수.
+        const signUpResponse = (responseBody:SignUpResponse | ResponseDto | null)=>{
+            if (!responseBody) return;
+            const {code} = responseBody;
+
+            if (code === ResponseCode.SUCCESS) alert("요청성공");
+
+        }
+        // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
+        const onSignUpBtnClickEventHandler = () =>{
+            const requestBody : SignUpRequest = {email : userEmail};
+            console.log(requestBody.email);
+            signUpRequest(requestBody).then(respnose => signUpResponse(respnose));
+
+        }
+
         return (
             <div id={"sign-in-card-wrapper"}>
                 {/*top container*/}
@@ -166,7 +186,7 @@ export default function Authentication() {
                     </div>
 
                     <div className={"sign-up-top-button-box"}>
-                        <div className={"sign-up-button cursor-pointer"}>{"회원가입"}</div>
+                        <div className={"sign-up-button cursor-pointer"} onClick={onSignUpBtnClickEventHandler}>{"회원가입"}</div>
                     </div>
                 </div>
 
