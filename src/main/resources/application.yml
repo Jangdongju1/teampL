@@ -1,2 +1,23 @@
 server:
   port: 4000
+
+secret:
+  key: 5tL8bu7gWhFn9sZpQdXDz4bEAJc1TKhtu2oM6qVfwNixGsZo9Km3npRyFS3D4JuHzms
+
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jdj8812041@gmail.com
+    password: nulg nzuk eroe phsz
+    properties:
+      mail:
+        smtp:
+          auth : true;
+          starttls:
+            enable : true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000

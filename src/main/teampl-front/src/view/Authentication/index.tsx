@@ -158,8 +158,7 @@ export default function Authentication() {
         // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
         const onSignUpBtnClickEventHandler = () =>{
             const requestBody : SignUpRequest = {email : userEmail};
-            console.log(requestBody.email);
-            signUpRequest(requestBody).then(respnose => signUpResponse(respnose));
+            signUpRequest(requestBody).then(response => signUpResponse(response));
 
         }
 
