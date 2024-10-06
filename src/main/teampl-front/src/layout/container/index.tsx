@@ -1,8 +1,7 @@
 //component: 컨테이너
-import Header from "../header";
 import {Outlet, useLocation} from "react-router-dom";
 import Footer from "../footer";
-import {AUTH_PATH} from "../../constant";
+import {AUTH_PATH, PASSWORD_REGISTRATION_PATH} from "../../constant";
 import AuthHeader from "../header/authheader";
 
 
@@ -14,7 +13,7 @@ export default function Container() {
         <>
             {pathname == AUTH_PATH() && (<AuthHeader/>)}
             <Outlet/>
-            {pathname != AUTH_PATH() && (<Footer/>)}
+            {pathname != AUTH_PATH() || pathname != PASSWORD_REGISTRATION_PATH()  && (<Footer/>)}
         </>
     )
 }

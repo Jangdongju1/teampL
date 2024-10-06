@@ -1,0 +1,121 @@
+#password-reg-wrapper{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+    background-image: url("https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/wac.92a80da2.svg");
+}
+.password-reg-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.password-reg-card{
+    width: 400px;
+    height: 450px;
+    background-color: rgba(255,255,255,1);
+    border-radius: 16px;
+    border: 1px solid blue;
+
+    display: flex;
+    align-items:  center;
+    flex-direction: column;
+}
+
+.password-reg-top-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+.password-reg-top-logo-container{
+    height: 55px;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.password-reg-top-tool-logo{
+    width: 26px;
+    height: 26px;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+.password-reg-top-tool-name{
+    font-size: 28px;
+    font-weight: 500;
+}
+.password-registration-comment{
+    margin-top: 20px;
+    font-size: 12px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.password-reg-middle-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.password-reg-input-container{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.password-reg-button-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 35px;
+}
+.password-reg-sign-up-button{
+    width: 260px;
+    height: 40px;
+
+    color: rgba(255,255,255,1);
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor:pointer;
+
+    background-color: rgba(33,161,89,255);
+}
+.password-reg-etc-comment-container{
+    margin-top:30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.password-reg-bottom-divider{
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    height: 0px;
+    width: 260px;
+}
+.etc-comment{
+    font-size: 12px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+
+    color: rgba(0,0,0,0.4);
+}

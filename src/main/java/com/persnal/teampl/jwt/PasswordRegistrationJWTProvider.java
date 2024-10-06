@@ -71,22 +71,4 @@ public class PasswordRegistrationJWTProvider implements WebToken {
         return subject;
     }
 
-    @Override
-    public boolean validationWebToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            boolean isExpired = claims.getExpiration().before(Date.from(Instant.now()));
-
-            if (isExpired) return false;
-
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return false;
-    }
 }

@@ -101,11 +101,6 @@
     justify-content: center;
     align-items: center;
 }
-.sign-in-top-logo{
-    font-family: "Yellowtail", cursive;
-    font-size: 36px;
-    font-weight: 400;
-}
 .sign-in-top-input-container{
     width: 100%;
     margin-top: 25px;
@@ -115,7 +110,6 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-
 }
 
 .sign-in-top-login-button-container{
