@@ -11,10 +11,149 @@
     background-image: url("https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/wac.92a80da2.svg");
 }
 .code-confirm-card-container{
+    padding: 20px 0;
+    box-sizing: border-box;
     width: 550px;
     height: 500px;
 
     background-color: rgba(255,255,255,1);
     border-radius: 16px;
-    border: 1px solid blue;
+    border: 1px solid rgba(0,0,0,0.5);
+}
+.code-confirm-top-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.code-confirm-top-logo-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+     gap: 12px;
+}
+.code-confirm-top-logo{
+    height: 46px;
+    width: 46px;
+
+    background-size: 100% 100%;
+    background-position: 50% 50%;
+}
+.code-confirm-top-tool-name{
+    font-size: 22px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+}
+.code-confirm-top-comment-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.code-confirm-top-comment-title-container{
+    margin-top: 40px;
+    margin-left: 20px;
+}
+.code-confirm-top-comment-title{
+    font-size: 20px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight:  600;
+}
+.code-confirm-top-comment-content-container{
+    margin-left: 20px;
+}
+.code-confirm-comment-content{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+}
+.code-confirm-middle-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-confirm-code-container{
+    margin-top: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.code-confirm-code-head{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.code-confirm-code-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+#confirm-code-input-wrapper{
+    width: 45px;
+    height: 55px;
+    border: 1px solid rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.code-confirm-code{
+    border: none;
+    outline: none;
+    background: none;
+
+    width: 25px;
+    height: 40px;
+
+    font-size: 20px;
+    font-weight: 600;
+
+    text-align: center;
+}
+.code-confirm-bottom-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.code-confirm-bottom-comment-container{
+    margin-top: 60px;
+    margin-left: 20px;
+}
+.code-confirm-bottom-comment{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+}
+.code-confirm-resend-code{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.code-confirm-button-container{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.code-confirm-button{
+    width: 220px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    color: rgba(255,255,255,1);
+    background-color: rgba(33,161,89,255);
 }
