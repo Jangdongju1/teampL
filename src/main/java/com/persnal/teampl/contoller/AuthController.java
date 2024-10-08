@@ -1,6 +1,6 @@
 package com.persnal.teampl.contoller;
 
-import com.persnal.teampl.jwt.webTokenModule.WebToken;
+import com.persnal.teampl.jwt.webTokenModule.WebTokenProvider;
 import com.persnal.teampl.service.OAuthService;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.respose.auth.SignUpResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final OAuthService oAuthService;
-    private final WebToken provider;
+    private final WebTokenProvider provider;
 
 
     @PostMapping("/sign-up")

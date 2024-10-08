@@ -5,7 +5,15 @@ secret:
   key: 5tL8bu7gWhFn9sZpQdXDz4bEAJc1TKhtu2oM6qVfwNixGsZo9Km3npRyFS3D4JuHzms
 
 
+
+
 spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/teampl
+    username: teamPLDeveloper
+    password: 882614
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   mail:
     host: smtp.gmail.com
     port: 587

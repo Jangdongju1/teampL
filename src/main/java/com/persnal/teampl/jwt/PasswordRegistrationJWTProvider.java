@@ -1,6 +1,6 @@
 package com.persnal.teampl.jwt;
 
-import com.persnal.teampl.jwt.webTokenModule.WebToken;
+import com.persnal.teampl.jwt.webTokenModule.WebTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Component
 @PropertySource("classpath:application.yml")
-public class PasswordRegistrationJWTProvider implements WebToken {
+public class PasswordRegistrationJWTProvider implements WebTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -35,10 +35,10 @@ public class PasswordRegistrationJWTProvider implements WebToken {
     }
 
     @Override
-    public String createWebToken(String email) {
+    public String createWebToken(String email, int validTimeSec) {
         String token = "";
         try {
-            Date expireDate = Date.from(Instant.now().plus(300, ChronoUnit.SECONDS));
+            Date expireDate = Date.from(Instant.now().plus(validTimeSec, ChronoUnit.SECONDS));
             token = Jwts.builder()
                     .subject(email)
                     .issuedAt(Date.from(Instant.now()))  // 발행시간
