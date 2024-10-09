@@ -20,7 +20,7 @@ public class IssueEntity {
     @JoinColumn(name = "projectNum")
     private ProjectEntity projectEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")
     private UserEntity userEntity;
 
@@ -41,6 +41,6 @@ public class IssueEntity {
     @Setter
     private boolean isDeleted;
 
-    @OneToMany(mappedBy = "issue",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "issueEntity",fetch = FetchType.LAZY)
     Set<IssueCommentEntity> issueCommentEntities;
 }

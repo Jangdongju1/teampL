@@ -1,41 +1,65 @@
 package com.persnal.teampl.service.serviceImpl;
 
-import com.persnal.teampl.dto.respose.auth.SignUpResponse;
-import com.persnal.teampl.service.OAuthService;
+import com.persnal.teampl.common.global.GlobalVariable;
+import com.persnal.teampl.service.MailAuthService;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSendException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
-public class GmailAuth implements OAuthService {
+public class GmailAuth implements MailAuthService {
+
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    private final MailSender mailSender;
+    private final JavaMailSender mailSender;
 
 
+    @Async
     @Override
-    public ResponseEntity<? super SignUpResponse> sendAuthentication(String email) {
+    public void sendAuthentication(String email) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            String title = "TeamPL에 오신 것을 환영합니다.";
-            String link = "";
-
-            message.setTo(email);
-            message.setSubject(title);
-            message.setText("아래의 링크를 클릭하시고  비밀번호를 설정해 주세요. \n" + link);
-
+            MimeMessage message = createAuthMsg(email);
             mailSender.send(message);
-        } catch (MailSendException e) {
-            logger.info(e.getMessage());
-        }
 
-        return null;
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), e.getMessage());
+        }
+    }
+
+    private String generateAuthenticationCode() {
+        int code = (int) (Math.random() * 1000000);
+        return String.format("%06d", code);
+    }
+
+    private MimeMessage createAuthMsg(String email) {
+        MimeMessage message = null;
+        try {
+            message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            String code = generateAuthenticationCode();
+            String title = "TeamPL에 오신 것을 환영합니다.";
+            String content = "";
+
+            content += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
+            content += "<h1>" + code + "</h1>";
+            content += "<h3>" + "감사합니다." + "</h3>";
+
+
+            helper.setTo(email);
+            helper.setSubject(title);
+            helper.setText(content, true);
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), e.getMessage());
+        }
+        return message;
     }
 }

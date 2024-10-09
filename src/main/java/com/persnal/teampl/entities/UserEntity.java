@@ -27,10 +27,10 @@ public class UserEntity {
     private String groupName;
 
     // 일대다 관계에서 부모가 주인이 아님을 선언해야 한다.
-    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     Set<IssueEntity> issueEntities;
 
-    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     Set<IssueCommentEntity> issueCommentEntities;
 
 }

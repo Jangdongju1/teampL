@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 public class IssueCommentEntity {
     @Id
     private int commentNum;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issueNum")
     private IssueEntity issueEntity;
     private String content;
     private String writeDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")
     private UserEntity userEntity;
     private int commentLevel;
