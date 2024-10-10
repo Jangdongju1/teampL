@@ -3,20 +3,39 @@ import FlowChartDataListMock from "../../mock/flowChartDataList.mock";
 import FlowChart from "../../component/flowChart/flowchart";
 import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent";
-import {ChangeEvent, useState} from "react";
-import {getSpaceUntilMaxLength} from "@testing-library/user-event/dist/utils";
+import {ChangeEvent, useEffect, useState} from "react";
 import {Simulate} from "react-dom/test-utils";
-import contextMenu = Simulate.contextMenu;
 import ImageSlide from "../../component/imageSlide";
-import {signUpRequest} from "../../api";
-import {SignUpRequest} from "../../interface/request";
-import {ResponseDto, SignUpResponse} from "../../interface/response";
+import {authCodeRequest} from "../../api";
+import {AuthCodeRequest} from "../../interface/request";
+import {ResponseDto, AuthCodeResponse} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";
+import {useNavigate} from "react-router-dom";
+import {AUTH_PATH, AUTHENTICATION_CODE_CONFIRM_PATH, SIGN_IN_PATH} from "../../constant";
+import {useCookies} from "react-cookie";
+import {userEmailStore} from "../../hook";
 
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
+    // Navigate : 네이게이션 함수
+    const navigator  = useNavigate();
     // state : 로그인 카드 상태
     const [logInCardState, setLogInCardState] = useState<boolean>(false);
+    // state : 쿠기 상태
+    const [cookie, setCookie] = useCookies();
+    // state : 인증코드 페이지 식별자 상태
+    const [indicator, setIndicator] = useState<string>("");
+
+    // global state : 전역상태  유저의 이메일을 인증 코드 컴포넌트로 전달
+    const {email,setEmail} = userEmailStore();
+
+
+
+    // effect : 토큰 체크로직
+    useEffect(() => {
+         if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
+         else navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(indicator)}`)
+    }, [cookie]);
 
     const SignInCard = () => {
         // state : 유저 아이디 상태
@@ -148,17 +167,29 @@ export default function Authentication() {
         }
 
         // function : 회원가입 응답 처리함수.
-        const signUpResponse = (responseBody:SignUpResponse | ResponseDto | null)=>{
+        const signUpResponse = (responseBody:AuthCodeResponse | ResponseDto | null)=>{
             if (!responseBody) return;
             const {code} = responseBody;
 
-            if (code === ResponseCode.SUCCESS) alert("요청성공");
+            if (code === ResponseCode.SUCCESS) alert("이메일을 보냈습니다.");
+            else if (code === ResponseCode.EXIST_USER) {
+                alert("이미 가입된 회원입니다.")
+                navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
+            }
+            else if (code === ResponseCode.ALREADY_SENT) return;  // 이미 이메일을 보낸 경우.
+
+            const {data} = responseBody as AuthCodeResponse;
+            const  expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
+            setCookie("accessToken_Auth", data.accessToken_Auth, {expires,path:AUTH_PATH()});
+            setIndicator(data.email);  // 인코딩이 필요함
+            setEmail(data.email);  // 전역상태 저장.
+            navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(data.email)}`);
 
         }
         // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
         const onSignUpBtnClickEventHandler = () =>{
-            const requestBody : SignUpRequest = {email : userEmail};
-            signUpRequest(requestBody).then(response => signUpResponse(response));
+            const requestBody : AuthCodeRequest = {email : userEmail};
+            authCodeRequest(requestBody).then(response => signUpResponse(response));
 
         }
 

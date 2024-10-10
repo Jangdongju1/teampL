@@ -1,13 +1,28 @@
 import "./style.css";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {KeyboardEvent} from "react";
-
+import {useCookies} from "react-cookie";
+import {useNavigate} from "react-router-dom";
+import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
+import {userEmailStore} from "../../../hook";
+import {AuthCodeConfirmRequest} from "../../../interface/request";
+import {authCodeConfirmRequest} from "../../../api";
+import {ResponseDto} from "../../../interface/response";
+import AuthCodeConfirmResponse from "../../../interface/response/authCodeConfirmResponse";
+import ResponseCode from "../../../common/responseCode";
+import {ALL} from "node:dns";
 export default function ConfirmAuthCode() {
+
+    // navigate : 네비게이터
+    const navigator = useNavigate();
     // state: 인증번호 input head 상태
     const [codeHeads, setCodeHeads] = useState<string[]>(Array(3).fill(''));
     // state: 인증번호 input body 상태
     const [codeBodies, setCodeBodies] = useState<string[]>(Array(3).fill(''));
-
+    // state : 쿠키 상태
+    const [cookie, setCookie] = useCookies();
+    // global state : 유저 이메일 전역상태
+    const {email, setEmail} = userEmailStore();
     // reference: 인증 코드 input head 및 body refer
     const headRefs = useRef<(HTMLInputElement | null)[]>([]);
     const bodyRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -26,7 +41,7 @@ export default function ConfirmAuthCode() {
     };
 
     const onCodeHeadsKeyDownEventHandler = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (e.key ==="Backspace"){
+        if (e.key === "Backspace") {
             // 현재 인풋이 비어있지 않은 경우
             if (codeHeads[index] === "") {
                 // 이전 인풋으로 포커스 이동
@@ -37,18 +52,16 @@ export default function ConfirmAuthCode() {
         }
 
     }
-
     const onCodeBodiesKeyDownEventHandler = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-        if(e.key == "Backspace"){
-            if (codeBodies[index] ===""){
-                if(index > 0)
-                    bodyRefs.current[index-1]?.focus();
-                else if(index == 0)
-                    headRefs.current[codeHeads.length-1]?.focus();
+        if (e.key == "Backspace") {
+            if (codeBodies[index] === "") {
+                if (index > 0)
+                    bodyRefs.current[index - 1]?.focus();
+                else if (index == 0)
+                    headRefs.current[codeHeads.length - 1]?.focus();
             }
         }
     }
-
 
     //eventHandler: 인증번호 input body 변경 이벤트처리 헨들러
     const onCodeInputBodiesChangeEventHandler = (e: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -64,6 +77,24 @@ export default function ConfirmAuthCode() {
 
     }
 
+    // eventHandler: 인증하기 버튼 클릭 이벤트 헨들러
+    const onAuthenticationBtnClickEventHandler = () => {
+        const code = [...codeHeads, ...codeBodies].join(""); // 두 배열에 있는 값을 묶고
+        const requestBody : AuthCodeConfirmRequest = {email: email, code: code};
+        authCodeConfirmRequest(requestBody).then(responseBody => authCodeConfirmResponse(responseBody));
+    }
+
+    const authCodeConfirmResponse = (responseBody : ResponseDto | AuthCodeConfirmResponse | null)=>{
+        if (!responseBody) return;
+
+        const {code} = responseBody as ResponseDto;
+        if (code === ResponseCode.SUCCESS){
+            alert("성공");
+            // 다음으로 넘기고.
+        }
+        else if(code === ResponseCode.AUTHENTICATION_FAILED) alert("유효하지 않은 코드입니다.");
+        else if (code === ResponseCode.EXPIRE_AUTH_CODE) alert("만료된 코드입니다.");
+    }
 
     // interface: 인풋 엘리먼트 전달 Prop
     interface CodeInputProp {
@@ -89,9 +120,11 @@ export default function ConfirmAuthCode() {
         });
 
     useEffect(() => {
+        if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
+
         // 가장 먼저 빈 값을 가진 인덱스 찾기 만일 조건에 부합하지 않는경우 -1을반환
         const currentIndexCodeHeads = codeHeads.findIndex(code => code === "");
-        const currentIndexCodeBodies = codeBodies.findIndex(code => code ==="");
+        const currentIndexCodeBodies = codeBodies.findIndex(code => code === "");
         // 빈 값이 있는 경우 해당 인덱스로 포커스 이동
         if (currentIndexCodeHeads > -1 && headRefs.current[currentIndexCodeHeads]) {
 
@@ -99,15 +132,17 @@ export default function ConfirmAuthCode() {
             if (currentHeadEle === null) return;
             currentHeadEle.focus();
 
-        }else if(currentIndexCodeHeads === -1){
+        } else if (currentIndexCodeHeads === -1) {
 
-            if(currentIndexCodeBodies > -1 && bodyRefs.current[currentIndexCodeBodies]){
+            if (currentIndexCodeBodies > -1 && bodyRefs.current[currentIndexCodeBodies]) {
                 const currentBodyEle = bodyRefs.current[currentIndexCodeBodies];
                 if (currentBodyEle === null) return;
                 currentBodyEle.focus();
             }
         }
     }, [codeHeads, codeBodies]);
+
+    if (!cookie.accessToken_Auth) return null;
 
     return (
         <div id={"code-confirm-card-wrapper"}>
@@ -129,6 +164,13 @@ export default function ConfirmAuthCode() {
                             <div className={"code-confirm-comment-content"}>{"" +
                                 "이메일로 전송받은 인증코드를 입력하시고 확인 버튼을 클릭해 주세요."}</div>
                         </div>
+
+                        <div className={"code-confirm-userEmail-container"}>
+                            {email && (
+                                <div className={"code-confirm-userEmail"}>{`E-mail : ${email}`}</div>
+                            )}
+
+                        </div>
                     </div>
                 </div>
 
@@ -149,7 +191,7 @@ export default function ConfirmAuthCode() {
                             {codeBodies.map((item, index) =>
                                 <CodeInput ref={el => bodyRefs.current[index] = el} key={index} value={item}
                                            onChange={e => onCodeInputBodiesChangeEventHandler(e, index)}
-                                           onKeyDown={e => onCodeBodiesKeyDownEventHandler(e,index)}
+                                           onKeyDown={e => onCodeBodiesKeyDownEventHandler(e, index)}
                                 />)}
 
                         </div>
@@ -163,7 +205,7 @@ export default function ConfirmAuthCode() {
                     </div>
 
                     <div className={"code-confirm-button-container"}>
-                        <div className={"code-confirm-button"}>{"인증하기"}</div>
+                        <div className={"code-confirm-button"} onClick={onAuthenticationBtnClickEventHandler}>{"인증하기"}</div>
                     </div>
                 </div>
 

@@ -2,6 +2,7 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.service.MailAuthService;
+import com.persnal.teampl.service.RedisCacheService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -16,9 +17,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GmailAuth implements MailAuthService {
 
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private final JavaMailSender mailSender;
+    private final RedisCacheService redisCache;
 
 
     @Async
@@ -56,6 +57,9 @@ public class GmailAuth implements MailAuthService {
             helper.setTo(email);
             helper.setSubject(title);
             helper.setText(content, true);
+
+            // redis cache
+            redisCache.authCodeCache(email,code);
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), e.getMessage());

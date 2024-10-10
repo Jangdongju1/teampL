@@ -7,5 +7,8 @@ public interface ResponseMessage {
     String AUTHENTICATION_FAILED = "Authentication Failed.";
     String NO_PERMISSION = "You do not have permission to perform this operation.";
     String INITIAL_SERVER_ERROR = "Initial Server Error.";
+    String EXIST_USER = "User already exists.";
+    String EXPIRE_AUTH_CODE ="AuthCode is expired." ;
+    String ALREADY_SENT = "Email Already Sent.";
 
 }

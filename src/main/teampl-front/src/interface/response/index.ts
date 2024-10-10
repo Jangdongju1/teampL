@@ -1,7 +1,7 @@
-import SignUpResponse from "./signUpResponse";
+import AuthCodeResponse from "./authCodeResponse";
 import ResponseDto from "./ResponseDto";
 
 export type {
-    SignUpResponse,
+    AuthCodeResponse,
     ResponseDto
 }

@@ -9,7 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SignUpRequest {
+public class AuthCodeConfirmRequest {
     @NotNull @NotBlank
     private String email;
+    @NotNull @NotBlank
+    private String code;
+
 }

@@ -1,4 +1,4 @@
-package com.persnal.teampl.dto;
+package com.persnal.teampl.dto.response;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
@@ -11,18 +11,18 @@ import org.springframework.http.ResponseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto {
+public class Response {
     private String code;
     private String message;
 
 
-    public static ResponseEntity<ResponseDto> initialServerError() {
-        ResponseDto response = new ResponseDto(ResponseCode.INITIAL_SERVER_ERROR, ResponseMessage.INITIAL_SERVER_ERROR);
+    public static ResponseEntity<Response> initialServerError() {
+        Response response = new Response(ResponseCode.INITIAL_SERVER_ERROR, ResponseMessage.INITIAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    public static ResponseEntity<ResponseDto> validationFailed() {
-        ResponseDto response = new ResponseDto(ResponseCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+    public static ResponseEntity<Response> validationFailed() {
+        Response response = new Response(ResponseCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

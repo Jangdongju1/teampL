@@ -46,9 +46,9 @@
 }
 
 /*왜 뜨는지 모르겟네?*/
-.fixed-bar-container{
-    margin-top: -8px;
-}
+/*.fixed-bar-container{*/
+/*    margin-top: -8px;*/
+/*}*/
 .slide-left-button{
     background-image: url("asset/expand-left-light-icon.png");
 }

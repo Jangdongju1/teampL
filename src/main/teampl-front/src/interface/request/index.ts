@@ -1,5 +1,6 @@
-import SignUpRequest from "./signUpRequest";
-
+import AuthCodeRequest from "./authCodeRequest";
+import AuthCodeConfirmRequest from "./authCodeConfirmRequest";
 export type {
-    SignUpRequest
+    AuthCodeRequest,
+    AuthCodeConfirmRequest
 }
