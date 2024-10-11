@@ -27,6 +27,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -54,6 +56,11 @@ dependencies {
     implementation group: 'io.lettuce', name: 'lettuce-core', version: '6.4.0.RELEASE'
     // redis lettuce end
 
+
+    // etc start
+    // 구글 Gson
+    implementation 'com.google.code.gson:gson:2.8.8'
+    // etc end
 
 
 }

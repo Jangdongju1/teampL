@@ -8,6 +8,7 @@ import com.persnal.teampl.dto.response.auth.AuthCodeConfirmResponse;
 import com.persnal.teampl.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,10 +32,10 @@ public class AuthController {
     @PostMapping("/confirm-code")
     public ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> authCodeConfirm(
             @Validated
-            @RequestBody AuthCodeConfirmRequest request) {
+            @RequestBody AuthCodeConfirmRequest request, @AuthenticationPrincipal String email) {
 
         ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> responseBody =
-                authService.confirmCode(request.getEmail(), request.getCode());
+                authService.confirmCode(email, request.getCode());
         return responseBody;
     }
 

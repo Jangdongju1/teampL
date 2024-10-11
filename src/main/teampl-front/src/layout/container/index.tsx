@@ -9,12 +9,11 @@ import AuthHeader from "../header/authheader";
 export default function Container() {
     // state : pathname 상태
     const {pathname} = useLocation();
-    console.log(pathname)
     return (
         <>
             {pathname == `${AUTH_PATH()}/${SIGN_IN_PATH()}` && (<AuthHeader/>)}
             <Outlet/>
-            {pathname != AUTH_PATH() || pathname != PASSWORD_REGISTRATION_PATH()  && (<Footer/>)}
+            {pathname != AUTH_PATH() || pathname != PASSWORD_REGISTRATION_PATH(":email")  && (<Footer/>)}
         </>
     )
 }

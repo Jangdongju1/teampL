@@ -9,6 +9,7 @@ import com.persnal.teampl.repository.UserRepository;
 import com.persnal.teampl.service.AuthService;
 import com.persnal.teampl.service.MailAuthService;
 import com.persnal.teampl.service.RedisCacheService;
+import com.persnal.teampl.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> confirmCode(String email, String code) {
-        String token = "";
 
         try {
             String cachedCode = redisCacheService.findCodeByEmail(email);
@@ -64,12 +64,10 @@ public class AuthServiceImpl implements AuthService {
 
             if (!code.equals(cachedCode)) return AuthCodeConfirmResponse.invalidCode();
 
-            token = webTokenProvider.createWebToken(email, loginTokenExpireTime);
-
         } catch (Exception e) {
-            logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), e.getMessage());
+            logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), Utils.getStackTrace(e));
         }
 
-        return AuthCodeConfirmResponse.success(token, loginTokenExpireTime);
+        return AuthCodeConfirmResponse.success();
     }
 }

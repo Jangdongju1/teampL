@@ -11,8 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AuthCodeConfirmRequest {
     @NotNull @NotBlank
-    private String email;
-    @NotNull @NotBlank
     private String code;
 
 }

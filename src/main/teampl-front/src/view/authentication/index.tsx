@@ -4,11 +4,10 @@ import FlowChart from "../../component/flowChart/flowchart";
 import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent";
 import {ChangeEvent, useEffect, useState} from "react";
-import {Simulate} from "react-dom/test-utils";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest} from "../../api";
 import {AuthCodeRequest} from "../../interface/request";
-import {ResponseDto, AuthCodeResponse} from "../../interface/response";
+import {AuthCodeResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, AUTHENTICATION_CODE_CONFIRM_PATH, SIGN_IN_PATH} from "../../constant";
@@ -18,24 +17,25 @@ import {userEmailStore} from "../../hook";
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
     // Navigate : 네이게이션 함수
-    const navigator  = useNavigate();
+    const navigator = useNavigate();
     // state : 로그인 카드 상태
     const [logInCardState, setLogInCardState] = useState<boolean>(false);
     // state : 쿠기 상태
     const [cookie, setCookie] = useCookies();
     // state : 인증코드 페이지 식별자 상태
-    const [indicator, setIndicator] = useState<string>("");
 
     // global state : 전역상태  유저의 이메일을 인증 코드 컴포넌트로 전달
-    const {email,setEmail} = userEmailStore();
+    const {email, setEmail} = userEmailStore();
+
 
 
 
     // effect : 토큰 체크로직
     useEffect(() => {
-         if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
-         else navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(indicator)}`)
+        if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
     }, [cookie]);
+
+
 
     const SignInCard = () => {
         // state : 유저 아이디 상태
@@ -79,8 +79,14 @@ export default function Authentication() {
         }
 
         // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
-        const onSignUpBtnClickEventHandler = ()=>{
-            setLogInCardState(!logInCardState);
+        const onSignUpBtnClickEventHandler = () => {
+            if(!cookie.accessToken_Auth) setLogInCardState(!logInCardState);
+            else {
+                const encodedIndicator = sessionStorage.getItem("userEmail");
+                if (!encodedIndicator) return;
+                navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedIndicator)}`);
+            }
+
         }
         return (
             <div id={"sign-in-card-wrapper"}>
@@ -162,12 +168,12 @@ export default function Authentication() {
             setUserEmail(value);
         }
         // eventHandler : 로그인 버튼 클릭 이벤트 헨들러
-        const onLogInBtnClickEventHandler = () =>{
+        const onLogInBtnClickEventHandler = () => {
             setLogInCardState(!logInCardState);
         }
 
         // function : 회원가입 응답 처리함수.
-        const signUpResponse = (responseBody:AuthCodeResponse | ResponseDto | null)=>{
+        const signUpResponse = (responseBody: AuthCodeResponse | ResponseDto | null) => {
             if (!responseBody) return;
             const {code} = responseBody;
 
@@ -175,20 +181,23 @@ export default function Authentication() {
             else if (code === ResponseCode.EXIST_USER) {
                 alert("이미 가입된 회원입니다.")
                 navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
-            }
-            else if (code === ResponseCode.ALREADY_SENT) return;  // 이미 이메일을 보낸 경우.
+            } else if (code === ResponseCode.ALREADY_SENT) return;  // 이미 이메일을 보낸 경우.
 
             const {data} = responseBody as AuthCodeResponse;
-            const  expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
-            setCookie("accessToken_Auth", data.accessToken_Auth, {expires,path:AUTH_PATH()});
-            setIndicator(data.email);  // 인코딩이 필요함
+            const expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
+            setCookie("accessToken_Auth", data.accessToken_Auth, {expires, path: `${AUTH_PATH()}/`});
+
             setEmail(data.email);  // 전역상태 저장.
-            navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(data.email)}`);
+
+            // 세션스토리지에 url식별자를 저장하고,  이메일로 인증페이지에 대한 url을 함께 전송할 예졍.
+            const encodedEmail = btoa(data.email);
+            sessionStorage.setItem("userEmail", encodedEmail);
+            navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedEmail)}`);
 
         }
         // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
-        const onSignUpBtnClickEventHandler = () =>{
-            const requestBody : AuthCodeRequest = {email : userEmail};
+        const onSignUpBtnClickEventHandler = () => {
+            const requestBody: AuthCodeRequest = {email: userEmail};
             authCodeRequest(requestBody).then(response => signUpResponse(response));
 
         }
@@ -216,7 +225,8 @@ export default function Authentication() {
                     </div>
 
                     <div className={"sign-up-top-button-box"}>
-                        <div className={"sign-up-button cursor-pointer"} onClick={onSignUpBtnClickEventHandler}>{"회원가입"}</div>
+                        <div className={"sign-up-button cursor-pointer"}
+                             onClick={onSignUpBtnClickEventHandler}>{"회원가입"}</div>
                     </div>
                 </div>
 
@@ -256,7 +266,8 @@ export default function Authentication() {
                 <div className={"sign-up-bottom-container"}>
                     <div className={"sign-up-bottom-to-sign-in-card"}>
                         <div className={"sign-up-bottom-to-sign-in-card-comment"}>
-                            {"이미 계정이 있으신가요?"}<span className={"terms-and-conditions-emphasis"} onClick={onLogInBtnClickEventHandler}>{"로그인"}</span>
+                            {"이미 계정이 있으신가요?"}<span className={"terms-and-conditions-emphasis"}
+                                                   onClick={onLogInBtnClickEventHandler}>{"로그인"}</span>
                         </div>
                     </div>
                 </div>
@@ -270,7 +281,7 @@ export default function Authentication() {
             <div className={"auth-top-container"}>
                 <div className={'auth-top-contents-container'}>
                     <div className={"auth-top-sign-in-card "}>
-                        {!logInCardState? <SignInCard/> : <SignUPCard/>}
+                        {!logInCardState ? <SignInCard/> : <SignUPCard/>}
                     </div>
                     <div className={"auth-top-slide"}>
                         <ImageSlide/>
@@ -288,7 +299,7 @@ export default function Authentication() {
             <div className={"auth-bottom-container"}>
                 <div className={"auth-bottom-content-container"}>
                     {FlowChartDataListMock.map((item, index) =>
-                        index % 2 == 0 ?
+                        index % 2 === 0 ?
                             <FlowChart key={index} title={item.title} content={item.content}
                                        backgroundImg={item.backgroundImg}/> :
                             <FlowchartReverse key={index} title={item.title} content={item.content}

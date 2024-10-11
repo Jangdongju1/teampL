@@ -2,26 +2,18 @@ package com.persnal.teampl.dto.response.auth;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.Response;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-@AllArgsConstructor
 public class AuthCodeConfirmResponse {
-    private String accessToken_Main;
-    private int expireTimeSec;
+    public AuthCodeConfirmResponse() {
+    }
 
-
-    public static ResponseEntity<ApiResponse<AuthCodeConfirmResponse>> success(String token, int expireTimeSec){
-        ApiResponse<AuthCodeConfirmResponse> responseBody =
-                new ApiResponse<>(
-                        ResponseCode.SUCCESS,
-                        ResponseMessage.SUCCESS,
-                        new AuthCodeConfirmResponse(token, expireTimeSec));
+    public static ResponseEntity<Response> success(){
+        Response responseBody = new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 

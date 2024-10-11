@@ -1,13 +1,17 @@
 import AuthCodeRequest from "../interface/request/authCodeRequest";
 import axios from "axios";
-import {ResponseDto, AuthCodeResponse} from "../interface/response";
+import {AuthCodeResponse, ResponseDto} from "../interface/response";
 import ApiEndPoint from "../common/ApiEndPoint";
 import {AuthCodeConfirmRequest} from "../interface/request";
-import * as domain from "node:domain";
 import AuthCodeConfirmResponse from "../interface/response/authCodeConfirmResponse";
 
 const DOMAIN ="http://localhost:4000";
 const apiEndPoint = (domain: string, indicator:string) => `${domain}${indicator}`;
+
+const Authorization = (token:string) => {
+    return {headers: {Authorization:`Bearer ${token}`}};
+};
+
 
 // 회원가입 요청 == >  200 or 400
 export const authCodeRequest = async (requestBody : AuthCodeRequest) =>{
@@ -26,9 +30,9 @@ export const authCodeRequest = async (requestBody : AuthCodeRequest) =>{
 }
 
 // security 세팅후 토큰인증처리해야함.
-export const authCodeConfirmRequest = async (requestBody : AuthCodeConfirmRequest)=>{
+export const authCodeConfirmRequest = async (requestBody : AuthCodeConfirmRequest, token : string)=>{
     const result =
-        await axios.post(apiEndPoint(DOMAIN,ApiEndPoint.AUTH_CODE_CONFIRM_PATH), requestBody)
+        await axios.post(apiEndPoint(DOMAIN,ApiEndPoint.AUTH_CODE_CONFIRM_PATH), requestBody, Authorization(token))
         .then(response =>{
             const responseBody : AuthCodeConfirmResponse = response.data;
             return responseBody;

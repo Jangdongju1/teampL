@@ -1,16 +1,16 @@
 import "./style.css";
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {KeyboardEvent} from "react";
+import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from "react";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
+import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant";
 import {userEmailStore} from "../../../hook";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
 import {authCodeConfirmRequest} from "../../../api";
 import {ResponseDto} from "../../../interface/response";
 import AuthCodeConfirmResponse from "../../../interface/response/authCodeConfirmResponse";
 import ResponseCode from "../../../common/responseCode";
-import {ALL} from "node:dns";
+import CryptoJS from "crypto-js/core";
+
 export default function ConfirmAuthCode() {
 
     // navigate : 네비게이터
@@ -80,17 +80,27 @@ export default function ConfirmAuthCode() {
     // eventHandler: 인증하기 버튼 클릭 이벤트 헨들러
     const onAuthenticationBtnClickEventHandler = () => {
         const code = [...codeHeads, ...codeBodies].join(""); // 두 배열에 있는 값을 묶고
-        const requestBody : AuthCodeConfirmRequest = {email: email, code: code};
-        authCodeConfirmRequest(requestBody).then(responseBody => authCodeConfirmResponse(responseBody));
+        const requestBody : AuthCodeConfirmRequest = {code: code};
+        const token : string = cookie.accessToken_Auth;
+        if (!token){
+            alert("유효하지 않은 페이지입니다.")
+            navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
+            return;
+        }
+        authCodeConfirmRequest(requestBody,token).then(responseBody => authCodeConfirmResponse(responseBody));
     }
 
+
+
+    // function : 인증번호 인증에 대한 응답처리함수
     const authCodeConfirmResponse = (responseBody : ResponseDto | AuthCodeConfirmResponse | null)=>{
         if (!responseBody) return;
 
         const {code} = responseBody as ResponseDto;
         if (code === ResponseCode.SUCCESS){
-            alert("성공");
-            // 다음으로 넘기고.
+
+            const encodedEmail = btoa(email);
+            navigator(`${AUTH_PATH()}/${PASSWORD_REGISTRATION_PATH(encodedEmail)}`);
         }
         else if(code === ResponseCode.AUTHENTICATION_FAILED) alert("유효하지 않은 코드입니다.");
         else if (code === ResponseCode.EXPIRE_AUTH_CODE) alert("만료된 코드입니다.");

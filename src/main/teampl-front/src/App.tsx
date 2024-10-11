@@ -15,9 +15,9 @@ function App() {
                 <Route path={AUTH_PATH()}>
                     <Route path={SIGN_IN_PATH()} element={<Authentication/>}/>
                     <Route path={AUTHENTICATION_CODE_CONFIRM_PATH(":email")} element={<ConfirmAuthCode/>}/>
+                    <Route path={PASSWORD_REGISTRATION_PATH(":email")} element={<PasswordRegistration/>}/>
                 </Route>
 
-                <Route path={PASSWORD_REGISTRATION_PATH()} element={<PasswordRegistration/>}/>
             </Route>
         </Routes>
     );
