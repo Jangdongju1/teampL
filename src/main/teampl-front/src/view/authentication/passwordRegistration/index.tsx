@@ -1,9 +1,18 @@
 import "./style.css";
 import InputComponent from "../../../component/inputCmponent";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
+import {userEmailStore} from "../../../hook";
+import {useCookies} from "react-cookie";
+import {useNavigate} from "react-router-dom";
+import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
+import {SignUpRequest} from "../../../interface/request";
+import {signUpRequest} from "../../../api";
+import {ResponseDto, SignUpResponse} from "../../../interface/response";
+import ResponseCode from "../../../common/responseCode";
 
 export default function PasswordRegistration() {
-    // 패스워드 재등록 컴포넌트로 바꿀예정
+    // navigator
+    const navigator = useNavigate();
 
     //state : 비밀번호 입력 상태.
     const [password, setPassword] = useState<string>("");
@@ -13,7 +22,10 @@ export default function PasswordRegistration() {
     const [passwordInputIcon, setPasswordInputIcon] = useState<"key-light-on-icon" | "key-light-off-icon">("key-light-off-icon");
     //state : 닉네임(아이디) 상태
     const [nickname, setNickname] = useState<string>("");
-
+    // GlobalState: 유저이메일 전역상태
+    const {email,setEmail} = userEmailStore();
+    // state : 쿠킥 상태
+    const [cookie , setCookie] = useCookies();
 
     //eventHandler : 비밀번호 input 엘리먼드 변경 이벤트 처리 헨들러
     const onPasswordInputElementChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +47,34 @@ export default function PasswordRegistration() {
         const value = e.target.value;
         setNickname(value);
     }
+    //eventHandler: 회원가입 버튼 클릭 이베트 헨들러
+    const onSignUpBtnClickEventHandler = () =>{
+        const accessToken_Auth = cookie.accessToken_Auth;
+        if (!accessToken_Auth) return;
+        const requestBody:SignUpRequest = {password: password, nickname: nickname};// 객체화시켜서
+        signUpRequest(requestBody,accessToken_Auth)
+            .then(requestBody => signUpResponse(requestBody))
+
+    }
+
+    // function : 회원가입 응답결과 처리함수
+
+    const signUpResponse = (responseBody:SignUpResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+        const {code} = responseBody as ResponseDto;
+
+        if (code === ResponseCode.INITIAL_SERVER_ERROR) return;
+        else if(code === ResponseCode.SUCCESS){
+            const {data}  = responseBody as SignUpResponse;
+            const cookieExpireTime = new Date(new Date().getTime() + data.expireTimeSec * 1000);
+            setCookie("accessToken_Main", data.accessToken_Main, {expires:cookieExpireTime, path:`/`})  //메인 페스만 유효한 것으로수정
+            // 메인페이지로 네비게이트
+        }
+    }
+    useEffect(() => {
+        if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
+    }, [cookie]);
+    if (!cookie.accessToken_Auth) return null;  // 쿠키가 없으면 화면 출력 x
 
     return (
         <div id={"password-reg-wrapper"}>

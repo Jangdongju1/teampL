@@ -7,7 +7,8 @@ enum ResponseCode {
     INITIAL_SERVER_ERROR = "IDE",
     EXIST_USER = "EU",
     EXPIRE_AUTH_CODE = "EAC",
-    ALREADY_SENT = "AS"
+    ALREADY_SENT = "AS",
+    NOT_EXIST_USER="NEU"
 
 }
 

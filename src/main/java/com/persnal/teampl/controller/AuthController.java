@@ -2,9 +2,11 @@ package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.auth.AuthCodeRequest;
 import com.persnal.teampl.dto.request.auth.AuthCodeConfirmRequest;
+import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeConfirmResponse;
+import com.persnal.teampl.dto.response.auth.SignUpResponse;
 import com.persnal.teampl.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +24,23 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth-code")
-    public ResponseEntity<? super ApiResponse<AuthCodeResponse>> authCodeRequest(
+    public ResponseEntity<? super ApiResponse<AuthCodeResponse>> emailAuth(
             @Validated
             @RequestBody AuthCodeRequest request) {
-        ResponseEntity<? super ApiResponse<AuthCodeResponse>> responseBody = authService.signUpAuth(request.getEmail());
-        return responseBody;
+        return authService.signUpAuth(request.getEmail());
     }
 
     @PostMapping("/confirm-code")
-    public ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> authCodeConfirm(
+    public ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> emailCodeConfirm(
             @Validated
             @RequestBody AuthCodeConfirmRequest request, @AuthenticationPrincipal String email) {
+        return authService.confirmCode(email, request.getCode());
+    }
 
-        ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> responseBody =
-                authService.confirmCode(email, request.getCode());
-        return responseBody;
+    @PostMapping("sign-up")
+    public ResponseEntity<? super ApiResponse<SignUpResponse>> signUp(@AuthenticationPrincipal String email,
+                                                                      @Validated @RequestBody SignUpRequest request) {
+        return authService.signUp(email, request);
     }
 
 }

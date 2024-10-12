@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.response.Response;
+import com.persnal.teampl.dto.response.ResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +25,7 @@ public class FailedAuthenticationEntryPoint  implements AuthenticationEntryPoint
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 인증실패
 
-        Response authenticationFailed = new Response(ResponseCode.AUTHENTICATION_FAILED, ResponseMessage.AUTHENTICATION_FAILED);
+        ResponseDto authenticationFailed = new ResponseDto(ResponseCode.AUTHENTICATION_FAILED, ResponseMessage.AUTHENTICATION_FAILED);
         response.getWriter().write(new Gson().toJson(authenticationFailed));
     }
 }

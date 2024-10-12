@@ -9,27 +9,24 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 @Getter
 @AllArgsConstructor
-public class AuthCodeResponse{
-    private String email;
-    private String accessToken_Auth;
+public class SignUpResponse {
+    private String accessToken_Main;
     private int expireTimeSec;
 
 
-    public static ResponseEntity<ApiResponse<AuthCodeResponse>> success(String email, String accessToken) {
-        ApiResponse<AuthCodeResponse> responseBody =
-                new ApiResponse<>(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, new AuthCodeResponse(email, accessToken, 300));
+    public static ResponseEntity<ApiResponse<SignUpResponse>> success(String accessToken_Main, int expireTimeSec) {
+        ApiResponse<SignUpResponse> responseBody =
+                new ApiResponse<>(
+                        ResponseCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        new SignUpResponse(accessToken_Main, expireTimeSec));
+
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> existUser(){
+    public static ResponseEntity<ResponseDto> existedUser(){
         return ResponseDto.existedUser();
     }
-
-    public static ResponseEntity<ResponseDto> emailAlreadySent(){
-        return ResponseDto.emailAlreadySent();
-    }
-
 }

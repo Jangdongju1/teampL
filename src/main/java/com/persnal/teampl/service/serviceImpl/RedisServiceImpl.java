@@ -32,12 +32,11 @@ public class RedisServiceImpl implements RedisCacheService {
     public void authCodeCache(String key, String value) {
         // Duration.ofSeconds(expireTime) 만료시간
         valueOperations.set(key, value, Duration.ofSeconds(cacheDataExpireTime)); // 5분.
-
     }
 
     @Override
     public boolean isExistEmail(String email) {
-        return redisTemplate.hasKey(email);
+        return redisTemplate.hasKey(email) != null;
     }
 
     @Override

@@ -1,4 +1,4 @@
-import {ImageSlide_1Data} from "../interface";
+import {ImageSlide_1Data} from "../interface/etc";
 
 const imageSlide_1DataListMock : ImageSlide_1Data[] = [
     {

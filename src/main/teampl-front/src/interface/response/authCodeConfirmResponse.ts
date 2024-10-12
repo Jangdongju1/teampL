@@ -1,5 +1,4 @@
 import ResponseDto from "./ResponseDto";
 export default interface AuthCodeConfirmResponse extends ResponseDto{
-    accessToken_Main : string,
-    expireTimeSec : number
+    // 응답코드 밖에 받는게 없음.
 }

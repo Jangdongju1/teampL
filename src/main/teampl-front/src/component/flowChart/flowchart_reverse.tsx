@@ -1,5 +1,5 @@
 import "./style.css";
-import {FlowChartData} from "../../interface";
+import {FlowChartData} from "../../interface/etc";
 
 export default function FlowchartReverse(props : FlowChartData) {
     // props : flowchardData

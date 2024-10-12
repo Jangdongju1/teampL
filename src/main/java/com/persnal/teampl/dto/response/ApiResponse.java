@@ -3,7 +3,7 @@ package com.persnal.teampl.dto.response;
 import lombok.Getter;
 
 @Getter
-public class ApiResponse<D> extends Response {
+public class ApiResponse<D> extends ResponseDto {
     private final D data;
 
     public ApiResponse(String code, String message, D data) {

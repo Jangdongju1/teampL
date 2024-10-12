@@ -1,4 +1,4 @@
-import {FlowChartData} from "../interface";
+import {FlowChartData} from "../interface/etc";
 
 const flowChartDataListMock: FlowChartData[] = [
     {

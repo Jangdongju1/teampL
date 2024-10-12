@@ -5,14 +5,16 @@ import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent";
 import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
-import {authCodeRequest} from "../../api";
-import {AuthCodeRequest} from "../../interface/request";
+import {authCodeRequest, signInRequest, signUpRequest} from "../../api";
+import {AuthCodeRequest, SignInRequest} from "../../interface/request";
 import {AuthCodeResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, AUTHENTICATION_CODE_CONFIRM_PATH, SIGN_IN_PATH} from "../../constant";
 import {useCookies} from "react-cookie";
 import {userEmailStore} from "../../hook";
+import SignInResponse from "../../interface/response/signInResponse";
+import {calculateNewValue} from "@testing-library/user-event/dist/utils";
 
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
@@ -28,13 +30,10 @@ export default function Authentication() {
     const {email, setEmail} = userEmailStore();
 
 
-
-
     // effect : 토큰 체크로직
     useEffect(() => {
         if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
     }, [cookie]);
-
 
 
     const SignInCard = () => {
@@ -80,12 +79,36 @@ export default function Authentication() {
 
         // eventHandler : 회원가입 버튼 클릭 이벤트 헨들러
         const onSignUpBtnClickEventHandler = () => {
-            if(!cookie.accessToken_Auth) setLogInCardState(!logInCardState);
+            if (!cookie.accessToken_Auth) setLogInCardState(!logInCardState);
             else {
                 const encodedIndicator = sessionStorage.getItem("userEmail");
                 if (!encodedIndicator) return;
                 navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedIndicator)}`);
             }
+
+        }
+
+        const signInResponse = (responseBody:SignInResponse | ResponseDto | null)=>{
+            const {code,message} = responseBody as ResponseDto;
+            if (code === ResponseCode.SUCCESS) {
+                const {token, expireTimeSec} = responseBody as SignInResponse;
+                const now = new Date().getTime();
+                const expires = new Date(now + expireTimeSec*1000);
+                setCookie("accessToken_Main", token, {expires, path:`/`});
+
+                // 네비게이트 메인화면
+
+            }
+            else if (code === ResponseCode.SIGN_IN_FAILED) alert(message);
+            else if (code === ResponseCode.NOT_EXIST_USER) alert(message);
+
+
+        }
+        // eventHandler: 로그인 버튼 클릭 이벤트 헨들러
+        const onLogInBtnClickEventHandler = () => {
+            const requestBody: SignInRequest = {email: userId, password: pass};
+            signInRequest(requestBody)
+                .then(responseBody => signInResponse(responseBody));
 
         }
         return (
