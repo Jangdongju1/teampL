@@ -4,8 +4,6 @@ import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.apache.catalina.users.SparseUserDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

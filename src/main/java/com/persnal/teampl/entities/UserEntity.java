@@ -1,14 +1,10 @@
 package com.persnal.teampl.entities;
-
-import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.Set;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,14 +28,13 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     Set<IssueCommentEntity> issueCommentEntities;
 
-    public UserEntity(SignUpRequest req, String email) {
+    public UserEntity(String password,String nickname, String email) {
+        this.password = password;
         this.email = email;
-        this.password = req.getPassword();
-
-        if (req.getNickname().isEmpty()) {
+        if (nickname.isEmpty()) {
             this.nickname = email;
         } else {
-            this.nickname = req.getNickname();
+            this.nickname = nickname;
         }
     }
 }

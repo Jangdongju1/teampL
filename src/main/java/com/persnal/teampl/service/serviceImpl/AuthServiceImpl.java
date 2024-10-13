@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +33,8 @@ public class AuthServiceImpl implements AuthService {
     private final MailAuthService mailAuthService;
     private final RedisCacheService redisCacheService;
     private final WebTokenProvider webTokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Value("${token.expire.auth-code-token}")
     int authCodeTokenExpireTime;
@@ -82,7 +85,10 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<? super ApiResponse<SignUpResponse>> signUp(String email, SignUpRequest req) {
         String token = null;
         try {
-            UserEntity userEntity = new UserEntity(req, email);
+            String nickname = req.getNickname();
+            String password = passwordEncoder.encode(req.getPassword());  // 패스워드 인코딩
+
+            UserEntity userEntity = new UserEntity(password, nickname, email);
 
             userRepository.save(userEntity);  // 저장을 하고
 
@@ -104,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
             UserEntity userEntity = userRepository.findByEmail(req.getEmail());
             if (userEntity == null)
                 return SignInResponse.notExistedUser();
-            if (!userEntity.getPassword().equals(req.getPassword()))
+            if (!passwordEncoder.matches(req.getPassword(), userEntity.getPassword()))
                 return SignInResponse.invalidInformation();
 
             token = webTokenProvider.createWebToken(req.getEmail(), loginTokenExpireTime);

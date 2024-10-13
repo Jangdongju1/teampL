@@ -2,10 +2,12 @@ package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.auth.AuthCodeRequest;
 import com.persnal.teampl.dto.request.auth.AuthCodeConfirmRequest;
+import com.persnal.teampl.dto.request.auth.SigInRequest;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeConfirmResponse;
+import com.persnal.teampl.dto.response.auth.SignInResponse;
 import com.persnal.teampl.dto.response.auth.SignUpResponse;
 import com.persnal.teampl.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,11 @@ public class AuthController {
     public ResponseEntity<? super ApiResponse<SignUpResponse>> signUp(@AuthenticationPrincipal String email,
                                                                       @Validated @RequestBody SignUpRequest request) {
         return authService.signUp(email, request);
+    }
+
+    @PostMapping("sign-in")
+    public ResponseEntity<? super ApiResponse<SignInResponse>> signUP(@Validated @RequestBody SigInRequest req) {
+        return authService.signIn(req);
     }
 
 }

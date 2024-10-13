@@ -36,7 +36,7 @@ public class RedisServiceImpl implements RedisCacheService {
 
     @Override
     public boolean isExistEmail(String email) {
-        return redisTemplate.hasKey(email) != null;
+        return redisTemplate.hasKey(email);
     }
 
     @Override
