@@ -1,0 +1,214 @@
+#main-header-wrapper {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.main-header-container {
+    width: 1920px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-header-content-box {
+    width: 1536px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-header-content1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+}
+
+.main-header-logo-content-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.main-header-logo {
+    width: 26px;
+    height: 26px;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.main-header-tool-name {
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 26px;
+    font-weight: 500;
+
+    line-height: 160%;
+}
+
+.main-header-menu-box {
+    display: flex;
+    justify-content: center;
+}
+
+.main-header-menu {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    gap: 15px;
+    position: relative;
+
+}
+
+.main-header-menu > li {
+    float: left;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.main-header-menu > li > span {
+    width: 16px;
+    height: 16px;
+}
+
+.main-header-menu > li:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+}
+
+.main-header-menu-detail1 {
+    margin-top: 225px;
+    margin-left: 365px;
+    width: 320px;
+    height: 180px;
+    position: absolute;
+    box-sizing: border-box;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.main-header-menu-detail2 {
+    margin-left: 390px;
+    margin-top: 345px;
+    width: 480px;
+    height: 300px;
+    position: absolute;
+    box-sizing: border-box;
+    padding: 8px 8px 40px 8px;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.main-header-content2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-header-individual-content-box {
+    display: flex;
+    gap: 8px;
+}
+
+.main-header-individual-email {
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 160%;
+}
+
+#team-detail-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-detail-menu {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.team-detail-menu > li {
+    width: 100%;
+    height: 34px;
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.team-detail-menu > li > span {
+    width: 20px;
+    height: 20px;
+}
+
+.team-detail-menu > li:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.current-detail-wrapper{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.current-detail-title{
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 14px;
+    font-weight: 500;
+}
+.current-detail-content-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.current-detail-none-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.current-detail-none-img{
+    margin-top: 8px;
+    width: 130px;
+    height: 160px;
+    background-position: 50%  50%;
+    background-size: 100% 100%;
+
+    background-image: url("https://cc-fe-bifrost.prod-east.frontend.public.atl-paas.net/assets/master/u2OAyMCSwv.svg");
+}
+.current-detail-none-comment{
+    font-size: 20px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    color: rgba(0,0,0,0.3);
+}

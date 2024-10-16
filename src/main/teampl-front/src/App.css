@@ -44,14 +44,26 @@
 .tool-logo{
     background-image: url("asset/main_logo.png");
 }
-
-/*왜 뜨는지 모르겟네?*/
-/*.fixed-bar-container{*/
-/*    margin-top: -8px;*/
-/*}*/
+.arrow-down-icon{
+    background-image: url("asset/arrow_down.png");
+}
+.group-add-icon{
+    background-image: url("asset/group_add_icon.png");
+}
+.add-icon{
+    background-image: url("asset/add_icon.png");
+}
+.search-icon{
+    background-image: url("asset/search_icon.png");
+}
 .slide-left-button{
     background-image: url("asset/expand-left-light-icon.png");
 }
 .slide-right-button{
     background-image: url("asset/expand-right-light-icon.png");
+}
+.divider{
+    height: 0;
+    border: 1px solid rgba(0,0,0,0.3);
+    width: 100%;
 }
