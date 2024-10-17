@@ -56,6 +56,21 @@
 .search-icon{
     background-image: url("asset/search_icon.png");
 }
+.personal-project-icon{
+    background-image: url("asset/personal_project_icon.png");
+}
+.issue-icon{
+    background-image: url("asset/issue_icon.png");
+}
+.favorite-off{
+    background-image: url("asset/favorite_off.png");
+}
+.favorite-on{
+    background-image: url("asset/favorite_on.png");
+}
+.project-item-picture{
+    background-image: url("https://cdn.monday.com/images/quick_search_recent_board.svg");
+}
 .slide-left-button{
     background-image: url("asset/expand-left-light-icon.png");
 }
@@ -66,4 +81,9 @@
     height: 0;
     border: 1px solid rgba(0,0,0,0.3);
     width: 100%;
+}
+.personal-prj-item-favorite-icon{
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
 }

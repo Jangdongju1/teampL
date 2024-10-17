@@ -8,17 +8,32 @@ export default function MainHeader() {
     const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
     // state : 최근 버튼 클릭 상태.
     const [currentBtnClickState, setCurrentBtnClickState] = useState<boolean>(false);
+    // state : 개인프로젝트 버튼 클릭 상태.
+    const [personalPrjBtnClickState, setPersonalPrjBtnClickState] = useState<boolean>(false);
+
+
+    // eventHandler : 버튼 클릭 공통 헨들러
+    const onMenuBtnClickEventHandler = (btnType: string) =>{
+        setTeamBtnClickState(btnType === "team"? !teamBtnClickState :false);
+        setCurrentBtnClickState(btnType === "current"? !currentBtnClickState : false);
+        setPersonalPrjBtnClickState(btnType === "personal"? !personalPrjBtnClickState : false);
+    }
     // eventHandler : 팀 버튼 클릭 이벤트 헨들러
     const onTeamBtnClickEventHandler = () => {
-        setTeamBtnClickState(!teamBtnClickState);
-        setCurrentBtnClickState(false);
+        onMenuBtnClickEventHandler("team");
+
     }
-    const onCurrentBtnClickEventHandler = () =>{
-        setCurrentBtnClickState(!currentBtnClickState);
-        setTeamBtnClickState(false);
+    const onCurrentBtnClickEventHandler = () => {
+        onMenuBtnClickEventHandler("current");
+
+    }
+    const onPersonalPrjBtnClickEventHandler = () => {
+        onMenuBtnClickEventHandler("personal")
+
     }
 
-    const TeamDetailComp = () =>{
+
+    const TeamDetailComp = () => {
         return (
             <div className={"team-detail-wrapper"}>
                 <ul className={"team-detail-menu"}>
@@ -30,7 +45,7 @@ export default function MainHeader() {
         )
     }
 
-    const CurrentDetailComp = ()=>{
+    const CurrentDetailComp = () => {
         return (
             <div className={"current-detail-wrapper"}>
                 <div className={"current-detail-title"}>{"최근의 작업"}</div>
@@ -44,6 +59,19 @@ export default function MainHeader() {
             </div>
         )
     }
+
+    const PersonalPrjDetailComp = ()=>{
+        return (
+            <div id={"personal-detail-wrapper"}>
+                <ul className={"personal-detail-menu"}>
+                    <li><span className={"icon personal-project-icon"}></span>개인 프로젝트</li>
+                    <li><span className={"icon add-icon"}></span>개인프로젝트 생성</li>
+                    <li><span className={"icon issue-icon"}></span>이슈관리</li>
+                </ul>
+            </div>
+        )
+    }
+
     return (
         <div id={"main-header-wrapper"}>
             <div className={"main-header-container"}>
@@ -56,19 +84,19 @@ export default function MainHeader() {
                         <div className={"main-header-menu-box"}>
                             <ul className={"main-header-menu"}>
                                 <li>홈</li>
-                                <li onClick={onCurrentBtnClickEventHandler}> 최근<span className={"icon arrow-down-icon"}></span></li>
+                                <li onClick={onCurrentBtnClickEventHandler}> 최근<span
+                                    className={"icon arrow-down-icon"}></span></li>
                                 <li onClick={onTeamBtnClickEventHandler}> 팀<span
                                     className={"icon arrow-down-icon"}></span></li>
+                                <li onClick={onPersonalPrjBtnClickEventHandler}>개인 프로젝트 <span className={"icon arrow-down-icon"}></span></li>
                                 <li>이슈 리포트</li>
                                 <li>캘린더</li>
                             </ul>
                         </div>
-                        {teamBtnClickState && (<div className={"main-header-menu-detail1"}>
-                            <TeamDetailComp/>
-                        </div>)}
-                        {currentBtnClickState && (<div className={"main-header-menu-detail2"}>
-                            <CurrentDetailComp/>
-                        </div>)}
+                        {teamBtnClickState && (<div className={"main-header-menu-detail1"}><TeamDetailComp/></div>)}
+                        {currentBtnClickState && (
+                            <div className={"main-header-menu-detail2"}><CurrentDetailComp/></div>)}
+                        {personalPrjBtnClickState && (<div className={"main-header-menu-detail3"}><PersonalPrjDetailComp/></div>)}
                     </div>
                     <div className={"main-header-content2"}>
                         <div className={"main-header-individual-content-box"}>
