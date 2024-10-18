@@ -1,50 +1,55 @@
-#main-wrapper{
+#main-wrapper {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
 }
-.main-container{
+
+.main-container {
     width: 1536px;
     height: 804px;
     display: grid;
     grid-template-columns: 3fr 1fr;
-    background-color: rgba(255,255,255,1);
+    background-color: rgba(255, 255, 255, 1);
 }
-.main-left-container{
+
+.main-left-container {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     padding: 20px;
 }
-.main-right-container{
+
+.main-right-container {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     padding: 20px;
 
 }
-.main-left-content-box{
+
+.main-left-content-box {
     width: 100%;
     height: 100%;
-    background-color: rgba(255,255,255,1);
-    border: 1px solid rgba(0,0,0,0.03);
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.03);
     border-radius: 15px;
     box-shadow: 0px 3px 12px #e6e9ef;
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
-.main-right-content-box{
+
+.main-right-content-box {
     width: 100%;
     height: 100%;
-    background-color: rgba(255,255,255,1);
-    border: 1px solid rgba(0,0,0,0.03);
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.03);
     border-radius: 15px;
     box-shadow: 0px 3px 12px #e6e9ef;
 }
-.main-left-content-personal-project{
+
+.main-left-content-personal-project {
     width: 100%;
     height: 300px;
     box-sizing: border-box;
@@ -53,23 +58,20 @@
     flex-direction: column;
     gap: 15px;
 }
-.main-left-content-personal-title{
-    width: 100%;
-    font-size: 18px;
-    font-family: "Noto Sans KR Sans KR";
-    font-weight: 600;
-}
-.main-left-content-personal-content{
+
+
+.main-left-content-personal-content {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
 }
-#personal-prj-item-wrapper{
+
+#personal-prj-item-wrapper {
     width: 25%;
     height: 100%;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     padding: 8px;
     border-radius: 5px;
@@ -78,7 +80,8 @@
     flex-direction: column;
     cursor: pointer;
 }
-.personal-prj-item-picture-box{
+
+.personal-prj-item-picture-box {
     width: 100%;
     height: 140px;
     display: flex;
@@ -87,38 +90,101 @@
     border-radius: 5px;
     background-color: #6c6cff;
 }
-.personal-prj-item-picture{
+
+.personal-prj-item-picture {
     width: 95%;
     height: 100%;
     background-position: 50% 50%;
     background-size: 100% 100%;
 }
-.personal-prj-item-title-box{
+
+.personal-prj-item-title-box {
     margin-top: 10px;
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
-.personal-prj-item-title{
+
+.personal-prj-item-title {
     width: 150px;
     font-family: "Noto Sans KR Sans KR";
     font-weight: 600;
-    color: rgba(0,0,0,0.6);
+    color: rgba(0, 0, 0, 0.6);
     font-size: 16px;
 
-    white-space: nowrap;/*한줄로 유지*/
+    white-space: nowrap; /*한줄로 유지*/
     overflow: hidden; /* 넘치는 부분 숨김 */
     text-overflow: ellipsis; /* ...으로 표시 */
 }
-.personal-prj-item-create-date-box{
+
+.personal-prj-item-create-date-box {
     margin-top: 3px;
     width: 100%;
     display: flex;
     align-items: center;
 }
-.personal-prj-item-create-date{
+
+.personal-prj-item-create-date {
     font-size: 14px;
     font-family: "Noto Sans KR Sans KR";
     font-weight: 600;
-    color: rgba(0,0,0,0.6);
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.main-left-content-personal-none {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-left-content-personal-none-comment {
+    font-size: 20px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.main-left-content-personal-issue-list {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 16px 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.main-left-content-title{
+    width: 100%;
+    font-size: 18px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.main-left-more-btn{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.main-left-content-personal-issue-content{
+    width: 100%;
+    height: 140px;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 5px;
+}
+.main-left-content-personal-issue-none{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.3);
 }

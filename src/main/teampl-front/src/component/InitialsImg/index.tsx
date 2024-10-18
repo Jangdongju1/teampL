@@ -2,15 +2,16 @@ import {useEffect, useRef} from "react";
 import "./style.css";
 
 
-
 interface InitialsImgProps {
-    name: string;
+    name: string,
+    width: number,
+    height: number;
 }
 
 export default function InitialsImg(props: InitialsImgProps) {
     // ref
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const {name} = props;
+    const {name,height,width} = props;
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
@@ -24,6 +25,7 @@ export default function InitialsImg(props: InitialsImgProps) {
         if (!canvas || !context) return;
 
         const radius = canvas.width / 2;
+        const fontSize = radius;
 
 
         context.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
@@ -35,7 +37,7 @@ export default function InitialsImg(props: InitialsImgProps) {
 
 
         context.fillStyle = '#FFFFFF'; // 텍스트 색
-        context.font = 'bold 16px Arial';
+        context.font = `bold ${fontSize}px Arial`;
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.fillText(initials, radius, radius);
@@ -43,6 +45,6 @@ export default function InitialsImg(props: InitialsImgProps) {
 
     }, [name]);
     return (
-        <canvas className={"initial-canvas"} ref={canvasRef} width={36} height={36}/>
+        <canvas className={"initial-canvas"} ref={canvasRef} width={width} height={height}/>
     )
 }

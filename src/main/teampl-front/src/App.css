@@ -56,11 +56,32 @@
 .search-icon{
     background-image: url("asset/search_icon.png");
 }
+.more-list-icon{
+    background-image: url("asset/more_list_icon.png");
+}
 .personal-project-icon{
     background-image: url("asset/personal_project_icon.png");
 }
 .issue-icon{
     background-image: url("asset/issue_icon.png");
+}
+.complete-icon{
+    background-image: url("asset/complete_icon.png");
+}
+.comment-icon{
+    background-image: url("asset/comment_icon.png");
+}
+.connect-icon{
+    background-image: url("asset/connect_icon.png");
+}
+.person-check-icon{
+    background-image: url("asset/person_check.png");
+}
+.waiting-icon{
+    background-image: url("asset/waiting_icon.png");
+}
+.in-progress-icon{
+    background-image: url("asset/in_progress-icon.png");
 }
 .favorite-off{
     background-image: url("asset/favorite_off.png");
@@ -86,4 +107,13 @@
     margin-right: 8px;
     width: 20px;
     height: 20px;
+}
+.multiline-ellipsis {
+    /*firefox등 브라우저에는 적용되지 않을 수 있음*/
+    display: -webkit-box;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 원하는 줄 수 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* ... 표시 */
 }

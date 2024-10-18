@@ -100,7 +100,7 @@ export default function MainHeader() {
                     </div>
                     <div className={"main-header-content2"}>
                         <div className={"main-header-individual-content-box"}>
-                            <InitialsImg name={"jdj881204@naver.com"}/>
+                            <InitialsImg name={"jdj881204@naver.com"} height={36} width={36}/>
                         </div>
                     </div>
                 </div>

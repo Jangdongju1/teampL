@@ -1,9 +1,9 @@
-interface PersonalPrj{
+interface PersonalPrj {
     projectName: string,
-    createDate : string
+    createDate: string
 }
 
-const PersonalProjectListMock : PersonalPrj[] = [
+const PersonalProjectListMock: PersonalPrj[] = [
     {
         projectName: "개인프로젝트1",
         createDate: "2022-12-04"
