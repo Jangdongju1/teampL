@@ -64,9 +64,8 @@ export default function MainHeader() {
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
-                    <li><span className={"icon personal-project-icon"}></span>개인 프로젝트</li>
-                    <li><span className={"icon add-icon"}></span>개인프로젝트 생성</li>
-                    <li><span className={"icon issue-icon"}></span>이슈관리</li>
+                    <li><span className={"icon add-icon"}></span>프로젝트 생성</li>
+                    <li><span className={"icon personal-project-icon"}></span>프로젝트 이슈 관리</li>
                 </ul>
             </div>
         )
