@@ -1,11 +1,13 @@
 import "./style.css";
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation, useParams} from "react-router-dom";
 import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
+import Home from "../../../view/home";
+import {HOME_PATH} from "../../../constant";
 
 export default function MainContainer() {
-
-
+    // location  :  path값을 가져오는 함수
+    const {pathname} = useLocation();
 
     interface ParticipantsProp{
         email: string,
@@ -43,6 +45,8 @@ export default function MainContainer() {
             </div>
         )
     }
+    if (pathname === `${HOME_PATH()}`) return null;
+
     return (
         <>
             <MainHeader/>

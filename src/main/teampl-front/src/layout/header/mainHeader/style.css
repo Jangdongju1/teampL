@@ -99,22 +99,22 @@
 }
 
 .main-header-menu-detail2 {
-    margin-top: 345px;
-    margin-left: 230px;
-    width: 480px;
-    height: 300px;
+    margin-top: 210px;
+    margin-left: 220px;
+    width: 320px;
+    height: 180px;
     position: absolute;
     box-sizing: border-box;
-    padding: 8px 8px 40px 8px;
+    padding: 8px;
     background-color: rgba(255, 255, 255, 1);
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
 .main-header-menu-detail3{
-    margin-top: 170px;
+    margin-top: 225px;
     margin-left: 335px;
     width: 320px;
-    height: 125px;
+    height: 180px;
     position: absolute;
     box-sizing: border-box;
     padding: 8px;

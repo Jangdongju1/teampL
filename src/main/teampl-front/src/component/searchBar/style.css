@@ -1,0 +1,27 @@
+.search-bar-box{
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+}
+.search-bar{
+    height: 32px;
+    box-sizing: border-box;
+    padding: 3px;
+
+    display: flex;
+    align-items: center;
+}
+.search-bar-input{
+    width: 200px;
+    height: 14px;
+    font-size: 14px;
+    border: none;
+    background: none;
+    outline: none;
+}
+.search-icon-btn{
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
+

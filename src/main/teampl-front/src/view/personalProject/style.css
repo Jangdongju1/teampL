@@ -1,0 +1,94 @@
+#personal-project-wrapper{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+}
+.personal-project-top-container{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.personal-project-top-title{
+    font-size: 26px;
+    font-family: "Karla";
+    font-weight: 600;
+}
+
+#personal-dashboard-table-wrapper{
+    width: 100%;
+}
+.personal-dashboard-table{
+    min-width: 900px;
+}
+.personal-dashboard-table > thead > tr > td{
+    width: 25%;
+}
+.personal-dashboard-table-head{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+}
+.personal-dashboard-table-body{
+    font-size: 26px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+}
+.personal-project-bottom-container{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.personal-project-bottom-title-box{
+    width: 100%;
+}
+.personal-project-bottom-title{
+    font-size: 26px;
+    font-family: "Karla";
+    font-weight: 600;
+}
+.personal-project-bottom-content-box{
+    width: 100%;
+    height: 100%;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+.personal-project-bottom-content{
+    width: 100%;
+    max-height: 510px;
+    box-sizing: border-box;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.personal-project-bottom-content-item {
+    display: inline-block;
+    width: 300px;
+    height: 200px;
+    background-color: #f0f0f0;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 5px;
+}
+.personal-project-none{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.3);
+}

@@ -53,7 +53,7 @@
 .add-icon{
     background-image: url("asset/add_icon.png");
 }
-.search-icon{
+.search-icon-btn{
     background-image: url("asset/search_icon.png");
 }
 .more-list-icon{
@@ -83,6 +83,9 @@
 .in-progress-icon{
     background-image: url("asset/in_progress-icon.png");
 }
+.folder-open-icon{
+    background-image: url("asset/folder_open.png");
+}
 .favorite-off{
     background-image: url("asset/favorite_off.png");
 }
@@ -98,9 +101,20 @@
 .slide-right-button{
     background-image: url("asset/expand-right-light-icon.png");
 }
+.home-icon{
+    background-image: url("asset/home_icon.png");
+}
+.people-icon{
+    background-image: url("asset/participants_icon.png");
+}
 .divider{
     height: 0;
     border: 1px solid rgba(0,0,0,0.3);
+    width: 100%;
+}
+.divider2{
+    height: 0;
+    border-top: 1px solid rgba(0,0,0,0.3);
     width: 100%;
 }
 .personal-prj-item-favorite-icon{

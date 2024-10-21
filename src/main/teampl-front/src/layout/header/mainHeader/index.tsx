@@ -1,9 +1,13 @@
 import "./style.css";
-import {useRef, useState} from "react";
-import defaultProfileImg from "../../../asset/defaultProfileImg.png";
+import {useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
+import {useNavigate} from "react-router-dom";
 
 export default function MainHeader() {
+
+    // navigate 함수 : 페이지 이동
+    const navigator = useNavigate();
+
     // state : 팀버튼 클릭 상태
     const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
     // state : 최근 버튼 클릭 상태.
@@ -11,14 +15,12 @@ export default function MainHeader() {
     // state : 개인프로젝트 버튼 클릭 상태.
     const [personalPrjBtnClickState, setPersonalPrjBtnClickState] = useState<boolean>(false);
 
-
     // eventHandler : 버튼 클릭 공통 헨들러
     const onMenuBtnClickEventHandler = (btnType: string) =>{
         setTeamBtnClickState(btnType === "team"? !teamBtnClickState :false);
         setCurrentBtnClickState(btnType === "current"? !currentBtnClickState : false);
         setPersonalPrjBtnClickState(btnType === "personal"? !personalPrjBtnClickState : false);
     }
-    // eventHandler : 팀 버튼 클릭 이벤트 헨들러
     const onTeamBtnClickEventHandler = () => {
         onMenuBtnClickEventHandler("team");
 
@@ -29,9 +31,13 @@ export default function MainHeader() {
     }
     const onPersonalPrjBtnClickEventHandler = () => {
         onMenuBtnClickEventHandler("personal")
-
     }
 
+    // eventHandler : 개인프로젝트 > 프로젝트 목록 버튼 클릭 이벤트 헨들러
+    const  onPersonalPrjListBtnClickEventHandler = ()=>{
+        // 개인 프로젝트 페이지로 네비게이트
+        //navigator(``)
+    }
 
     const TeamDetailComp = () => {
         return (
@@ -39,7 +45,7 @@ export default function MainHeader() {
                 <ul className={"team-detail-menu"}>
                     <li><span className={"icon group-add-icon"}></span>{"팀 생성"}</li>
                     <li><span className={"icon add-icon"}></span>{"TeamPL에 사용자 초대"}</li>
-                    <li><span className={"icon search-icon"}></span>{"사용자 및 팀 검색"}</li>
+                    <li><span className={"icon search-icon-btn"}></span>{"사용자 및 팀 검색"}</li>
                 </ul>
             </div>
         )
@@ -64,6 +70,7 @@ export default function MainHeader() {
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
+                    <li><span className={"icon more-list-icon"} onClick={onPersonalPrjListBtnClickEventHandler}></span>프로젝트 목록</li>
                     <li><span className={"icon add-icon"}></span>프로젝트 생성</li>
                     <li><span className={"icon personal-project-icon"}></span>프로젝트 이슈 관리</li>
                 </ul>

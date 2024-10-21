@@ -3,7 +3,7 @@ import "./style.css";
 import {ChangeEvent, KeyboardEvent} from "react";
 
 interface InputProps {
-    label: string,
+    label?: string,
     type: "text" | "password",
     placeholder?: string,
     value: string,
