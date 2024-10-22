@@ -2,7 +2,7 @@ package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.auth.AuthCodeRequest;
 import com.persnal.teampl.dto.request.auth.AuthCodeConfirmRequest;
-import com.persnal.teampl.dto.request.auth.SigInRequest;
+import com.persnal.teampl.dto.request.auth.SignInRequest;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeResponse;
@@ -14,13 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
@@ -39,15 +36,15 @@ public class AuthController {
         return authService.confirmCode(email, request.getCode());
     }
 
-    @PostMapping("sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<? super ApiResponse<SignUpResponse>> signUp(@AuthenticationPrincipal String email,
                                                                       @Validated @RequestBody SignUpRequest request) {
         return authService.signUp(email, request);
     }
-
-    @PostMapping("sign-in")
-    public ResponseEntity<? super ApiResponse<SignInResponse>> signUP(@Validated @RequestBody SigInRequest req) {
-        return authService.signIn(req);
-    }
+//
+//    @PostMapping("/sign-in")
+//    public ResponseEntity<? super ApiResponse<SignInResponse>> signUP(@Validated @RequestBody SignInRequest req) {
+//        return authService.signIn(req);
+//    }
 
 }

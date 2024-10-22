@@ -1,0 +1,29 @@
+#kanban-board-panel-wrapper{
+    max-width: 250px;
+    height: 100%;
+}
+.kanban-board-panel-name-box{
+    width: 100%;
+    height: 40px;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    align-items: center;
+}
+.kanban-board-panel-name{
+    font-size: 16px;
+    font-family: Karla;
+    font-weight: 700;
+    color: rgba(255,255,255,1);
+    box-sizing: border-box;
+    padding: 0 0 0 8px;
+}
+.kanban-board-panel-item-box{
+    width: 100%;
+    height: 540px;
+    max-height: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    background-color: #F6F7FB;
+}

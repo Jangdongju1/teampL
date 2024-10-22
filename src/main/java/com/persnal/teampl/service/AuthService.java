@@ -1,6 +1,6 @@
 package com.persnal.teampl.service;
 
-import com.persnal.teampl.dto.request.auth.SigInRequest;
+import com.persnal.teampl.dto.request.auth.SignInRequest;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeResponse;
@@ -16,6 +16,6 @@ public interface AuthService {
 
     public ResponseEntity<? super ApiResponse<SignUpResponse>> signUp(String email, SignUpRequest req);
 
-    public ResponseEntity<? super ApiResponse<SignInResponse>> signIn(SigInRequest req);
+//    public ResponseEntity<? super ApiResponse<SignInResponse>> signIn(SignInRequest req);
 }
 

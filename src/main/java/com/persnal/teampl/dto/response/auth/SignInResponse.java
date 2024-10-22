@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 @Getter
 @AllArgsConstructor
 public class SignInResponse {
-    private String accessToken_Main;
+    private String token;
     private int expireTimeSec;
 
 

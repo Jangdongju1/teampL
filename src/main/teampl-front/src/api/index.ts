@@ -70,3 +70,7 @@ export const signInRequest = async (requestBody: SignInRequest) => {
         });
 }
 
+// 로그인된 유저인지 확인하는 요청
+export const isLoginUserRequest = async (token: string) => {
+    //return await axios.get()
+}

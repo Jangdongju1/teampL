@@ -5,6 +5,7 @@ import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.response.ResponseDto;
+import com.persnal.teampl.util.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ public class FailedAuthenticationEntryPoint  implements AuthenticationEntryPoint
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        logger.error(GlobalVariable.LOG_PATTERN.getClass().getName(), "Authentication Failed");
+        logger.error(GlobalVariable.LOG_PATTERN,getClass().getName(), Utils.getStackTrace(authException));
 
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 인증실패

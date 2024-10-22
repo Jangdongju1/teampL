@@ -42,7 +42,7 @@ export default function IssueCard(props: IssueCardProps) {
         <div id={"issue-card-wrapper"}>
             <div className={"issue-card-container"}>
                 <div className={"issue-card-title-box"}>
-                    <div className={"issue-card-title multiline-ellipsis"}>{title}</div>
+                    <div className={"issue-card-title"}>{title}</div>
                 </div>
 
                 <div className={"issue-card-middle-box"}>

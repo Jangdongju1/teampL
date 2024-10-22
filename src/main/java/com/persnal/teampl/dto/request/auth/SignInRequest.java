@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SigInRequest {
+public class SignInRequest {
     @NotNull @NotBlank
     private String email;
     @NotNull @NotBlank

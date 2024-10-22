@@ -1,6 +1,6 @@
-package com.persnal.teampl.jwt;
+package com.persnal.teampl.jwt.webTokenImpl;
 
-import com.persnal.teampl.jwt.webTokenModule.WebTokenProvider;
+import com.persnal.teampl.jwt.WebTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Component
 @PropertySource("classpath:application.yml")
-public class PasswordRegistrationJWTProvider implements WebTokenProvider {
+public class JwtProvider implements WebTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -35,12 +35,13 @@ public class PasswordRegistrationJWTProvider implements WebTokenProvider {
     }
 
     @Override
-    public String createWebToken(String email, int validTimeSec) {
+    public String createWebToken(String email, String role, int validTimeSec) {
         String token = "";
         try {
             Date expireDate = Date.from(Instant.now().plus(validTimeSec, ChronoUnit.SECONDS));
             token = Jwts.builder()
                     .subject(email)
+                    .claim("role", role)
                     .issuedAt(Date.from(Instant.now()))  // 발행시간
                     .expiration(expireDate) // 만료일시
                     .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
@@ -69,6 +70,25 @@ public class PasswordRegistrationJWTProvider implements WebTokenProvider {
             logger.error(e.getMessage());
         }
         return subject;
+    }
+
+    @Override
+    public String createTemporaryWebToken(String email, int validTimeSec) {
+        String token = "";
+        try {
+            Date expireDate = Date.from(Instant.now().plus(validTimeSec, ChronoUnit.SECONDS));
+            token = Jwts.builder()
+                    .subject(email)
+                    .issuedAt(Date.from(Instant.now()))  // 발행시간
+                    .expiration(expireDate) // 만료일시
+                    .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                    .compact();
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return token;
     }
 
 }

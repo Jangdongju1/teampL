@@ -1,5 +1,6 @@
 import "./style.css";
 import KanbanTopComponent from "../../../component/kanbanBoardTopComponent/kanbanTopComponent";
+import KanbanBoardPanel from "../../../component/kanbanBoardPanal/kanbanBoardPanel";
 
 export default function PersonalKanbanBoard() {
     return (
@@ -9,10 +10,18 @@ export default function PersonalKanbanBoard() {
             </div>
             <div className={"kanban-board-bottom-container"}>
 
-                <div className={"kanban-board-box"}></div>
-                <div className={"kanban-board-box"}></div>
-                <div className={"kanban-board-box"}></div>
-                <div className={"kanban-board-box"}></div>
+                <div className={"kanban-board-box"}>
+                    <KanbanBoardPanel boardName={"Not Start"}/>
+                </div>
+                <div className={"kanban-board-box"}>
+                    <KanbanBoardPanel boardName={"On Working"}/>
+                </div>
+                <div className={"kanban-board-box"}>
+                    <KanbanBoardPanel boardName={"Stuck"}/>
+                </div>
+                <div className={"kanban-board-box"}>
+                    <KanbanBoardPanel boardName={"Done"}/>
+                </div>
 
             </div>
         </div>

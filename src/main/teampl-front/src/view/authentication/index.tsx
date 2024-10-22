@@ -5,16 +5,21 @@ import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent";
 import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
-import {authCodeRequest, signInRequest, signUpRequest} from "../../api";
+import {authCodeRequest, signInRequest} from "../../api";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
 import {AuthCodeResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, AUTHENTICATION_CODE_CONFIRM_PATH, SIGN_IN_PATH} from "../../constant";
+import {
+    AUTH_PATH,
+    AUTHENTICATION_CODE_CONFIRM_PATH,
+    HOME_PATH,
+    PERSONAL_PROJECT_HOME_PATH,
+    SIGN_IN_PATH
+} from "../../constant";
 import {useCookies} from "react-cookie";
 import {userEmailStore} from "../../hook";
 import SignInResponse from "../../interface/response/signInResponse";
-import {calculateNewValue} from "@testing-library/user-event/dist/utils";
 
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
@@ -91,12 +96,14 @@ export default function Authentication() {
         const signInResponse = (responseBody:SignInResponse | ResponseDto | null)=>{
             const {code,message} = responseBody as ResponseDto;
             if (code === ResponseCode.SUCCESS) {
-                const {token, expireTimeSec} = responseBody as SignInResponse;
-                const now = new Date().getTime();
-                const expires = new Date(now + expireTimeSec*1000);
-                setCookie("accessToken_Main", token, {expires, path:`/`});
+                const {data} = responseBody as SignInResponse;
+                const now = Date.now();
 
-                // 네비게이트 메인화면
+                const expires = new Date(now + data.expireTimeSec*1000);
+                setCookie("accessToken_Main", data.token, {expires, path:`/`});
+
+                const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
+                navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
 
             }
             else if (code === ResponseCode.SIGN_IN_FAILED) alert(message);
@@ -133,7 +140,7 @@ export default function Authentication() {
                                         message={passErrorMassage}/>
                     </div>
                     <div className={"sign-in-top-login-button-container"}>
-                        <div className={"sign-in-top-login-button"}>{"로그인"}</div>
+                        <div className={"sign-in-top-login-button"} onClick={onLogInBtnClickEventHandler}>{"로그인"}</div>
                     </div>
                 </div>
 
@@ -204,6 +211,8 @@ export default function Authentication() {
             else if (code === ResponseCode.EXIST_USER) {
                 alert("이미 가입된 회원입니다.")
                 navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`);
+                return;
+
             } else if (code === ResponseCode.ALREADY_SENT) return;  // 이미 이메일을 보낸 경우.
 
             const {data} = responseBody as AuthCodeResponse;

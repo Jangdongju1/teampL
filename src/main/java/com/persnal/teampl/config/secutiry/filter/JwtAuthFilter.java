@@ -1,7 +1,7 @@
 package com.persnal.teampl.config.secutiry.filter;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.jwt.webTokenModule.WebTokenProvider;
+import com.persnal.teampl.jwt.WebTokenProvider;
 import com.persnal.teampl.util.Utils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,43 +21,48 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
 @Component
 @RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {  // JWT 검증필터
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final WebTokenProvider provider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = null;
+            String requestURI = request.getRequestURI();
+            if (requestURI.startsWith("/api/v1/auth")){
+                String token = null;
 
-            token = parseToken(request);
+                token = parseToken(request);
 
 
-            if (token == null) {
-                filterChain.doFilter(request, response);
-                return;
+                if (token == null) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                // 유효시간은 알아서 검증을 함.
+
+                String email = provider.getSubject(token);
+
+                if (email.isEmpty()) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                AbstractAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
+
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+                securityContext.setAuthentication(authenticationToken);
+                SecurityContextHolder.setContext(securityContext);
             }
 
-            // 여기서 토근 유효시간 검증 로직 추가
-
-            String email = provider.getSubject(token);
-
-            if (email.isEmpty()) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            AbstractAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
-
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-
-            securityContext.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(securityContext);
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), Utils.getStackTrace(e));

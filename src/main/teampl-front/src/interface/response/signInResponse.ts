@@ -1,4 +1,6 @@
-export default interface SignInResponse{
-    token: string,
-    expireTimeSec : number
+export default interface SignInResponse {
+    data: {
+        token: string,
+        expireTimeSec: number
+    }
 }

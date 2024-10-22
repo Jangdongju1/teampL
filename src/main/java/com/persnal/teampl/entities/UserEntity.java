@@ -20,6 +20,8 @@ public class UserEntity {
     private String profileImg;
     @Setter
     private String groupName;
+    @Setter
+    private String role;
 
     // 일대다 관계에서 부모가 주인이 아님을 선언해야 한다.
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
