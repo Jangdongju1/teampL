@@ -11,5 +11,6 @@ public interface ResponseMessage {
     String EXIST_USER = "User already exists.";
     String EXPIRE_AUTH_CODE ="AuthCode is expired." ;
     String ALREADY_SENT = "Email Already Sent.";
+    String LOGIN_USER = "Verified User";
 
 }

@@ -1,13 +1,21 @@
 import "./style.css";
-import {Outlet, useLocation, useParams} from "react-router-dom";
+import {Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
 import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
 import Home from "../../../view/home";
-import {HOME_PATH} from "../../../constant";
+import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant";
+import {useCookies} from "react-cookie";
+import {useEffect, useState} from "react";
 
 export default function MainContainer() {
     // location  :  path값을 가져오는 함수
     const {pathname} = useLocation();
+    // navigate : 네비게이트 함수
+    const navigator = useNavigate();
+    // state : 쿠키상태
+    const [cookies, setCookies] = useCookies();
+    // const : 로딩상태
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     interface ParticipantsProp{
         email: string,
@@ -15,6 +23,17 @@ export default function MainContainer() {
         profileImg? : string,
         teamRole: number
     }
+
+    // useEffect
+    useEffect(() => {
+        if (!cookies.accessToken_Main) {
+            navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
+            return;
+        }
+        setIsLoading(true);
+
+
+    }, [cookies.accessToken_Main]);
 
 
     // 참여자 컴포넌트
@@ -46,6 +65,8 @@ export default function MainContainer() {
         )
     }
     if (pathname === `${HOME_PATH()}`) return null;
+    if (isLoading === false) return null;
+    //if (!cookies.accessToken_Main) return null;
 
     return (
         <>

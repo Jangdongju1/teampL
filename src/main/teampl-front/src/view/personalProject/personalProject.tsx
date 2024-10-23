@@ -2,6 +2,8 @@ import "./style.css";
 import ProjectCard from "../../component/projectCard/projectCard";
 import PersonalProjectListMock from "../../mock/personalProjectList.mock";
 import personalProjectListMock from "../../mock/personalProjectList.mock";
+import {useCookies} from "react-cookie";
+
 export default function PersonalProject() {
 
 
@@ -10,6 +12,8 @@ export default function PersonalProject() {
     }
     // 상단 대시보드 컴포넌트
     const PersonalPrjDashBoardTable = () => {
+
+
         return (
             <div id={"personal-dashboard-table-wrapper"}>
                 <table className={"personal-dashboard-table"}>
@@ -34,6 +38,7 @@ export default function PersonalProject() {
             </div>
         )
     }
+
     return (
         <div id={"personal-project-wrapper"}>
             <div className={"personal-project-top-container"}>
@@ -49,9 +54,9 @@ export default function PersonalProject() {
 
                 <div className={"personal-project-bottom-content-box"}>
                     <div className={"personal-project-bottom-content"}>
-                        {!personalProjectListMock?
+                        {!personalProjectListMock ?
                             <div className={"personal-project-none"}>{"진행중인 프로젝트가 없습니다."}</div> :
-                            personalProjectListMock.map((item , index) => <ProjectCard
+                            personalProjectListMock.map((item, index) => <ProjectCard
                                 projectName={item.projectName}
                                 createDate={item.createDate}/>)
                         }

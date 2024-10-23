@@ -4,6 +4,7 @@ import {AuthCodeConfirmResponse, AuthCodeResponse, ResponseDto, SignUpResponse} 
 import ApiEndPoint from "../common/ApiEndPoint";
 import {AuthCodeConfirmRequest, SignInRequest, SignUpRequest} from "../interface/request";
 import SignInResponse from "../interface/response/signInResponse";
+import LoginUserResponse from "../interface/response/loginUserResponse";
 
 const DOMAIN = "http://localhost:4000";
 const apiEndPoint = (domain: string, indicator: string) => `${domain}${indicator}`;
@@ -72,5 +73,13 @@ export const signInRequest = async (requestBody: SignInRequest) => {
 
 // 로그인된 유저인지 확인하는 요청
 export const isLoginUserRequest = async (token: string) => {
-    //return await axios.get()
+    return await axios.get(apiEndPoint(DOMAIN, ApiEndPoint.LOGIN_USER), Authorization(token))
+        .then(response => {
+            const responseBody: LoginUserResponse = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
 }

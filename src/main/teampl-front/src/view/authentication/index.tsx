@@ -7,7 +7,7 @@ import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
-import {AuthCodeResponse, ResponseDto} from "../../interface/response";
+import {AuthCodeResponse, ResponseDto,SignInResponse} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";
 import {useNavigate} from "react-router-dom";
 import {
@@ -19,7 +19,7 @@ import {
 } from "../../constant";
 import {useCookies} from "react-cookie";
 import {userEmailStore} from "../../hook";
-import SignInResponse from "../../interface/response/signInResponse";
+
 
 // component : 로그인 관련 컴포넌트
 export default function Authentication() {
@@ -103,6 +103,7 @@ export default function Authentication() {
                 setCookie("accessToken_Main", data.token, {expires, path:`/`});
 
                 const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
+                localStorage.setItem("identifier", encodedUserEmail); //로컬스토리지에 식별자 저장 .
                 navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
 
             }

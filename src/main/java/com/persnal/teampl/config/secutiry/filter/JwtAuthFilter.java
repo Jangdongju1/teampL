@@ -32,36 +32,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {  // JWT 검증필터
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String requestURI = request.getRequestURI();
-            if (requestURI.startsWith("/api/v1/auth")){
-                String token = null;
 
-                token = parseToken(request);
+            String token = null;
+
+            token = parseToken(request);
 
 
-                if (token == null) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
-                // 유효시간은 알아서 검증을 함.
-
-                String email = provider.getSubject(token);
-
-                if (email.isEmpty()) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
-                AbstractAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
-
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-
-                securityContext.setAuthentication(authenticationToken);
-                SecurityContextHolder.setContext(securityContext);
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
             }
+
+            // 유효시간은 알아서 검증을 함.
+
+            String email = provider.getSubject(token);
+
+            if (email.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            AbstractAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
+
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+            securityContext.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(securityContext);
 
 
         } catch (Exception e) {
