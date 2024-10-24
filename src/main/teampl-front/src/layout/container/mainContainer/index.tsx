@@ -6,6 +6,7 @@ import Home from "../../../view/home";
 import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
+import {modalStore} from "../../../hook";
 
 export default function MainContainer() {
     // location  :  path값을 가져오는 함수
@@ -17,6 +18,10 @@ export default function MainContainer() {
     // const : 로딩상태
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    // global State: 모달에 관련된 전역상태
+    const {isModalOpen} = modalStore();
+
+
     interface ParticipantsProp{
         email: string,
         nickname: string,
@@ -26,14 +31,26 @@ export default function MainContainer() {
 
     // useEffect
     useEffect(() => {
-        if (!cookies.accessToken_Main) {
-            navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
-            return;
-        }
+        // if (!cookies.accessToken_Main) {
+        //     navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
+        //     return;
+        // }
         setIsLoading(true);
 
 
     }, [cookies.accessToken_Main]);
+
+    // 모달오픈시 화면블러처리
+    useEffect(() => {
+        if (isModalOpen){
+            document.body.classList.add("body-blackout-style");
+        }else{
+            document.body.classList.remove("body-blackout-style");
+        }
+        return () => {
+            document.body.classList.remove('body-blur');
+        };
+    }, [isModalOpen]);
 
 
     // 참여자 컴포넌트
@@ -65,8 +82,8 @@ export default function MainContainer() {
         )
     }
     if (pathname === `${HOME_PATH()}`) return null;
-    if (isLoading === false) return null;
-    //if (!cookies.accessToken_Main) return null;
+    // if (isLoading === false) return null;
+
 
     return (
         <>

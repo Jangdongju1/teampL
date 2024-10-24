@@ -1,5 +1,6 @@
 import userEmailStore from "./userEmailStore";
-
+import modalStore from "./modalStore";
 export {
-    userEmailStore
+    userEmailStore,
+    modalStore
 }

@@ -6,7 +6,6 @@ import com.persnal.teampl.config.secutiry.filter.JwtAuthFilter;
 import com.persnal.teampl.config.secutiry.filter.LoginFilter;
 import com.persnal.teampl.jwt.WebTokenProvider;
 import com.persnal.teampl.util.Utils;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -73,7 +72,6 @@ public class WebSecurityConfig {
                 authorizeRequests
                         .requestMatchers(HttpMethod.POST, "/", "/api/v1/auth/auth-code").permitAll()   // 인증코드 발급
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-in").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/test").permitAll()
                         .anyRequest().authenticated();
             });
 

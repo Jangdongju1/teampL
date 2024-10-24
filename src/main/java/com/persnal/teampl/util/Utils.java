@@ -1,5 +1,8 @@
 package com.persnal.teampl.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Utils {
     public static String getStackTrace(Exception e) {
         StackTraceElement[] element = e.getStackTrace();
@@ -28,4 +31,8 @@ public class Utils {
         element = null;
         return str.toString();
     }
+    public static String getNowTime(LocalDateTime time){
+        return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
 }

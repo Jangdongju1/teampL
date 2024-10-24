@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "team")
 public class TeamEntity {
+    @Setter
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int regNum;
     private String email;
@@ -24,6 +26,9 @@ public class TeamEntity {
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private Set<ProjectEntity> projectEntities;
 
+    public TeamEntity(int regNum){
+        this.regNum = regNum;
+    }
     // mappedBy
     // 일대다 관계에서 주인은 FK가 있는 쪽이되어야 하므로, 이 설정으로 이 엔티티는 주인이 아님을 선언한 것.
     // 관계를 설정하면 연관된 엔티티까지 모두 검색이 되기에 양방향 접근이 가능해진다.

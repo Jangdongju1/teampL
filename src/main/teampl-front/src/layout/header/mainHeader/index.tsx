@@ -2,12 +2,14 @@ import "./style.css";
 import {useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
+import {modalStore} from "../../../hook";
 
 export default function MainHeader() {
 
     // navigate 함수 : 페이지 이동
     const navigator = useNavigate();
-
+    // global State : 모달창에 대한 전역상태
+    const {setIsModalOpen, setModalType} = modalStore();
     // state : 팀버튼 클릭 상태
     const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
     // state : 최근 버튼 클릭 상태.
@@ -67,11 +69,17 @@ export default function MainHeader() {
     }
 
     const PersonalPrjDetailComp = ()=>{
+        //* eventHandler :프로젝트 생성 버튼 클릭이 이벤트 헨들러
+        //*팀생성 버튼에 대한 모달타입은 cp임
+        const onCreateProjectBtnClickEventHandler = () =>{
+            setModalType("cp");
+            setIsModalOpen(true);
+        }
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
                     <li><span className={"icon more-list-icon"} onClick={onPersonalPrjListBtnClickEventHandler}></span>프로젝트 목록</li>
-                    <li><span className={"icon add-icon"}></span>프로젝트 생성</li>
+                    <li onClick={onCreateProjectBtnClickEventHandler}><span className={"icon add-icon"}></span>프로젝트 생성</li>
                     <li><span className={"icon personal-project-icon"}></span>프로젝트 이슈 관리</li>
                 </ul>
             </div>
