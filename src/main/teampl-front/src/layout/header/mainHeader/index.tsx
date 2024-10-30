@@ -3,6 +3,7 @@ import {useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
 import {modalStore} from "../../../hook";
+import headerMenuStore from "../../../hook/headerMenuStore";
 
 export default function MainHeader() {
 
@@ -10,18 +11,28 @@ export default function MainHeader() {
     const navigator = useNavigate();
     // global State : 모달창에 대한 전역상태
     const {setIsModalOpen, setModalType} = modalStore();
-    // state : 팀버튼 클릭 상태
-    const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
-    // state : 최근 버튼 클릭 상태.
-    const [currentBtnClickState, setCurrentBtnClickState] = useState<boolean>(false);
-    // state : 개인프로젝트 버튼 클릭 상태.
-    const [personalPrjBtnClickState, setPersonalPrjBtnClickState] = useState<boolean>(false);
+    // global State : 헤더 메뉴 오픈 상태
+    const {
+        currentBtnClickState,
+        personalPrjBtnClickState,
+        teamBtnClickState,
+        setTeamBtnClickState,
+        setCurrentBtnClickState,
+        setPersonalPrjBtnClickState
+    } = headerMenuStore();
+
+    // // state : 팀버튼 클릭 상태
+    // const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
+    // // state : 최근 버튼 클릭 상태.
+    // const [currentBtnClickState, setCurrentBtnClickState] = useState<boolean>(false);
+    // // state : 개인프로젝트 버튼 클릭 상태.
+    // const [personalPrjBtnClickState, setPersonalPrjBtnClickState] = useState<boolean>(false);
 
     // eventHandler : 버튼 클릭 공통 헨들러
-    const onMenuBtnClickEventHandler = (btnType: string) =>{
-        setTeamBtnClickState(btnType === "team"? !teamBtnClickState :false);
-        setCurrentBtnClickState(btnType === "current"? !currentBtnClickState : false);
-        setPersonalPrjBtnClickState(btnType === "personal"? !personalPrjBtnClickState : false);
+    const onMenuBtnClickEventHandler = (btnType: string) => {
+        setTeamBtnClickState(btnType === "team" ? !teamBtnClickState : false);
+        setCurrentBtnClickState(btnType === "current" ? !currentBtnClickState : false);
+        setPersonalPrjBtnClickState(btnType === "personal" ? !personalPrjBtnClickState : false);
     }
     const onTeamBtnClickEventHandler = () => {
         onMenuBtnClickEventHandler("team");
@@ -32,11 +43,11 @@ export default function MainHeader() {
 
     }
     const onPersonalPrjBtnClickEventHandler = () => {
-        onMenuBtnClickEventHandler("personal")
+        onMenuBtnClickEventHandler("personal");
     }
 
     // eventHandler : 개인프로젝트 > 프로젝트 목록 버튼 클릭 이벤트 헨들러
-    const  onPersonalPrjListBtnClickEventHandler = ()=>{
+    const onPersonalPrjListBtnClickEventHandler = () => {
         // 개인 프로젝트 페이지로 네비게이트
         //navigator(``)
     }
@@ -68,18 +79,22 @@ export default function MainHeader() {
         )
     }
 
-    const PersonalPrjDetailComp = ()=>{
+    const PersonalPrjDetailComp = () => {
         //* eventHandler :프로젝트 생성 버튼 클릭이 이벤트 헨들러
         //*팀생성 버튼에 대한 모달타입은 cp임
-        const onCreateProjectBtnClickEventHandler = () =>{
+        const onCreateProjectBtnClickEventHandler = () => {
+            onMenuBtnClickEventHandler("personal");
             setModalType("cp");
             setIsModalOpen(true);
         }
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
-                    <li><span className={"icon more-list-icon"} onClick={onPersonalPrjListBtnClickEventHandler}></span>프로젝트 목록</li>
-                    <li onClick={onCreateProjectBtnClickEventHandler}><span className={"icon add-icon"}></span>프로젝트 생성</li>
+                    <li><span className={"icon more-list-icon"} onClick={onPersonalPrjListBtnClickEventHandler}></span>프로젝트
+                        목록
+                    </li>
+                    <li onClick={onCreateProjectBtnClickEventHandler}><span className={"icon add-icon"}></span>프로젝트 생성
+                    </li>
                     <li><span className={"icon personal-project-icon"}></span>프로젝트 이슈 관리</li>
                 </ul>
             </div>
@@ -102,7 +117,8 @@ export default function MainHeader() {
                                     className={"icon arrow-down-icon"}></span></li>
                                 <li onClick={onTeamBtnClickEventHandler}> 팀<span
                                     className={"icon arrow-down-icon"}></span></li>
-                                <li onClick={onPersonalPrjBtnClickEventHandler}>개인 프로젝트 <span className={"icon arrow-down-icon"}></span></li>
+                                <li onClick={onPersonalPrjBtnClickEventHandler}>개인 프로젝트 <span
+                                    className={"icon arrow-down-icon"}></span></li>
                                 <li>이슈 리포트</li>
                                 <li>캘린더</li>
                             </ul>
@@ -110,7 +126,8 @@ export default function MainHeader() {
                         {teamBtnClickState && (<div className={"main-header-menu-detail1"}><TeamDetailComp/></div>)}
                         {currentBtnClickState && (
                             <div className={"main-header-menu-detail2"}><CurrentDetailComp/></div>)}
-                        {personalPrjBtnClickState && (<div className={"main-header-menu-detail3"}><PersonalPrjDetailComp/></div>)}
+                        {personalPrjBtnClickState && (
+                            <div className={"main-header-menu-detail3"}><PersonalPrjDetailComp/></div>)}
                     </div>
                     <div className={"main-header-content2"}>
                         <div className={"main-header-individual-content-box"}>

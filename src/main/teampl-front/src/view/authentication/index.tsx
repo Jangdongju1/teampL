@@ -5,7 +5,7 @@ import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent";
 import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
-import {authCodeRequest, signInRequest} from "../../api";
+import {authCodeRequest, signInRequest} from "../../api/authApi";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
 import {AuthCodeResponse, ResponseDto,SignInResponse} from "../../interface/response";
 import ResponseCode from "../../common/responseCode";

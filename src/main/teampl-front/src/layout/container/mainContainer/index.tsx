@@ -1,12 +1,13 @@
 import "./style.css";
-import {Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
-import Home from "../../../view/home";
-import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant";
+import {HOME_PATH} from "../../../constant";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
-import {modalStore} from "../../../hook";
+import {modalStore,headerMenuStore} from "../../../hook";
+import CreationModal from "../../../component/modal/creationModal/creationModal";
+
 
 export default function MainContainer() {
     // location  :  path값을 가져오는 함수
@@ -19,13 +20,33 @@ export default function MainContainer() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // global State: 모달에 관련된 전역상태
-    const {isModalOpen} = modalStore();
+    const {isModalOpen, modalType} = modalStore();
+    // global State : 메뉴 오픈에 관한 전역상태
+    const {
+        teamBtnClickState,
+        currentBtnClickState,
+        personalPrjBtnClickState,
+        setPersonalPrjBtnClickState,
+        setTeamBtnClickState,
+        setCurrentBtnClickState
+    } = headerMenuStore();
+    // state : 헤더메뉴 오픈 상태
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+    //* eventHandler : 메인 컨테이너 클릭 이벤트헨들러 > 컨테이너를 클릭하면 상단 메뉴가 닫혀야 한다.
+    const onMainContainerClickEventHandler = () => {
+        if (teamBtnClickState || currentBtnClickState || personalPrjBtnClickState){
+            setCurrentBtnClickState(false);
+            setPersonalPrjBtnClickState(false);
+            setTeamBtnClickState(false);
+        }
+    }
 
 
-    interface ParticipantsProp{
+    interface ParticipantsProp {
         email: string,
         nickname: string,
-        profileImg? : string,
+        profileImg?: string,
         teamRole: number
     }
 
@@ -42,9 +63,9 @@ export default function MainContainer() {
 
     // 모달오픈시 화면블러처리
     useEffect(() => {
-        if (isModalOpen){
+        if (isModalOpen) {
             document.body.classList.add("body-blackout-style");
-        }else{
+        } else {
             document.body.classList.remove("body-blackout-style");
         }
         return () => {
@@ -54,15 +75,15 @@ export default function MainContainer() {
 
 
     // 참여자 컴포넌트
-    const ParticipantsCardItem = (props : ParticipantsProp)=>{
-        const {email,nickname,profileImg} = props;
+    const ParticipantsCardItem = (props: ParticipantsProp) => {
+        const {email, nickname, profileImg} = props;
         const {teamRole} = props;
 
         // function : 값에 따른 직급 얻어오기
-        const getRole = (teamRole: number) =>{
-            const roles : {[roleNum : string] : string} ={
-                "0" : "팀장",
-                "1" : "팀원"
+        const getRole = (teamRole: number) => {
+            const roles: { [roleNum: string]: string } = {
+                "0": "팀장",
+                "1": "팀원"
             }
             return roles[teamRole.toString()];
         }
@@ -88,9 +109,18 @@ export default function MainContainer() {
     return (
         <>
             <MainHeader/>
+
             <div id={"main-wrapper"}>
-                <div className={"main-container"}>
-                <div className={"main-left-container"}>
+                <div className={"main-container"} onClick={onMainContainerClickEventHandler}>
+                    {isModalOpen && modalType === "cp" && (
+                        <CreationModal title={"Create a Project"}
+                                       comment={"개인용 프로젝트를 생성합니다."}
+                                       nameLabel={"Project Name"}
+                                       nameToolTip={"이 프로젝트를 누가 보나요?"}
+                                       createBtnName={"프로젝트 생성"}
+                                       isTeamCreationModal={false}/>
+                    )}
+                    <div className={"main-left-container"}>
                         <Outlet/>
                     </div>
                     <div className={"main-right-container"}>
@@ -98,7 +128,8 @@ export default function MainContainer() {
                             <div className={"main-right-participants-title"}>{"팀 참여자"}</div>
                             <div className={"main-right-participants-divider"}></div>
                             <div className={"main-right-participants-body"}>
-                                <ParticipantsCardItem email={"jdj881204@naver.cowewefewwem"} nickname={"동주"} teamRole={1}/>
+                                <ParticipantsCardItem email={"jdj881204@naver.cowewefewwem"} nickname={"동주"}
+                                                      teamRole={1}/>
                             </div>
                         </div>
                         <div className={"main-right-etc-container"}>{"기타"}</div>

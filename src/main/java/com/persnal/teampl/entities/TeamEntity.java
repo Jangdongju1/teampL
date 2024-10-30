@@ -23,7 +23,7 @@ public class TeamEntity {
     private String description;
     private boolean isDeleted;
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "teamEntity", fetch = FetchType.LAZY)
     private Set<ProjectEntity> projectEntities;
 
     public TeamEntity(int regNum){

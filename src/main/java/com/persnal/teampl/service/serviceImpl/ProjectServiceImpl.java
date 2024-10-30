@@ -1,10 +1,12 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.common.Enum.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.request.project.CreateProjectRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
+import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.TeamEntity;
 import com.persnal.teampl.entities.UserEntity;
@@ -18,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -26,14 +30,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createProject(String email, CreateProjectRequest request) {
+    public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createPersonalPrj(String email, CreateProjectRequest request) {
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity == null) return CreateProjectResponse.notExistUser();
 
-            TeamEntity teamEntity = new TeamEntity(-1);  // 팀이 없는경우 -1
 
-            ProjectEntity entity = new ProjectEntity(email, userEntity, teamEntity, request);
+            ProjectEntity entity = new ProjectEntity(email, userEntity, request);
 
             projectRepository.save(entity);
 
@@ -42,5 +45,25 @@ public class ProjectServiceImpl implements ProjectService {
             return ResponseDto.initialServerError();
         }
         return CreateProjectResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(String email) {
+        List<ProjectEntity> projectEntities = null;
+        try {
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity == null) return GetPersonalPrjListResponse.notExistUser();
+
+
+            projectEntities = projectRepository.findByUserEntityEmailAndProjectType(
+                    userEntity.getEmail(),
+                    ProjectType.PERSONAL_PROJECT.getValue());
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetPersonalPrjListResponse.success(projectEntities);
     }
 }

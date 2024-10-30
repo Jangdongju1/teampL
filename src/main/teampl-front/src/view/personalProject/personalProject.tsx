@@ -1,38 +1,44 @@
 import "./style.css";
 import ProjectCard from "../../component/projectCard/projectCard";
-import personalProjectListMock from "../../mock/personalProjectList.mock";
-import {modalStore} from "../../hook";
-import CreationModal from "../../component/modal/creationModal/creationModal";
+import {useEffect, useState} from "react";
+import {Project} from "../../interface/types";
+import {useCookies} from "react-cookie";
+import {getPersonalPrjRequest} from "../../api/projectApi";
+import {GetPersonalPrjResponse, ResponseDto} from "../../interface/response";
+import ResponseCode from "../../common/responseCode";
 
 export default function PersonalProject() {
+    // state: 개인프로젝트 상태
+    const [personalPrjState, setPersonalPrjState] = useState<Project[]>([]);
+    // state : 쿠키 상태
+    const [cookies, setCookies] = useCookies();
+
+
+    //* function: 프로젝트 리스트를 가져오는 요청에 대한 응답처리 함수.
+    const getPersonalPrjResponse = (responseBody: GetPersonalPrjResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code != ResponseCode.SUCCESS) alert(message);
+
+        const {data} = responseBody as GetPersonalPrjResponse;
+        setPersonalPrjState(data.list);
+    }
+
 
     // 각각 버튼의 종류는 아래와 같이 정의한다.
     //개인프로젝트 : 1) projectList 2) createProject => key값 == pl, cp
     //팀프로젝트 : 1) 팀원초대, 2)팀프로젝트 목록 key값 => ti, tl
 
-    //state: 모달에 대한 전역상태
-    const {modalType,isModalOpen,setModalType, setIsModalOpen} = modalStore();
-
-    //event Handler: 프로젝트 생성 버튼 클릭 이벤트 헨들러
-    const onCreateProjectBtnClickEventHandler = ()=>{
-
-    }
-
     type PersonalDashBoardProp = {
         // 1) 개인프로젝트수 2) 완료된프로젝트수 3) 처리된 이슈의 숫자 4) 미처리 이슈의 숫자
+
+
     }
     // 상단 대시보드 컴포넌트
     const PersonalPrjDashBoardTable = () => {
         return (
             <div id={"personal-dashboard-table-wrapper"}>
-                {isModalOpen && modalType === "cp" &&(
-                    <CreationModal title={"Create a Project"}
-                                   comment={"개인용 프로젝트를 생성합니다."}
-                                   nameLabel={"Project Name"}
-                                   nameToolTip={"이 프로젝트를 누가 보나요?"}
-                                   onClick={onCreateProjectBtnClickEventHandler}
-                                   isTeamCreationModal={false}/>
-                )}
                 <table className={"personal-dashboard-table"}>
                     <thead className={"personal-dashboard-table-head"}>
                     <tr>
@@ -56,6 +62,19 @@ export default function PersonalProject() {
         )
     }
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const token = cookies.accessToken_Main;
+            if (!token) return;
+
+            const responseBody = await getPersonalPrjRequest(token);
+            getPersonalPrjResponse(responseBody);
+        };
+
+        fetchData();
+
+    }, []);
+
     return (
         <div id={"personal-project-wrapper"}>
             <div className={"personal-project-top-container"}>
@@ -71,12 +90,11 @@ export default function PersonalProject() {
 
                 <div className={"personal-project-bottom-content-box"}>
                     <div className={"personal-project-bottom-content"}>
-                        {!personalProjectListMock ?
+                        {/*<div className={"personal-project-none"}>{"진행중인 프로젝트가 없습니다."}</div>*/}
+                        {!personalPrjState ?
                             <div className={"personal-project-none"}>{"진행중인 프로젝트가 없습니다."}</div> :
-                            personalProjectListMock.map((item, index) => <ProjectCard
-                                key={index}
-                                projectName={item.projectName}
-                                createDate={item.createDate}/>)
+                            personalPrjState.map((item, index)=>
+                                <ProjectCard projectName={item.projectName} createDate={item.createDate}/>)
                         }
                     </div>
                 </div>

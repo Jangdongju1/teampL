@@ -6,7 +6,7 @@ import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
 import {SignUpRequest} from "../../../interface/request";
-import {signUpRequest} from "../../../api";
+import {signUpRequest} from "../../../api/authApi";
 import {ResponseDto, SignUpResponse} from "../../../interface/response";
 import ResponseCode from "../../../common/responseCode";
 

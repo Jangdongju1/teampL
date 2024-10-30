@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 @NoArgsConstructor
 public class CreateProjectResponse {
 
-
     public static ResponseEntity<? super ApiResponse<CreateProjectResponse>> success(){
         ApiResponse<CreateProjectResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,

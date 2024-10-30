@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant";
 import {userEmailStore} from "../../../hook";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
-import {authCodeConfirmRequest} from "../../../api";
+import {authCodeConfirmRequest} from "../../../api/authApi";
 import {ResponseDto} from "../../../interface/response";
 import AuthCodeConfirmResponse from "../../../interface/response/authCodeConfirmResponse";
 import ResponseCode from "../../../common/responseCode";
