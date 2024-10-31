@@ -13,6 +13,11 @@ public class ResponseDto {
     private String code;
     private String message;
 
+    public static ResponseEntity<ResponseDto> resourceNotFound(){
+        ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_RESOURCE, ResponseMessage.NOT_EXIST_RESOURCE);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
 
     public static ResponseEntity<ResponseDto> initialServerError() {
         ResponseDto response = new ResponseDto(ResponseCode.INITIAL_SERVER_ERROR, ResponseMessage.INITIAL_SERVER_ERROR);

@@ -8,6 +8,7 @@
     border-radius: 5px 5px 0 0;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 .kanban-board-panel-name{
     font-size: 16px;
@@ -16,6 +17,14 @@
     color: rgba(255,255,255,1);
     box-sizing: border-box;
     padding: 0 0 0 8px;
+}
+.kanban-board-add-icon{
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+.kanban-board-add-icon:hover{
+    cursor: pointer;
 }
 .kanban-board-panel-item-box{
     width: 100%;

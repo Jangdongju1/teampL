@@ -1,15 +1,17 @@
 import "./style.css";
 import {useState} from "react";
+import {getFormattedDate} from "../../util";
 
 
 type ProjectCardProps = {
-    projectName: string,
-    createDate: string,
-
+    projectNum : string,
+    projectName : string,
+    createDate : string,
+    onClick : () => void
 }
 
-export default function ProjectCard(props : ProjectCardProps) {
-    const {projectName,createDate} = props;
+export default function ProjectCard(props: ProjectCardProps) {
+    const {projectNum,projectName, createDate,onClick} = props;
     // state: 즐겨찾기 버튼 클릭 상태
     const [startBtnClickState, setStarBtnClickState] = useState<boolean>(false);
 
@@ -20,7 +22,7 @@ export default function ProjectCard(props : ProjectCardProps) {
 
 
     return (
-        <div className={"project-card-wrapper"}>
+        <div className={"project-card-wrapper"} onClick={onClick}>
             <div className={"project-card-container"}>
                 <div className={"project-card-top-container"}>
                     <div className={"project-card-top-picture project-item-picture"}></div>
@@ -40,7 +42,7 @@ export default function ProjectCard(props : ProjectCardProps) {
 
                     <div className={"project-card-create-date-box"}>
                         <div className={"project-card-create-date"}>
-                            {createDate}
+                            {getFormattedDate(createDate)}
                         </div>
                     </div>
 

@@ -12,5 +12,6 @@ public interface ResponseMessage {
     String EXPIRE_AUTH_CODE ="AuthCode is expired." ;
     String ALREADY_SENT = "Email Already Sent.";
     String LOGIN_USER = "Verified User";
+    String NOT_EXIST_RESOURCE = "Resource does not exist.";
 
 }

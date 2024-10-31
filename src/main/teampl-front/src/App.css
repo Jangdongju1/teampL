@@ -89,6 +89,9 @@
 .tool-tip-icon{
     background-image: url("asset/tool_tip_icon.png");
 }
+.description-icon{
+    background-image: url("asset/description_icon.png");
+}
 .favorite-off{
     background-image: url("asset/favorite_off.png");
 }
@@ -112,6 +115,9 @@
 }
 .people-icon{
     background-image: url("asset/participants_icon.png");
+}
+.kanban-item-add-icon{
+    background-image: url("asset/kanban_item_add_icon.png");
 }
 .divider{
     height: 0;

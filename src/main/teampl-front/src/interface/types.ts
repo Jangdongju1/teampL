@@ -4,5 +4,7 @@ export type Project = {
     projectName : string,
     description : string,
     createDate : string,
-    creator: string
+    creator: string,
+    stat:number,
+    projectType : number
 }

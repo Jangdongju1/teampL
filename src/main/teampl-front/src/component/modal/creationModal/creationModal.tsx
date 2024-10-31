@@ -1,13 +1,12 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent";
 import {ChangeEvent, useState} from "react";
-import {modalStore} from "../../../hook";
-import {CreateProjectRequest} from "../../../interface/request";
+import {modalStore, personalPrjStore} from "../../../store";
+import {CreateProjectListRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
-import {createProjectRequest} from "../../../api/projectApi";
-import {ResponseDto} from "../../../interface/response";
+import {createProjectRequest, getPersonalPrjListRequest} from "../../../api/projectApi";
+import {GetPersonalPrjListResponse, ResponseDto} from "../../../interface/response";
 import CreateProjectResponse from "../../../interface/response/createProjectResponse";
-import {AxiosResponse} from "axios";
 import ResponseCode from "../../../common/responseCode";
 
 type HeaderBtnModalProps = {
@@ -30,6 +29,8 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     } = props;
     // global State: 모달의 전역상태
     const {setIsModalOpen, setModalType} = modalStore();
+    // global State: 개인프로젝트 상태
+    const {setProjects} = personalPrjStore();
     // state : 쿠키상태
     const [cookies, setCookies] = useCookies();
 
@@ -57,20 +58,37 @@ export default function CreationModal(props: HeaderBtnModalProps) {
         setModalType("");
     }
 
+
+    // function : 프로젝트 목록 가져오기 api 호출 응답 결과 처리함수.
+    const getPersonalPrjResponse = (responseBody: ResponseDto | GetPersonalPrjListResponse | null)=>{
+        if (!responseBody) return;
+        const {code,message} = responseBody as ResponseDto;
+        if (code != ResponseCode.SUCCESS) {
+            alert(message);
+            return
+        }
+        const {data} = responseBody as GetPersonalPrjListResponse;
+        setProjects(data.list);
+    }
+
     // function: 프로젝트 생성 응답처리함수
-    const createProjectResponse = (responseBody: ResponseDto | CreateProjectResponse | null) => {
+    const createProjectResponse = async (responseBody: ResponseDto | CreateProjectResponse | null) => {
         if (!responseBody) return
 
-        const {code,message} = responseBody as ResponseDto;
-        if (code != ResponseCode.SUCCESS){
+        const {code, message} = responseBody as ResponseDto;
+        if (code != ResponseCode.SUCCESS) {
             alert(message);
             return;
-        }else{
+        } else {
             alert("프로젝트가 생성되었습니다.");
             setIsModalOpen(false);
-            //프로젝트 목록 api 호출
-        }
+            //프로젝트 목록 가져오기 api호출
+            const token = cookies.accessToken_Main;
+            if (!token) return;
 
+            const responseBody = await getPersonalPrjListRequest(token);
+            getPersonalPrjResponse(responseBody);
+        }
 
 
     }
@@ -78,13 +96,14 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     const onProjectCreateBtnClickEventHandler = async () => {
         const accessToken = cookies.accessToken_Main;
         if (!accessToken) return;
-        const requestBody: CreateProjectRequest = {projectName: nameState, description: descriptionState};
+        const requestBody: CreateProjectListRequest = {projectName: nameState, description: descriptionState};
 
         const responseBody = await createProjectRequest(requestBody, accessToken);
-        createProjectResponse(responseBody);
+
+        await createProjectResponse(responseBody);
     }
 
-    const onTeamCreateBtnClickEventHandler = ()=>{
+    const onTeamCreateBtnClickEventHandler = () => {
 
     }
     return (
@@ -132,7 +151,8 @@ export default function CreationModal(props: HeaderBtnModalProps) {
                     <div className={"creation-modal-bottom-btn-box"}>
                         <div className={"creation-modal-bottom-btn-cancel"}
                              onClick={onCloseModalBtnClickEventHandler}>{"취소"}</div>
-                        <div className={"creation-modal-bottom-btn-creation"} onClick={isTeamCreationModal? onTeamCreateBtnClickEventHandler : onProjectCreateBtnClickEventHandler}>{createBtnName}</div>
+                        <div className={"creation-modal-bottom-btn-creation"}
+                             onClick={isTeamCreationModal ? onTeamCreateBtnClickEventHandler : onProjectCreateBtnClickEventHandler}>{createBtnName}</div>
                     </div>
                 </div>
             </div>

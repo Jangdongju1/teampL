@@ -1,7 +1,7 @@
 import "./style.css";
 import InputComponent from "../../../component/inputCmponent";
 import {ChangeEvent, useEffect, useState} from "react";
-import {userEmailStore} from "../../../hook";
+import {userEmailStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";

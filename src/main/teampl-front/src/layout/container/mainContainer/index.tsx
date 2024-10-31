@@ -2,10 +2,10 @@ import "./style.css";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
-import {HOME_PATH} from "../../../constant";
+import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
-import {modalStore,headerMenuStore} from "../../../hook";
+import {modalStore,headerMenuStore} from "../../../store";
 import CreationModal from "../../../component/modal/creationModal/creationModal";
 
 
@@ -52,10 +52,10 @@ export default function MainContainer() {
 
     // useEffect
     useEffect(() => {
-        // if (!cookies.accessToken_Main) {
-        //     navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
-        //     return;
-        // }
+        if (!cookies.accessToken_Main) {
+            navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
+            return;
+        }
         setIsLoading(true);
 
 
@@ -103,7 +103,7 @@ export default function MainContainer() {
         )
     }
     if (pathname === `${HOME_PATH()}`) return null;
-    // if (isLoading === false) return null;
+    if (!isLoading) return null;
 
 
     return (

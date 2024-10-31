@@ -18,7 +18,7 @@ import {
     SIGN_IN_PATH
 } from "../../constant";
 import {useCookies} from "react-cookie";
-import {userEmailStore} from "../../hook";
+import {userEmailStore} from "../../store";
 
 
 // component : 로그인 관련 컴포넌트

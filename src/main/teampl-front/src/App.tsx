@@ -22,7 +22,9 @@ import PersonalKanbanBoard from "./view/kanbanBoard/persnalKanbanBoard/personalK
 import {useCookies} from "react-cookie";
 import {LoginUserResponse, ResponseDto} from "./interface/response";
 import ResponseCode from "./common/responseCode";
-import {modalStore} from "./hook";
+import {modalStore, userEmailStore} from "./store";
+import {isLoginUserRequest} from "./api/authApi";
+import {inflate} from "node:zlib";
 
 function App() {
     //navigator
@@ -31,12 +33,20 @@ function App() {
     const [cookies, setCookies] = useCookies();
     // global State: 모달상태
     const {isModalOpen} = modalStore();
+    //* global State: 로그인된 유저의 이메일 상태
+    const {setEmail} = userEmailStore();
     //function : 로그인된 유저인지 확인 후 응답처리 함수.
     const loginUserResponse = (responseBody : LoginUserResponse | ResponseDto | null) =>{
         if (!responseBody) return;
         const {code} = responseBody as ResponseDto;
         if (code  !== ResponseCode.SUCCESS) return;
+
         const identifier = localStorage.getItem("identifier");
+
+        if (!identifier) return;
+
+        const userEmail = atob(identifier);
+        setEmail(userEmail);
 
         if (!identifier) return;
         navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
@@ -44,11 +54,11 @@ function App() {
 
     // 로그한 유저인지 확인
     useEffect(() => {
-        // if (!cookies.accessToken_Main) {
-        //     if (localStorage.getItem("identifier")) localStorage.removeItem("identifier");
-        // }
-        // isLoginUserRequest(cookies.accessToken_Main)
-        //     .then(respsone => (loginUserResponse(respsone)));
+        if (!cookies.accessToken_Main) {
+            if (localStorage.getItem("identifier")) localStorage.removeItem("identifier");
+        }
+        isLoginUserRequest(cookies.accessToken_Main)
+            .then(response => (loginUserResponse(response)));
 
     }, [cookies.accessToken_Main]);
 
@@ -67,10 +77,9 @@ function App() {
 
                 <Route element={<MainContainer/>}>
                     <Route path={HOME_PATH()}>
-                        <Route path={PERSONAL_PAGE_PATH(":email")} element={<Home/>}/>
+                        {/*<Route path={PERSONAL_PAGE_PATH(":email")} element={<Home/>}/>*/}
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
-                        <Route path={PERSONAL_PROJECT_BOARD_PATH(":email", ":projectNum")}
-                               element={<PersonalKanbanBoard/>}></Route>
+                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<PersonalKanbanBoard isTeamKanban={false}/>}/>
                     </Route>
                 </Route>
             </Routes>

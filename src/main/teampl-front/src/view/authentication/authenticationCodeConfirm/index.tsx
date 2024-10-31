@@ -3,7 +3,7 @@ import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from "re
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant";
-import {userEmailStore} from "../../../hook";
+import {userEmailStore} from "../../../store";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
 import {authCodeConfirmRequest} from "../../../api/authApi";
 import {ResponseDto} from "../../../interface/response";

@@ -5,10 +5,5 @@ export const AUTHENTICATION_CODE_CONFIRM_PATH = (email: string) => `confirm-code
 export const HOME_PATH = () => `/teamPL`;
 export const PERSONAL_PAGE_PATH = (email: string) => `${email}`;
 export const PERSONAL_PROJECT_HOME_PATH = (email: string) => `${email}/personal-project`;
-export const PERSONAL_PROJECT_BOARD_PATH = (email: string, projectNum: string) =>
-    `${PERSONAL_PROJECT_HOME_PATH(email)}/${projectNum}`;
-
-
-
-
+export const PERSONAL_PROJECT_BOARD_PATH = (email:string,projectNum: string) => `${email}/personal-project/${projectNum}`;
 

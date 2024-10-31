@@ -4,7 +4,8 @@ import AuthCodeConfirmResponse from "./authCodeConfirmResponse";
 import SignUpResponse from "./SignUpResponse";
 import LoginUserResponse from "./loginUserResponse";
 import SignInResponse from "./signInResponse";
-import GetPersonalPrjResponse from "./getPersonalPrjResponse";
+import GetPersonalPrjListResponse from "./getPersonalPrjListResponse";
+import {GetPersonalPrjInfoRequest} from "../request";
 
 export type {
     AuthCodeResponse,
@@ -13,5 +14,6 @@ export type {
     SignUpResponse,
     LoginUserResponse,
     SignInResponse,
-    GetPersonalPrjResponse
+    GetPersonalPrjListResponse,
+    GetPersonalPrjInfoRequest
 }

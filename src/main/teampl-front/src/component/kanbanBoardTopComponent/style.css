@@ -49,6 +49,9 @@
 .kanban-board-mode-btn-container {
     width: 100%;
     height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .kanban-board-mode-btn-box {
@@ -82,6 +85,49 @@
     display: inline-block;
     width: 16px;
     height: 16px;
+}
+.kanban-board-project-status-box{
+    min-width: 320px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+
+    font-family: Karla;
+    font-size: 16px;
+    font-weight: 500;
+    gap: 20px;
+}
+.kanban-board-project-type-title{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.kanban-board-project-status{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.kanban-board-project-status-title{
+    font-family: Karla;
+    font-size: 16px;
+    font-weight: 500;
+}
+.kanban-board-project-status-value{
+    font-family: Karla;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,1);
+
+    padding: 5px;
+    background-color: rgb(253, 188, 100);
+    border-radius: 6px;
+}
+.kanban-board-project-desc-icon{
+    width: 20px;
+    height: 20px;
+}
+.kanban-board-project-desc-icon:hover{
+    cursor: pointer;
 }
 .kanban-board-etc-container{
     margin-top: 5px;

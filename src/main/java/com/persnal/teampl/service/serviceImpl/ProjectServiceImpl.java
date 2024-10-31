@@ -2,13 +2,15 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.Enum.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.request.project.CreateProjectRequest;
+import com.persnal.teampl.dto.obj.ProjectObj;
+import com.persnal.teampl.dto.request.project.CreatePrjRequest;
+import com.persnal.teampl.dto.request.project.GetPersonalPrjInfoRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
+import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
 import com.persnal.teampl.entities.ProjectEntity;
-import com.persnal.teampl.entities.TeamEntity;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.repository.ProjectRepository;
 import com.persnal.teampl.repository.UserRepository;
@@ -30,7 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createPersonalPrj(String email, CreateProjectRequest request) {
+    public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createPersonalPrj(String email, CreatePrjRequest request) {
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity == null) return CreateProjectResponse.notExistUser();
@@ -65,5 +67,24 @@ public class ProjectServiceImpl implements ProjectService {
             return ResponseDto.initialServerError();
         }
         return GetPersonalPrjListResponse.success(projectEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(String email, GetPersonalPrjInfoRequest req) {
+        ProjectEntity projectInfo = null;
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+
+            if (!isExistUser) return GetPersonalPrjInfoResponse.notExistUser();
+
+            projectInfo = projectRepository.findByProjectNum(req.getProjectNum());
+
+            if (projectInfo == null) return GetPersonalPrjInfoResponse.resourceNotFound();
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+        }
+        return GetPersonalPrjInfoResponse.success(projectInfo);
     }
 }

@@ -18,6 +18,9 @@ public interface ResponseCode {
 
     //403
     String NO_PERMISSION = "NP";
+
+    // 404
+    String NOT_EXIST_RESOURCE = "NR";
     //500
     String INITIAL_SERVER_ERROR = "IDE";
 

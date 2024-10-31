@@ -1,8 +1,10 @@
 package com.persnal.teampl.controller;
 
-import com.persnal.teampl.dto.request.project.CreateProjectRequest;
+import com.persnal.teampl.dto.request.project.CreatePrjRequest;
+import com.persnal.teampl.dto.request.project.GetPersonalPrjInfoRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
+import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
 import com.persnal.teampl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +21,23 @@ public class ProjectController {
     @PostMapping("/create-project")
     public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createProject(
             @AuthenticationPrincipal String email,
-            @RequestBody CreateProjectRequest request) {
+            @RequestBody CreatePrjRequest req) {
 
-        return projectService.createPersonalPrj(email, request);
+        return projectService.createPersonalPrj(email, req);
     }
 
     @GetMapping("/personal-project")
-    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(@AuthenticationPrincipal String email){
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(
+            @AuthenticationPrincipal String email){
+
         return projectService.getPersonalPrjList(email);
+    }
+
+    @PostMapping("/personal-project-info")
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(
+            @AuthenticationPrincipal String email,
+            @RequestBody GetPersonalPrjInfoRequest req){
+
+        return projectService.getPersonalPrjInfo(email, req);
     }
 }

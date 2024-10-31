@@ -1,7 +1,7 @@
 import ResponseDto from "./ResponseDto";
 import {Project} from "../types";
 
-export default interface GetPersonalPrjResponse extends ResponseDto{
+export default interface GetPersonalPrjListResponse extends ResponseDto{
     data : {
         list : Project[];
     }

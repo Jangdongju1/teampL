@@ -44,13 +44,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {  // JWT 검증필터
             }
 
             // 유효시간은 알아서 검증을 함.
-
             String email = provider.getSubject(token);
 
             if (email.isEmpty()) {
                 filterChain.doFilter(request, response);
                 return;
             }
+
+            // 나중에 여기서 검증하는 것으로 변경하기
+//            boolean isExistUser = userRepository.existsByEmail(email);
 
             AbstractAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);

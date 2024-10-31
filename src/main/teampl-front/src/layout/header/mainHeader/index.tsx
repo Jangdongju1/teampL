@@ -2,8 +2,8 @@ import "./style.css";
 import {useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
-import {modalStore} from "../../../hook";
-import headerMenuStore from "../../../hook/headerMenuStore";
+import {modalStore} from "../../../store";
+import headerMenuStore from "../../../store/headerMenuStore";
 
 export default function MainHeader() {
 

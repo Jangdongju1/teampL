@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class CreateProjectRequest {
+public class CreatePrjRequest {
     @NotNull @NotBlank @Size(max = 50)
     private String projectName;
     private String description;

@@ -1,8 +1,9 @@
 package com.persnal.teampl.entities;
 
+import com.persnal.teampl.common.Enum.ProjectStat;
 import com.persnal.teampl.common.Enum.ProjectType;
 import com.persnal.teampl.dto.obj.ProjectObj;
-import com.persnal.teampl.dto.request.project.CreateProjectRequest;
+import com.persnal.teampl.dto.request.project.CreatePrjRequest;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -32,17 +32,18 @@ public class ProjectEntity {
     private String createDate;
     private boolean isDeleted;
     private Integer projectType;
-    // private String email;
+    private Integer stat; //프로젝트의 진행상태
 
     @ManyToOne
     @JoinColumn(name = "email")
     private UserEntity userEntity;
 
-    public ProjectEntity(String email, UserEntity userEntity, CreateProjectRequest req) {
+    public ProjectEntity(String email, UserEntity userEntity, CreatePrjRequest req) {
         this.projectName = req.getProjectName();
         this.description = req.getDescription();
         this.userEntity = userEntity;
         this.projectType = ProjectType.PERSONAL_PROJECT.getValue();
+        this.stat = ProjectStat.ON_WORKING.getValue();
 
         // 현재시간 세팅
         this.createDate = Utils.getNowTime(LocalDateTime.now());
@@ -51,18 +52,23 @@ public class ProjectEntity {
     public static List<ProjectObj> getProejctList(List<ProjectEntity> entities) {
         List<ProjectObj> list = new ArrayList<>();
         for (ProjectEntity entity : entities) {
-            ProjectObj obj = new ProjectObj();
-
-            obj.setProjectNum(entity.getProjectNum());
-            obj.setProjectName(entity.getProjectName());
-            obj.setDescription(entity.getDescription());
-            obj.setCreateDate(entity.getCreateDate());
-            obj.setCreator(entity.getUserEntity().getEmail());
-
+            ProjectObj obj = getProjectInfo(entity);
             list.add(obj);
         }
 
-
         return list;
+    }
+
+    public static ProjectObj getProjectInfo(ProjectEntity entity){
+        ProjectObj projectInfo  = new ProjectObj();
+
+        projectInfo.setProjectNum(entity.getProjectNum());
+        projectInfo.setProjectName(entity.getProjectName());
+        projectInfo.setDescription(entity.getDescription());
+        projectInfo.setCreateDate(entity.getCreateDate());
+        projectInfo.setCreator(entity.getUserEntity().getEmail());
+        projectInfo.setStat(entity.getStat());
+        projectInfo.setProjectType(entity.getProjectType());
+        return projectInfo;
     }
 }

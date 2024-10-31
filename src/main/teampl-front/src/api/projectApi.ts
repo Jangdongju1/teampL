@@ -1,8 +1,10 @@
-import {CreateProjectRequest} from "../interface/request";
+import {CreateProjectListRequest} from "../interface/request";
 import axios from "axios";
 import ApiEndPoint from "../common/ApiEndPoint";
 import CreateProjectResponse from "../interface/response/createProjectResponse";
-import {GetPersonalPrjResponse, ResponseDto} from "../interface/response";
+import {GetPersonalPrjListResponse, ResponseDto} from "../interface/response";
+import GetPersonalPrjInfoRequest from "../interface/request/getPersonalPrjInfoRequest";
+import GetPersonalPrjInfoResponse from "../interface/response/getPersonalPrjInfoResponse";
 
 const DOMAIN = "http://localhost:4000";
 const apiEndPoint = (domain: string, indicator: string) => `${domain}${indicator}`;
@@ -12,12 +14,12 @@ const Authorization = (token: string) => {
 };
 
 //* 개인 프로젝트 생성 api 호출
-export const createProjectRequest = async (requestBody: CreateProjectRequest, accessToken: string) => {
+export const createProjectRequest = async (requestBody: CreateProjectListRequest, accessToken: string) => {
 
     try {
         const result = await axios.post <CreateProjectResponse>(
             apiEndPoint(DOMAIN, ApiEndPoint.CREATE_PROJECT), requestBody, Authorization(accessToken));
-        const responseBody:CreateProjectResponse = result.data;
+        const responseBody: CreateProjectResponse = result.data;
         return responseBody;
 
     } catch (error) {
@@ -34,19 +36,39 @@ export const createProjectRequest = async (requestBody: CreateProjectRequest, ac
 }
 
 //* 개인프로젝트 목록 가져오기 api 호출
-
-export const getPersonalPrjRequest = async (accessToken:string)=>{
+export const getPersonalPrjListRequest = async (accessToken: string) => {
     try {
-        const result = await axios.get<GetPersonalPrjResponse>(apiEndPoint(
-            DOMAIN,ApiEndPoint.GET_PERSONAL_PROJECT_LIST), Authorization(accessToken));
-        const responseBody : GetPersonalPrjResponse = result.data;
+        const result = await axios.get<GetPersonalPrjListResponse>(apiEndPoint(
+            DOMAIN, ApiEndPoint.GET_PERSONAL_PROJECT_LIST), Authorization(accessToken));
+        const responseBody: GetPersonalPrjListResponse = result.data;
         return responseBody;
-    }catch (error){
-        if (axios.isAxiosError(error)){
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
             if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
+        } else {
+            console.log("unexpected error", error);
+            return null;
+        }
+    }
+
+}
+
+//* 특정 개인프로젝트의 정보를 가져오는 api호출
+export const getPersonalPrjInfoRequest = async (requestBody: GetPersonalPrjInfoRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.GET_PERSONAL_PROJECT_INFO), requestBody, Authorization(accessToken));
+
+        const responseBody: GetPersonalPrjInfoResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
             console.log("unexpected error", error);
             return null;
         }
