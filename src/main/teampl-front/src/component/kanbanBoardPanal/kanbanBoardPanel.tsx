@@ -1,13 +1,19 @@
 import "./style.css";
 import {useState} from "react";
+import {Issue} from "../../interface/types";
 
 // 개시물 데이터 받아야함.
 type KanbanBoardPanelProps = {
     boardName: string,
+    itemArray: Issue[],
+    stat: number;
 }
 
-export default function KanbanBoardPanel({boardName}: KanbanBoardPanelProps) {
-
+export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
+    //* 칸반보드에 대응하는 이슈의 상태를 나타냄
+    const {stat}= props
+    //각각 보드의 이름이랑  데이터배열
+    const {boardName, itemArray} = props;
     //state: 마우스 호버상태
     const [isMouseHover, setIsMouseHover] = useState<boolean>(false);
 
@@ -37,7 +43,8 @@ export default function KanbanBoardPanel({boardName}: KanbanBoardPanelProps) {
 
 
     return (
-        <div id={"kanban-board-panel-wrapper"} onMouseEnter={onMouseEnterEventHandler} onMouseLeave={onMouseLeaveEventHandler}>
+        <div id={"kanban-board-panel-wrapper"} onMouseEnter={onMouseEnterEventHandler}
+             onMouseLeave={onMouseLeaveEventHandler}>
             <div className={"kanban-board-panel-name-box"} style={{
                 backgroundColor:
                     getColor(boardName) === undefined ? "" : getColor(boardName)
@@ -55,7 +62,10 @@ export default function KanbanBoardPanel({boardName}: KanbanBoardPanelProps) {
 
             </div>
             <div className={"kanban-board-panel-item-box"}>
-
+                {!itemArray ? <></> :
+                    itemArray.map((item, index) =>
+                        <div></div>)
+                }
             </div>
 
         </div>

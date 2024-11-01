@@ -1,7 +1,9 @@
-import ProjectStatus from "./ProjectStatus";
-import ProjectType from "./ProjectType";
+import ProjectType from "./projectType";
+import ProjectStatus from "./projectStatus";
+import IssueStatus from "./IssueStatus";
 
 export {
     ProjectType,
-    ProjectStatus
+    ProjectStatus,
+    IssueStatus
 }

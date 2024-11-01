@@ -18,7 +18,7 @@ import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm";
 import Home from "./view/home";
 import MainContainer from "./layout/container/mainContainer";
 import PersonalProject from "./view/personalProject/personalProject";
-import PersonalKanbanBoard from "./view/kanbanBoard/persnalKanbanBoard/personalKanbanBoard";
+import KanbanBoard from "./view/kanbanBoard/kanbanBoard";
 import {useCookies} from "react-cookie";
 import {LoginUserResponse, ResponseDto} from "./interface/response";
 import ResponseCode from "./common/responseCode";
@@ -79,7 +79,7 @@ function App() {
                     <Route path={HOME_PATH()}>
                         {/*<Route path={PERSONAL_PAGE_PATH(":email")} element={<Home/>}/>*/}
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
-                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<PersonalKanbanBoard isTeamKanban={false}/>}/>
+                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard isTeamKanban={false}/>}/>
                     </Route>
                 </Route>
             </Routes>

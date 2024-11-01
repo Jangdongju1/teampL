@@ -1,5 +1,5 @@
 import "./style.css";
-import {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
 import SearchBar from "../searchBar/searchBar";
 import {ProjectType, ProjectStatus} from "../../common";
 
@@ -7,10 +7,17 @@ type KanbanTopCompProps = {
     isTeamPage: boolean,
     projectName: string,
     projectType: number,
-    stat: number
+    stat: number,
+    // 상단 메뉴상태
+    topMenuStat: string,
+    setTopMenuStat: Dispatch<SetStateAction<string>>
 }
 export default function KanbanTopComponent(props: KanbanTopCompProps) {
+    //* 칸반보드 관련 데이터 prop
     const {projectName, isTeamPage, projectType, stat} = props;
+    //* 칸반보드 상단 메뉴 상태 prop
+    const {topMenuStat, setTopMenuStat} = props;
+
 
     //* object: 프로젝트에 대한 타입 객체 정의
     const projectTypeDesc: Record<number, string> = {
@@ -34,11 +41,10 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     }
 
     //* function : 프로젝트  상태를 얻어오는 함수
-    const getProjectStatus= (status:number)=>{
+    const getProjectStatus = (status: number) => {
         if (status === undefined) return "";
         return projectStatus[status];
     }
-
 
 
     //state : 인풋 엘리먼트 상태
@@ -49,6 +55,14 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     const onSearchBarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchWordState(value);
+    }
+
+    // eventHandler : 상단 home 메뉴 버튼 클릭 헨들러
+    const onTopMenuBtnClickEventHandler= (e:React.MouseEvent<HTMLLIElement>)=>{
+        const menuStat = e.currentTarget.dataset.value;
+        if (menuStat === undefined) return;
+        setTopMenuStat(menuStat);
+
     }
 
     return (
@@ -65,8 +79,15 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
             <div className={"kanban-board-mode-btn-container"}>
                 <div className={"kanban-board-mode-btn-box"}>
                     <ul className={"kanban-board-mode-btn"}>
-                        <li><span className={"icon kanban-home-icon home-icon"}></span>{"Main Table"}</li>
-                        <li>{"Kanban"}</li>
+                        <li data-value={"home"} style={topMenuStat === "home" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
+                            onClick={onTopMenuBtnClickEventHandler}>
+                            <span className={"icon kanban-home-icon home-icon"}></span>{"Main Table"}
+                        </li>
+                        <li data-value={"kanban"} style={topMenuStat === "kanban" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
+                            onClick={onTopMenuBtnClickEventHandler}>
+
+                            {"Kanban"}
+                        </li>
                         {isTeamPage ?
                             <li><span className={"icon participant-icon people-icon"}></span>{"Participants"}</li> : ''}
 

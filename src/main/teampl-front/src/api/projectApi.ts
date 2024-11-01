@@ -1,6 +1,6 @@
 import {CreateProjectListRequest} from "../interface/request";
 import axios from "axios";
-import ApiEndPoint from "../common/ApiEndPoint";
+import ApiEndPoint from "../common/apiEndPoint";
 import CreateProjectResponse from "../interface/response/createProjectResponse";
 import {GetPersonalPrjListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoRequest from "../interface/request/getPersonalPrjInfoRequest";
