@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
             String nickname = req.getNickname();
             String password = passwordEncoder.encode(req.getPassword());  // 패스워드 인코딩
 
-            UserEntity userEntity = new UserEntity(password, nickname, email);
+            UserEntity userEntity = UserEntity.fromRequest(password, nickname, email);
 
             userEntity.setRole("ROLE_ADMIN"); //테스트로 권한을주고
 

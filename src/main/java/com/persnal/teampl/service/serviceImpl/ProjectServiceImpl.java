@@ -1,8 +1,7 @@
 package com.persnal.teampl.service.serviceImpl;
 
-import com.persnal.teampl.common.Enum.ProjectType;
+import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
 import com.persnal.teampl.dto.request.project.GetPersonalPrjInfoRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -38,7 +37,9 @@ public class ProjectServiceImpl implements ProjectService {
             if (userEntity == null) return CreateProjectResponse.notExistUser();
 
 
-            ProjectEntity entity = new ProjectEntity(email, userEntity, request);
+            ProjectEntity entity = ProjectEntity.fromRequest(email, userEntity, request);
+
+            //ProjectEntity entity = new ProjectEntity(email, userEntity, request);
 
             projectRepository.save(entity);
 

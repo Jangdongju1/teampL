@@ -1,5 +1,5 @@
 enum IssueStatus {
-    NOT_Start = 0,
+    NOT_START = 0,
     ON_WORKING = 1,
     STUCK = 2,
     DONE = 3

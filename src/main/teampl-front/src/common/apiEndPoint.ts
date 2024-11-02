@@ -6,6 +6,7 @@ enum ApiEndPoint{
     LOGIN_USER="/api/v1/user/login-user",
     CREATE_PROJECT="/api/v1/project/create-project",
     GET_PERSONAL_PROJECT_LIST= "/api/v1/project/personal-project",
-    GET_PERSONAL_PROJECT_INFO="/api/v1/project/personal-project-info"
+    GET_PERSONAL_PROJECT_INFO="/api/v1/project/personal-project-info",
+    CREATE_ISSUE="/api/v1/issue/create-issue"
 }
 export default ApiEndPoint;

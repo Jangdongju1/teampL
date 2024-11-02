@@ -1,4 +1,4 @@
-package com.persnal.teampl.common.Enum;
+package com.persnal.teampl.common.Enum.project;
 
 public enum ProjectStat {
     ON_WORKING(0),

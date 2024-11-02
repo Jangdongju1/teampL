@@ -10,5 +10,6 @@ export type {
     SignUpRequest,
     SignInRequest,
     CreateProjectListRequest,
-    GetPersonalPrjInfoRequest
+    GetPersonalPrjInfoRequest,
+
 }

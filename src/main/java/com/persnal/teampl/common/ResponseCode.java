@@ -9,6 +9,7 @@ public interface ResponseCode {
     String BAD_REQUEST = "VF";
     String EXIST_USER = "EU";
     String NOT_EXIST_USER = "NEU";
+    String NOT_EXIST_PROJECT = "NEP";
     String EXPIRE_AUTH_CODE="EAC";
     String ALREADY_SENT = "AS";
 

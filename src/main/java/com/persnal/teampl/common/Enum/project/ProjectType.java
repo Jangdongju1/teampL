@@ -1,4 +1,4 @@
-package com.persnal.teampl.common.Enum;
+package com.persnal.teampl.common.Enum.project;
 
 public enum ProjectType {
     PERSONAL_PROJECT(0),

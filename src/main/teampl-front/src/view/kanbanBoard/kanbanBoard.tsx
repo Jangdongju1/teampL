@@ -82,7 +82,7 @@ export default function KanbanBoard(props: KanbanType) {
             {topMenu === "kanban" ?
                 <div className={"kanban-board-bottom-container"}>
                     <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"Not Start"} itemArray={notStartState} stat={IssueStatus.NOT_Start}/>
+                        <KanbanBoardPanel boardName={"Not Start"} itemArray={notStartState} stat={IssueStatus.NOT_START}/>
                     </div>
 
                     <div className={"kanban-board-box"}>

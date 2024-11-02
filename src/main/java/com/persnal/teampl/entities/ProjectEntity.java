@@ -1,12 +1,14 @@
 package com.persnal.teampl.entities;
 
-import com.persnal.teampl.common.Enum.ProjectStat;
-import com.persnal.teampl.common.Enum.ProjectType;
+import com.persnal.teampl.common.Enum.project.ProjectStat;
+import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.dto.obj.ProjectObj;
+import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "reg_project")
+@Builder
 public class ProjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,16 +41,33 @@ public class ProjectEntity {
     @JoinColumn(name = "email")
     private UserEntity userEntity;
 
-    public ProjectEntity(String email, UserEntity userEntity, CreatePrjRequest req) {
-        this.projectName = req.getProjectName();
-        this.description = req.getDescription();
-        this.userEntity = userEntity;
-        this.projectType = ProjectType.PERSONAL_PROJECT.getValue();
-        this.stat = ProjectStat.ON_WORKING.getValue();
-
-        // 현재시간 세팅
-        this.createDate = Utils.getNowTime(LocalDateTime.now());
+    // 빌더를 통한 객체 생성
+    public static ProjectEntity fromRequest(String email, UserEntity userEntity, CreatePrjRequest req) {
+        return ProjectEntity.builder()
+                .projectName(req.getProjectName())
+                .description(req.getDescription())
+                .userEntity(userEntity)
+                .projectType(ProjectType.PERSONAL_PROJECT.getValue())
+                .stat(ProjectStat.ON_WORKING.getValue())
+                .createDate(Utils.getNowTime(LocalDateTime.now()))
+                .build();
     }
+
+
+//    public ProjectEntity(String email, UserEntity userEntity, CreatePrjRequest req) {
+//        this.projectName = req.getProjectName();
+//        this.description = req.getDescription();
+//        this.userEntity = userEntity;
+//        this.projectType = ProjectType.PERSONAL_PROJECT.getValue();
+//        this.stat = ProjectStat.ON_WORKING.getValue();
+//
+//        // 현재시간 세팅
+//        this.createDate = Utils.getNowTime(LocalDateTime.now());
+//    }
+//
+//    public ProjectEntity(Integer projectNum){
+//        this.projectNum = projectNum;
+//    }
 
     public static List<ProjectObj> getProejctList(List<ProjectEntity> entities) {
         List<ProjectObj> list = new ArrayList<>();

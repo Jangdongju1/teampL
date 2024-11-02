@@ -1,10 +1,7 @@
 package com.persnal.teampl.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -13,6 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
+@Builder
 public class UserEntity {
     @Id
     private String email;
@@ -36,13 +34,29 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private Set<ProjectEntity> projectEntities;
 
-    public UserEntity(String password, String nickname, String email) {
-        this.password = password;
-        this.email = email;
-        if (nickname.isEmpty()) {
-            this.nickname = email;
-        } else {
-            this.nickname = nickname;
-        }
+    public static UserEntity fromRequest(String password, String nickname, String email){
+        return UserEntity.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname.isEmpty()? email : nickname)
+                .build();
+
     }
+
+    public static UserEntity fromRequest(String email){
+        return UserEntity.builder()
+                .email(email)
+                .build();
+    }
+
+//    public UserEntity(String password, String nickname, String email) {
+//        this.password = password;
+//        this.email = email;
+//        if (nickname.isEmpty()) {
+//            this.nickname = email;
+//        } else {
+//            this.nickname = nickname;
+//        }
+//    }
+
 }

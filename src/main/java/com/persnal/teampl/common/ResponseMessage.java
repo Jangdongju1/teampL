@@ -13,5 +13,6 @@ public interface ResponseMessage {
     String ALREADY_SENT = "Email Already Sent.";
     String LOGIN_USER = "Verified User";
     String NOT_EXIST_RESOURCE = "Resource does not exist.";
+    String NOT_EXIST_PROJECT = "Project does not exist.";
 
 }
