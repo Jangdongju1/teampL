@@ -8,7 +8,7 @@ import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
 import {SignUpRequest} from "../../../interface/request";
 import {signUpRequest} from "../../../api/authApi";
 import {ResponseDto, SignUpResponse} from "../../../interface/response";
-import ResponseCode from "../../../common/responseCode";
+import ResponseCode from "../../../common/enum/responseCode";
 
 export default function PasswordRegistration() {
     // navigator

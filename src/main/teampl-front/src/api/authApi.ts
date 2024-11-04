@@ -1,10 +1,10 @@
-import AuthCodeRequest from "../interface/request/authCodeRequest";
+import AuthCodeRequest from "../interface/request/auth/authCodeRequest";
 import axios from "axios";
 import {AuthCodeConfirmResponse, AuthCodeResponse, ResponseDto, SignUpResponse} from "../interface/response";
-import ApiEndPoint from "../common/apiEndPoint";
+import {AUTH_CODE_CONFIRM_URL, EMAIL_AUTH_URL, LOGIN_USER_URL, SIGN_IN_URL, SIGN_UP_URL} from "../common/apiEndPoint";
 import {AuthCodeConfirmRequest, SignInRequest, SignUpRequest} from "../interface/request";
-import SignInResponse from "../interface/response/signInResponse";
-import LoginUserResponse from "../interface/response/loginUserResponse";
+import SignInResponse from "../interface/response/auth/signInResponse";
+import LoginUserResponse from "../interface/response/user/loginUserResponse";
 
 const DOMAIN = "http://localhost:4000";
 const apiEndPoint = (domain: string, indicator: string) => `${domain}${indicator}`;
@@ -16,7 +16,7 @@ const Authorization = (token: string) => {
 
 // 이메일 인증코드 요청.
 export const authCodeRequest = async (requestBody: AuthCodeRequest) => {
-    return await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.EMAIL_AUTH_PATH), requestBody)
+    return await axios.post(apiEndPoint(DOMAIN, EMAIL_AUTH_URL()), requestBody)
         .then(response => {
             const responseBody: AuthCodeResponse = response.data;
             return responseBody;
@@ -30,7 +30,7 @@ export const authCodeRequest = async (requestBody: AuthCodeRequest) => {
 
 // 이메일 인증코드 확인요청
 export const authCodeConfirmRequest = async (requestBody: AuthCodeConfirmRequest, token: string) => {
-    return await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.AUTH_CODE_CONFIRM_PATH), requestBody, Authorization(token))
+    return await axios.post(apiEndPoint(DOMAIN, AUTH_CODE_CONFIRM_URL()), requestBody, Authorization(token))
         .then(response => {
             const responseBody: AuthCodeConfirmResponse = response.data;
             return responseBody;
@@ -44,7 +44,7 @@ export const authCodeConfirmRequest = async (requestBody: AuthCodeConfirmRequest
 
 // 회원가입 요청(비밀번호 등록)
 export const signUpRequest = async (requestBody: SignUpRequest, token: string) => {
-    return await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.SIGN_UP), requestBody, Authorization(token))
+    return await axios.post(apiEndPoint(DOMAIN, SIGN_UP_URL()), requestBody, Authorization(token))
         .then(response => {
             const responseBody: SignUpResponse = response.data;
             return responseBody;
@@ -59,7 +59,7 @@ export const signUpRequest = async (requestBody: SignUpRequest, token: string) =
 
 // 로그인 요청
 export const signInRequest = async (requestBody: SignInRequest) => {
-    return await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.SIGN_IN), requestBody)
+    return await axios.post(apiEndPoint(DOMAIN, SIGN_IN_URL()), requestBody)
         .then(response => {
             const responseBody: SignInResponse = response.data;
             return responseBody;
@@ -73,7 +73,7 @@ export const signInRequest = async (requestBody: SignInRequest) => {
 
 // 로그인된 유저인지 확인하는 요청
 export const isLoginUserRequest = async (token: string) => {
-    return await axios.get(apiEndPoint(DOMAIN, ApiEndPoint.LOGIN_USER), Authorization(token))
+    return await axios.get(apiEndPoint(DOMAIN, LOGIN_USER_URL()), Authorization(token))
         .then(response => {
             const responseBody: LoginUserResponse = response.data;
             return responseBody;

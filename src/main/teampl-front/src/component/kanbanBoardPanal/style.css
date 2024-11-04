@@ -32,7 +32,6 @@
     max-height: 540px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
     overflow-y: auto;
     background-color: #F6F7FB;
 }

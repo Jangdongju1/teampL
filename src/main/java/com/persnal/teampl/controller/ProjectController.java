@@ -33,11 +33,11 @@ public class ProjectController {
         return projectService.getPersonalPrjList(email);
     }
 
-    @PostMapping("/personal-project-info")
+    @GetMapping("/personal-project-info/{projectNum}")
     public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(
             @AuthenticationPrincipal String email,
-            @RequestBody GetPersonalPrjInfoRequest req){
+            @PathVariable("projectNum") int projectNum){
 
-        return projectService.getPersonalPrjInfo(email, req);
+        return projectService.getPersonalPrjInfo(email, projectNum);
     }
 }

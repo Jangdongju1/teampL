@@ -1,4 +1,6 @@
 // 프로젝트 객체
+import {IssueStatus} from "../common";
+
 export type Project = {
     projectNum: number,
     regNum: number | null,
@@ -11,6 +13,7 @@ export type Project = {
 }
 // 이슈객체
 export type Issue = {
+    issueNum: number,
     projectNum: number,
     email: string,
     title: string,
@@ -22,5 +25,12 @@ export type Issue = {
     stat: number,
     category: string,
     isAssigned: boolean,
-    isDeleted: boolean
+    isDeleted: boolean,
+    ref : string,
+    issueSequence :string
+}
+
+export type KanbanState = {
+    status : IssueStatus,
+    setState : (issues:Issue[]) => void;
 }

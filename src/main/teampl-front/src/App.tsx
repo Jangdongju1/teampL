@@ -21,7 +21,7 @@ import PersonalProject from "./view/personalProject/personalProject";
 import KanbanBoard from "./view/kanbanBoard/kanbanBoard";
 import {useCookies} from "react-cookie";
 import {LoginUserResponse, ResponseDto} from "./interface/response";
-import ResponseCode from "./common/responseCode";
+import ResponseCode from "./common/enum/responseCode";
 import {modalStore, userEmailStore} from "./store";
 import {isLoginUserRequest} from "./api/authApi";
 import {inflate} from "node:zlib";
@@ -48,8 +48,7 @@ function App() {
         const userEmail = atob(identifier);
         setEmail(userEmail);
 
-        if (!identifier) return;
-        navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
+        //navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
     }
 
     // 로그한 유저인지 확인

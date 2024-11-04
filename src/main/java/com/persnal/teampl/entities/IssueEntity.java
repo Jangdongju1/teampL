@@ -1,12 +1,15 @@
 package com.persnal.teampl.entities;
 
 import com.persnal.teampl.common.Enum.issue.IssuePriority;
+import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -18,7 +21,8 @@ import java.util.Set;
 public class IssueEntity {
     @Id
     private int issueNum;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectNum")
     private ProjectEntity projectEntity;
 
@@ -32,33 +36,63 @@ public class IssueEntity {
     @Setter
     private String inCharge;
     @Setter
-    private int priority;
+    private Integer priority;
     private String writeDate;
     @Setter
     private String expireDate;
     @Setter
-    private int stat;
+    private Integer stat;
     @Setter
-    private int category;
+    private Integer category;
     @Setter
-    private boolean isDeleted;
-    //
+    private Boolean isDeleted;
+//    @Setter
+//    private Boolean isAssigned;
+    @Setter
     private String issueSequence;
+    @Setter
     private String ref;
 
     @OneToMany(mappedBy = "issueEntity", fetch = FetchType.LAZY)
     Set<IssueCommentEntity> issueCommentEntities;
 
-    public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity){
+    public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence) {
         return IssueEntity.builder()
+                .title("제목을 지정해 주세요.")  // 기본 값
                 .stat(stat)
                 .userEntity(userEntity)
                 .projectEntity(projectEntity)
                 .writeDate(Utils.getNowTime(LocalDateTime.now()))
                 .priority(IssuePriority.NORMAL.getValue())
                 .isDeleted(false)
-                .issueSequence("KANBAN_1")  // 테스트
+                .issueSequence(sequence)
                 .build();
+    }
+
+
+    public static List<IssueObj> getList(List<IssueEntity> entities) {
+        List<IssueObj> list = new ArrayList<>();
+        for (IssueEntity entity : entities) {
+            IssueObj listElement = IssueObj.builder()
+                    .issueNum(entity.getIssueNum())
+                    .projectNum(entity.getProjectEntity().getProjectNum())
+                    .email(entity.getUserEntity().getEmail())
+                    .title(entity.getTitle())
+                    .content(entity.getContent())
+                    .inCharge(entity.getInCharge())
+                    .priority(entity.getPriority())
+                    .writeDate(entity.getWriteDate())
+                    .expireDate(entity.getExpireDate())
+                    .stat(entity.getStat())
+                    .category(entity.getCategory())
+                    //.isAssigned(entity.getIsAssigned())
+                    .isDeleted(entity.getIsDeleted())
+                    .issueSequence(entity.getIssueSequence())
+                    .ref(entity.getRef())
+                    .build();
+            list.add(listElement);
+        }
+        return list;
     }
 
 

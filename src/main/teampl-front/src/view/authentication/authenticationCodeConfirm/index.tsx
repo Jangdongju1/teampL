@@ -7,8 +7,8 @@ import {userEmailStore} from "../../../store";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
 import {authCodeConfirmRequest} from "../../../api/authApi";
 import {ResponseDto} from "../../../interface/response";
-import AuthCodeConfirmResponse from "../../../interface/response/authCodeConfirmResponse";
-import ResponseCode from "../../../common/responseCode";
+import AuthCodeConfirmResponse from "../../../interface/response/auth/authCodeConfirmResponse";
+import ResponseCode from "../../../common/enum/responseCode";
 import CryptoJS from "crypto-js/core";
 
 export default function ConfirmAuthCode() {

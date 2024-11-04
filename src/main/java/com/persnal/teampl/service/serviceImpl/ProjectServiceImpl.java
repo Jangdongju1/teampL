@@ -71,14 +71,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(String email, GetPersonalPrjInfoRequest req) {
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(String email, int projectNum) {
         ProjectEntity projectInfo = null;
         try {
             boolean isExistUser = userRepository.existsByEmail(email);
 
             if (!isExistUser) return GetPersonalPrjInfoResponse.notExistUser();
 
-            projectInfo = projectRepository.findByProjectNum(req.getProjectNum());
+            projectInfo = projectRepository.findByProjectNum(projectNum);
 
             if (projectInfo == null) return GetPersonalPrjInfoResponse.resourceNotFound();
 

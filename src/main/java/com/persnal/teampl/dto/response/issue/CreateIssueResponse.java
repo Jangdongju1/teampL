@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 public class CreateIssueResponse {
 
-    public static ResponseEntity<? super ApiResponse<CreateIssueResponse>> success() {
-        ApiResponse<Object> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<CreateIssueResponse>> success() {
+        ApiResponse<CreateIssueResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseCode.SUCCESS,
                 null);

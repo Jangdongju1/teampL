@@ -8,7 +8,7 @@ import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api/authApi";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
 import {AuthCodeResponse, ResponseDto,SignInResponse} from "../../interface/response";
-import ResponseCode from "../../common/responseCode";
+import ResponseCode from "../../common/enum/responseCode";
 import {useNavigate} from "react-router-dom";
 import {
     AUTH_PATH,

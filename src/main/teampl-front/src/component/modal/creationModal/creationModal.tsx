@@ -6,8 +6,8 @@ import {CreateProjectListRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest, getPersonalPrjListRequest} from "../../../api/projectApi";
 import {GetPersonalPrjListResponse, ResponseDto} from "../../../interface/response";
-import CreateProjectResponse from "../../../interface/response/createProjectResponse";
-import ResponseCode from "../../../common/responseCode";
+import CreateProjectResponse from "../../../interface/response/project/personal/createProjectResponse";
+import ResponseCode from "../../../common/enum/responseCode";
 
 type HeaderBtnModalProps = {
     title: string,  // 모달의 제목

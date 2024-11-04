@@ -1,10 +1,13 @@
 import {CreateProjectListRequest} from "../interface/request";
 import axios from "axios";
-import ApiEndPoint from "../common/apiEndPoint";
-import CreateProjectResponse from "../interface/response/createProjectResponse";
+import {
+    CREATE_PERSONAL_PROJECT_URL,
+    GET_PERSONAL_PROJECT_INFO_URL,
+    GET_PERSONAL_PROJECT_LIST_URL
+} from "../common/apiEndPoint";
+import CreateProjectResponse from "../interface/response/project/personal/createProjectResponse";
 import {GetPersonalPrjListResponse, ResponseDto} from "../interface/response";
-import GetPersonalPrjInfoRequest from "../interface/request/getPersonalPrjInfoRequest";
-import GetPersonalPrjInfoResponse from "../interface/response/getPersonalPrjInfoResponse";
+import GetPersonalPrjInfoResponse from "../interface/response/project/personal/getPersonalPrjInfoResponse";
 
 const DOMAIN = "http://localhost:4000";
 const apiEndPoint = (domain: string, indicator: string) => `${domain}${indicator}`;
@@ -18,7 +21,7 @@ export const createProjectRequest = async (requestBody: CreateProjectListRequest
 
     try {
         const result = await axios.post <CreateProjectResponse>(
-            apiEndPoint(DOMAIN, ApiEndPoint.CREATE_PROJECT), requestBody, Authorization(accessToken));
+            apiEndPoint(DOMAIN, CREATE_PERSONAL_PROJECT_URL()), requestBody, Authorization(accessToken));
         const responseBody: CreateProjectResponse = result.data;
         return responseBody;
 
@@ -39,7 +42,7 @@ export const createProjectRequest = async (requestBody: CreateProjectListRequest
 export const getPersonalPrjListRequest = async (accessToken: string) => {
     try {
         const result = await axios.get<GetPersonalPrjListResponse>(apiEndPoint(
-            DOMAIN, ApiEndPoint.GET_PERSONAL_PROJECT_LIST), Authorization(accessToken));
+            DOMAIN, GET_PERSONAL_PROJECT_LIST_URL()), Authorization(accessToken));
         const responseBody: GetPersonalPrjListResponse = result.data;
         return responseBody;
     } catch (error) {
@@ -56,10 +59,10 @@ export const getPersonalPrjListRequest = async (accessToken: string) => {
 }
 
 //* 특정 개인프로젝트의 정보를 가져오는 api호출
-export const getPersonalPrjInfoRequest = async (requestBody: GetPersonalPrjInfoRequest, accessToken: string) => {
+export const getPersonalPrjInfoRequest = async (projectNum: string, accessToken: string) => {
     try {
         const result =
-            await axios.post(apiEndPoint(DOMAIN, ApiEndPoint.GET_PERSONAL_PROJECT_INFO), requestBody, Authorization(accessToken));
+            await axios.get(apiEndPoint(DOMAIN, GET_PERSONAL_PROJECT_INFO_URL(projectNum)), Authorization(accessToken));
 
         const responseBody: GetPersonalPrjInfoResponse = result.data;
         return responseBody;

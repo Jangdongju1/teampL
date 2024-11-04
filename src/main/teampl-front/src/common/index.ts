@@ -1,6 +1,6 @@
-import ProjectType from "./projectType";
-import ProjectStatus from "./projectStatus";
-import IssueStatus from "./IssueStatus";
+import ProjectType from "./enum/projectType";
+import ProjectStatus from "./enum/projectStatus";
+import IssueStatus from "./enum/IssueStatus";
 
 export {
     ProjectType,

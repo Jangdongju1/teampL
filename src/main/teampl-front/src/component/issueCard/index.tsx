@@ -1,5 +1,6 @@
 import "./style.css";
 import InitialsImg from "../InitialsImg";
+import {IssueStatus} from "../../common";
 
 type IssueCardProps = {
     email: string,
@@ -32,7 +33,8 @@ export default function IssueCard(props: IssueCardProps) {
         const statIcons: { [key: string]: string } = {
             "0": "waiting-icon",
             "1": "in-progress-icon",
-            "2": "complete-icon"
+            "2": "in-progress-icon",
+            "3": "complete-icon"
         }
         return statIcons[stat.toString()];
     }
@@ -72,7 +74,7 @@ export default function IssueCard(props: IssueCardProps) {
                     <div className={"issue-card-bottom-middle-box"}>
                         <div className={"issue-card-bottom-middle-stat"}>
                             {"status"}
-                            <span className={`icon stat-icon ${stat < 3 ? getStatIcon(stat) : ``}`}/>
+                            <span className={`icon stat-icon ${stat < Object.keys(IssueStatus).length/2 ? getStatIcon(stat) : ``}`}/>
                         </div>
                     </div>
 

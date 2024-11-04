@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import {useCookies} from "react-cookie";
 import {getPersonalPrjListRequest} from "../../api/projectApi";
 import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response";
-import ResponseCode from "../../common/responseCode";
+import ResponseCode from "../../common/enum/responseCode";
 import {personalPrjStore, userEmailStore} from "../../store";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../constant";
@@ -20,15 +20,14 @@ export default function PersonalProject() {
     const [cookies, setCookies] = useCookies();
 
     //* 프로젝트 엘리먼트 클릭 이벤트 처리함수
-    const onPrjElementClickEventHandler = (identifier:string | null ,projectNum: string) => {
+    const onPrjElementClickEventHandler = (identifier: string | null, projectNum: string) => {
         const accessToken = cookies.accessToken_Main;
         if (!accessToken) return;
 
-        if (identifier === null){
-            identifier = btoa(email);
-        }
+        identifier = btoa(email);
 
-        navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_BOARD_PATH(identifier,projectNum)}`);
+
+        navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_BOARD_PATH(identifier, projectNum)}`);
 
     }
 
@@ -125,7 +124,7 @@ export default function PersonalProject() {
                                     projectNum={item.projectNum.toString()}
                                     projectName={item.projectName}
                                     createDate={item.createDate}
-                                    onClick={() => onPrjElementClickEventHandler(localStorage.getItem("identifier"),item.projectNum.toString())}/>)
+                                    onClick={() => onPrjElementClickEventHandler(email, item.projectNum.toString())}/>)
                         }
                     </div>
                 </div>

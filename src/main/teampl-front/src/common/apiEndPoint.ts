@@ -1,12 +1,14 @@
-enum ApiEndPoint{
-    EMAIL_AUTH_PATH= "/api/v1/auth/auth-code",
-    AUTH_CODE_CONFIRM_PATH = "/api/v1/auth/confirm-code",
-    SIGN_UP = "/api/v1/auth/sign-up",
-    SIGN_IN = "/api/v1/auth/sign-in",
-    LOGIN_USER="/api/v1/user/login-user",
-    CREATE_PROJECT="/api/v1/project/create-project",
-    GET_PERSONAL_PROJECT_LIST= "/api/v1/project/personal-project",
-    GET_PERSONAL_PROJECT_INFO="/api/v1/project/personal-project-info",
-    CREATE_ISSUE="/api/v1/issue/create-issue"
-}
-export default ApiEndPoint;
+export const EMAIL_AUTH_URL = () => "/api/v1/auth/auth-code";
+export const AUTH_CODE_CONFIRM_URL = () => "/api/v1/auth/confirm-code";
+export const SIGN_UP_URL = () => "/api/v1/auth/sign-up";
+export const SIGN_IN_URL = () => "/api/v1/auth/sign-in";
+export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
+export const CREATE_PERSONAL_PROJECT_URL = () => "/api/v1/project/create-project";
+export const GET_PERSONAL_PROJECT_LIST_URL = () => "/api/v1/project/personal-project" //수정요망
+export const GET_PERSONAL_PROJECT_INFO_URL = (projectNum: string) => `/api/v1/project/personal-project-info/${projectNum}`;
+export const CREATE_PERSONAL_ISSUE_URL = () => "/api/v1/issue/create-issue";
+export const GET_PERSONAL_ISSUE_URL = (projectNum: string) => `/api/v1/issue/issue-list/${projectNum}`;
+export const GET_PERSONAL_ISSUE_BY_STATUS_URL =
+    (projectNum:string,status:number)=>`/api/v1/issue/issue-list/${projectNum}/${status}`;
+
+

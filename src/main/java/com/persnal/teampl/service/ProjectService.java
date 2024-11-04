@@ -11,5 +11,5 @@ import org.springframework.http.ResponseEntity;
 public interface ProjectService {
     ResponseEntity<? super ApiResponse<CreateProjectResponse>> createPersonalPrj(String email, CreatePrjRequest request);
     ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>>getPersonalPrjList(String email);
-    ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>>getPersonalPrjInfo(String email, GetPersonalPrjInfoRequest req);
+    ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>>getPersonalPrjInfo(String email, int projectNum);
 }

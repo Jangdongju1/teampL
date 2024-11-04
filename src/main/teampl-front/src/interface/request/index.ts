@@ -1,9 +1,9 @@
-import AuthCodeRequest from "./authCodeRequest";
-import AuthCodeConfirmRequest from "./authCodeConfirmRequest";
-import SignUpRequest from "./signUpRequest";
-import SignInRequest from "./signInRequest";
-import CreateProjectListRequest from "./createProjectListRequest";
-import GetPersonalPrjInfoRequest from "./getPersonalPrjInfoRequest";
+import AuthCodeRequest from "./auth/authCodeRequest";
+import AuthCodeConfirmRequest from "./auth/authCodeConfirmRequest";
+import SignUpRequest from "./auth/signUpRequest";
+import SignInRequest from "./auth/signInRequest";
+import CreateProjectListRequest from "./project/personal/createProjectListRequest";
+import GetPersonalPrjInfoRequest from "./project/personal/getPersonalPrjInfoRequest";
 export type {
     AuthCodeRequest,
     AuthCodeConfirmRequest,
