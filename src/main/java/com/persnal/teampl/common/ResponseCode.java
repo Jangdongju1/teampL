@@ -10,6 +10,7 @@ public interface ResponseCode {
     String EXIST_USER = "EU";
     String NOT_EXIST_USER = "NEU";
     String NOT_EXIST_PROJECT = "NEP";
+    String NOT_EXIST_ISSUE = "NEI";
     String EXPIRE_AUTH_CODE="EAC";
     String ALREADY_SENT = "AS";
 

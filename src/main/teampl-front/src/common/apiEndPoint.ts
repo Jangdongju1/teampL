@@ -10,5 +10,6 @@ export const CREATE_PERSONAL_ISSUE_URL = () => "/api/v1/issue/create-issue";
 export const GET_PERSONAL_ISSUE_URL = (projectNum: string) => `/api/v1/issue/issue-list/${projectNum}`;
 export const GET_PERSONAL_ISSUE_BY_STATUS_URL =
     (projectNum:string,status:number)=>`/api/v1/issue/issue-list/${projectNum}/${status}`;
+export const PATCH_ISSUE_TITLE_URL = ()=>"/api/v1/issue/revision/issue-title";
 
 

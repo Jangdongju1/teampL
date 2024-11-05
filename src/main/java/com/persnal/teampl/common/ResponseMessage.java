@@ -14,5 +14,6 @@ public interface ResponseMessage {
     String LOGIN_USER = "Verified User";
     String NOT_EXIST_RESOURCE = "Resource does not exist.";
     String NOT_EXIST_PROJECT = "Project does not exist.";
+    String NOT_EXIST_ISSUE = "Issue does not exist.";
 
 }

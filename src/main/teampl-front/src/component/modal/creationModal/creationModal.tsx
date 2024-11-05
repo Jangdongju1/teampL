@@ -1,5 +1,5 @@
 import "./style.css"
-import InputComponent from "../../inputCmponent";
+import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
 import {modalStore, personalPrjStore} from "../../../store";
 import {CreateProjectListRequest} from "../../../interface/request";

@@ -24,7 +24,7 @@ export type Issue = {
     expireDate: string,
     stat: number,
     category: string,
-    isAssigned: boolean,
+    //isAssigned: boolean,
     isDeleted: boolean,
     ref : string,
     issueSequence :string

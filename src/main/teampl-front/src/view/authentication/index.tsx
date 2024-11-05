@@ -2,7 +2,7 @@ import "./style.css";
 import FlowChartDataListMock from "../../mock/flowChartDataList.mock";
 import FlowChart from "../../component/flowChart/flowchart";
 import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
-import InputComponent from "../../component/inputCmponent";
+import InputComponent from "../../component/inputCmponent/auth";
 import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api/authApi";

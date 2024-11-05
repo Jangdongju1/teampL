@@ -30,6 +30,9 @@ export default function KanbanBoard(props: KanbanType) {
     //* state: 프로젝트 상태
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
+
+    //* 전체 IssueCard상태
+    const [totalIssues, setTotalIssues] = useState<Issue[]>([]);
     // 4개의 칸반보드 상태.
     //* state : 칸반보드(Not Start) 상태
     const [notStartState, setNotStartState] = useState<Issue[]>([]);
@@ -39,6 +42,7 @@ export default function KanbanBoard(props: KanbanType) {
     const [stuckState, setStuckState] = useState<Issue[]>([]);
     //* state : 칸반보드(Done)상태
     const [doneState, setDoneState] = useState<Issue[]>([]);
+
 
 
     //* function : 상태별 필터링
@@ -71,6 +75,7 @@ export default function KanbanBoard(props: KanbanType) {
         }
 
         const {data} = responseBody as GetPersonalIssueListResponse;
+        setTotalIssues(data.list)
         setIssueArray(data.list);
     }
 
@@ -106,7 +111,7 @@ export default function KanbanBoard(props: KanbanType) {
 
         fetchProjectInfo();
         fetchIssueList();
-    }, [projectNum]);
+    }, [totalIssues]);
 
     return (
         <div id={"kanban-board-wrapper"}>
@@ -123,27 +128,31 @@ export default function KanbanBoard(props: KanbanType) {
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Not Start"} itemArray={notStartState}
                                           stat={IssueStatus.NOT_START}
-                                          setArray={setNotStartState}/>
+                                          setArray={setNotStartState}
+                                          isTeamKanban={isTeamKanban}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"On Working"} itemArray={onWorkingState}
                                           stat={IssueStatus.ON_WORKING}
-                                          setArray={setOnWorkingState}/>
+                                          setArray={setOnWorkingState}
+                                          isTeamKanban={isTeamKanban}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Stuck"}
                                           itemArray={stuckState}
                                           stat={IssueStatus.STUCK}
-                                          setArray={setStuckState}/>
+                                          setArray={setStuckState}
+                                          isTeamKanban={isTeamKanban}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Done"}
                                           itemArray={doneState}
                                           stat={IssueStatus.DONE}
-                                          setArray={setDoneState}/>
+                                          setArray={setDoneState}
+                                          isTeamKanban={isTeamKanban}/>
                     </div>
                 </div> :
 

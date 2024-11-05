@@ -1,27 +1,79 @@
 import "./style.css";
 import InitialsImg from "../InitialsImg";
 import {IssueStatus} from "../../common";
+import React, {useState, KeyboardEvent} from "react";
+import {Issue} from "../../interface/types";
+import {useCookies} from "react-cookie";
+import {PatchIssueTitleResponse, ResponseDto} from "../../interface/response";
+import ResponseCode from "../../common/enum/responseCode";
+import FlexibleInput from "../inputCmponent/flexibleInput";
+import {PatchIssueTitleRequest} from "../../interface/request";
+import {patchIssueTitleRequest} from "../../api/issueApi";
 
 type IssueCardProps = {
-    email: string,
-    title: string,
-    priority: number,  // 숫자
-    stat: number,  // 숫자
-    inCharge: string | null,
+    data: Issue
     subIssueCnt: number,
-    commentCnt: number
-
+    commentCnt: number,
+    isTeamKanban: boolean,
+    isTitleChange: boolean,
 }
 
 export default function IssueCard(props: IssueCardProps) {
-    const {email, title, inCharge} = props;
-    const {priority, stat, commentCnt, subIssueCnt} = props;
+
+    // props
+    const {data} = props
+    const {isTeamKanban, isTitleChange} = props;
+    const {commentCnt, subIssueCnt} = props;
+
+
+    // state:쿠키 상태
+    const [cookies, setCookies] = useCookies();
+    // state: 이슈카드 제목 변경이벤트상태
+    const [titleChange, setTitleChange] = useState<boolean>(isTitleChange);
+    // state : 칸반보드 이슈카드 제목 상태
+    const [title, setTitle] = useState<string>(data.title);
+
+
+    // //*function: Title변경 api호출 결과처리
+    const patchTitleResponse = (responseBody: PatchIssueTitleResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message)
+        }
+    }
+
+    //eventHandler : title 클릭 이벤트 헨들러
+    const onTitleClickEventHandler = () => {
+        setTitleChange(!titleChange)
+    }
+    //eventHandler : flexibleInput 키다운 핸들러
+    const onTitleKeyDownEventHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === "Enter") {
+            setTitleChange(!titleChange);
+        }
+        TitleChangeRequest();
+    }
+
+    //* function : Title 변경 api 호출함수
+    const TitleChangeRequest = async () => {
+        const token = cookies.accessToken_Main;
+        if (!token) return;
+        const requestBody: PatchIssueTitleRequest =
+            {issueNum: data.issueNum, projectNum: data.projectNum, title};
+
+        const responseBody = await patchIssueTitleRequest(requestBody, token);
+
+        patchTitleResponse(responseBody);
+    }
+
 
     // priority에 따른 css색과 문구
     const getPriority = (priority: number) => {
         const priorities: { [key: string]: { text: string, color: string } } = {  // 상태는 총 4가지임.
-            "0": {text: "Long Term", color: "#e8e8e8"},
-            "1": {text: "Normal", color: "#4A90E2"},
+            "0": {text: "Normal", color: "#e8e8e8"},
+            "1": {text: "Long Term", color: "#4A90E2"},
             "2": {text: "Urgent", color: "#F5A623"},
             "3": {text: "Very Urgent", color: "#D0021B"}
         };
@@ -39,20 +91,27 @@ export default function IssueCard(props: IssueCardProps) {
         return statIcons[stat.toString()];
     }
 
-
     return (
         <div id={"issue-card-wrapper"}>
             <div className={"issue-card-container"}>
                 <div className={"issue-card-title-box"}>
-                    <div className={"issue-card-title"}>{title}</div>
+                    {!titleChange ?
+                        <div className={"issue-card-title"} onClick={onTitleClickEventHandler}>{data.title}</div> :
+                        <FlexibleInput onKeyDown={onTitleKeyDownEventHandler}
+                                       value={title}
+                                       setValue={setTitle}
+                                       setChangeSate={setTitleChange}/>
+                    }
+
+
                 </div>
 
                 <div className={"issue-card-middle-box"}>
                     <div className={"issue-card-priority-btn"}>
-                        {priority < 4 && (<>
+                        {data.priority < 4 && (<>
                             <div className={"issue-card-priority-color"}
-                                 style={{backgroundColor: `${getPriority(priority).color}`}}/>
-                            <div className={"issue-card-priority-stat"}>{getPriority(priority).text}</div>
+                                 style={{backgroundColor: `${getPriority(data.priority).color}`}}/>
+                            <div className={"issue-card-priority-stat"}>{getPriority(data.priority).text}</div>
                         </>)}
                     </div>
                 </div>
@@ -60,21 +119,24 @@ export default function IssueCard(props: IssueCardProps) {
                 <div className={"issue-card-bottom-box"}>
 
                     <div className={"issue-card-bottom-top-box"}>
-                        <div className={"issue-card-incharge-box"}>
-                            {"inCharge"}
-
-                            {!inCharge ? <span className={"icon issue-card-incharge-icon person-check-icon"}></span> :
-                                <span className={"issue-card-incharge-icon"}>
-                            <InitialsImg name={email} width={20} height={20}/>
+                        {!isTeamKanban ? <></> :
+                            <div className={"issue-card-incharge-box"}>
+                                {"inCharge"}
+                                {!data.inCharge ?
+                                    <span className={"icon issue-card-incharge-icon person-check-icon"}></span> :
+                                    <span className={"issue-card-incharge-icon"}>
+                            <InitialsImg name={data.email} width={20} height={20}/>
                         </span>}
+                            </div>
+                        }
 
-                        </div>
                     </div>
 
                     <div className={"issue-card-bottom-middle-box"}>
                         <div className={"issue-card-bottom-middle-stat"}>
                             {"status"}
-                            <span className={`icon stat-icon ${stat < Object.keys(IssueStatus).length/2 ? getStatIcon(stat) : ``}`}/>
+                            <span
+                                className={`icon stat-icon ${data.stat < Object.keys(IssueStatus).length / 2 ? getStatIcon(data.stat) : ``}`}/>
                         </div>
                     </div>
 

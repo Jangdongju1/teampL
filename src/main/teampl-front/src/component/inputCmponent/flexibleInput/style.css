@@ -1,0 +1,14 @@
+#flexible-input-wrapper{
+}
+.flexible-input-container{
+    width: 200px;
+    display: flex;
+    align-items: center;
+}
+.flexible-input{
+    width: 150px;
+    height: 14px;
+    resize: none;
+    outline: none;
+    overflow: hidden;
+}

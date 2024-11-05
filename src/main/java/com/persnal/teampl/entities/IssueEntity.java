@@ -30,6 +30,7 @@ public class IssueEntity {
     @JoinColumn(name = "email")
     private UserEntity userEntity;
 
+    @Setter
     private String title;
     @Setter
     private String content;

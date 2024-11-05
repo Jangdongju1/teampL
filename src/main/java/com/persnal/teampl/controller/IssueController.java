@@ -1,9 +1,11 @@
 package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
+import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
 import com.persnal.teampl.dto.response.issue.GetPersonalIssueResponse;
+import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
 import com.persnal.teampl.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,14 @@ public class IssueController {
 
 
         return issueService.getPersonalIssueListByStatus(email, projectNum, status);
+    }
+
+    @PatchMapping("/revision/issue-title")
+    public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchTitle(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssueTitleRequest req){
+
+        return issueService.patchIssueTitle(email, req);
     }
 
 }

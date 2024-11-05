@@ -1,5 +1,5 @@
 import "./style.css";
-import InputComponent from "../../../component/inputCmponent";
+import InputComponent from "../../../component/inputCmponent/auth";
 import {ChangeEvent, useEffect, useState} from "react";
 import {userEmailStore} from "../../../store";
 import {useCookies} from "react-cookie";
