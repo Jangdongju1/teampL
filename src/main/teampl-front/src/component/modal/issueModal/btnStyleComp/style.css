@@ -1,0 +1,55 @@
+.issue-modal-btn-style-comp-wrapper{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.issue-modal-btn-style-comp-label-box{
+    display: flex;
+    gap: 10px;
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    font-weight: 500;
+    align-items: center;
+}
+
+.issue-modal-btn-style-comp-label-icon{
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+}
+
+.issue-modal-btn-style-comp-content-box{
+    width: 300px;
+    height: 100%;
+}
+.issue-modal-btn-style-comp-content{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.03);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.issue-modal-participant-style{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.03);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.issue-modal-btn-style-comp-content:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.08);
+}
+
+

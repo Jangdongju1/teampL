@@ -119,6 +119,18 @@
 .kanban-item-add-icon{
     background-image: url("asset/kanban_item_add_icon.png");
 }
+.text-icon{
+    background-image: url("asset/title_revision_icon.png");
+}
+.issue-modal-team-icon{
+    background-image: url("asset/issue_modal-team_icon.png");
+}
+.issue-modal-participants-icon{
+    background-image: url("asset/issue_modal_participants_icon.png");
+}
+.incharge-icon{
+    background-image: url("asset/inCharge_icon.png");
+}
 .divider{
     height: 0;
     border: 1px solid rgba(0,0,0,0.3);

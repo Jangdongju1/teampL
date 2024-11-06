@@ -9,9 +9,11 @@ import GetPersonalPrjInfoResponse from "../../interface/response/project/persona
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, KanbanState, Project} from "../../interface/types";
-import {IssueStatus} from "../../common";
+import {IssueStatus, ModalType} from "../../common";
 import {getPersonalIssueListRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/personal/getPersonalIssueListResponse";
+import IssueModal from "../../component/modal/issueModal";
+import {modalStore} from "../../store";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -24,6 +26,9 @@ export default function KanbanBoard(props: KanbanType) {
     const [topMenu, setTopMenu] = useState<string>("kanban");
     //* Path Variable : 프로젝트의 번호
 
+
+    // global state: 모달상태
+    const {isModalOpen, modalType}= modalStore();
     const {projectNum} = useParams();
     //* state: 쿠키상태
     const [cookies, setCookies] = useCookies();
@@ -115,6 +120,10 @@ export default function KanbanBoard(props: KanbanType) {
 
     return (
         <div id={"kanban-board-wrapper"}>
+            {isModalOpen && modalType === ModalType.ISSUE_INFO && (
+                <IssueModal isTeamModal={true}/>
+            )}
+
             <div className={"kanban-board-top-container"}>
                 <KanbanTopComponent isTeamPage={isTeamKanban}
                                     projectName={projectInfo ? projectInfo.projectName : ""}

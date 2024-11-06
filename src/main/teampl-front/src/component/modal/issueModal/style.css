@@ -1,0 +1,113 @@
+#issue-modal-size{
+    width: 1100px;
+    height: 860px;
+    background-color: rgba(255,255,255,1);
+    box-sizing: border-box;
+    padding: 20px;
+
+
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 요소의 중앙을 기준으로 이동 */
+    z-index: 1011;
+
+    display: grid;
+
+    grid-template-columns: 4fr 5fr;
+}
+.issue-modal-left-container{
+    max-width: 470px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+    box-sizing: border-box;
+    padding: 28px;
+
+}
+
+.issue-modal-title{
+    width: 100%;
+    font-size: 24px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.issue-modal-content-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+.issue-modal-content-box-style{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.issue-modal-content-show-style{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    line-height: 140%;
+
+    box-sizing: border-box;
+    padding: 4px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.issue-modal-content-show-style:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.08);
+}
+
+.issue-modal-team-info-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+.issue-modal-team-participants-box{
+    width: 100%;
+    height: 40px;
+
+}
+.issue-modal-label-style{
+    display: flex;
+    gap: 10px;
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    font-weight: 500;
+    align-items: center;
+}
+
+.issue-modal-label-icon-style{
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+}
+.issue-modal-label-content-style{
+    width: 300px;
+    height: 100%;
+}
+
+
+
+.issue-modal-right-container{
+
+}
+

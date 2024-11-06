@@ -48,6 +48,7 @@ export default function FlexibleInput(props: FlexibleInputProps) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
     return (
         <div id={"flexible-input-wrapper"}>
             <div className={"flexible-input-container"}>

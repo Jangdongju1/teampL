@@ -18,7 +18,7 @@ type HeaderBtnModalProps = {
     isTeamCreationModal: boolean  // 팀생성 모달인지 여부
 }
 // 1) 팀 생성, 2)프로젝트 생성 3)팀프로젝트 생성 3곳에서 쓰일 모달창.
-export default function CreationModal(props: HeaderBtnModalProps) {
+export default function Index(props: HeaderBtnModalProps) {
     const {
         title,
         comment,
