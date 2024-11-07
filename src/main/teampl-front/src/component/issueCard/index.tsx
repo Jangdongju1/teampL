@@ -90,6 +90,7 @@ export default function IssueCard(props: IssueCardProps) {
 
         return priorities[priority.toString()];
     }
+
     // stat에 따른 아이콘
     const getStatIcon = (stat: number) => {
         const statIcons: { [key: string]: string } = {

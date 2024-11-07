@@ -3,6 +3,7 @@ import {KeyboardEvent, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
+import {IssuePriority} from "../../../common";
 
 type IssueModalProps = {
     isTeamModal: boolean
@@ -28,7 +29,7 @@ export default function IssueModal(props: IssueModalProps) {
     }
 
     return (
-        <div id={"issue-modal-size"}>
+        <div id={"issue-modal-wrapper"}>
             <div className={"issue-modal-left-container"}>
                 <div
                     className={"issue-modal-title"}>{"title-title-title-title-titletitletitletitletitletitletitle"}</div>
@@ -55,16 +56,28 @@ export default function IssueModal(props: IssueModalProps) {
                     {!isTeamModal ?
                         null :
                         <div className={"issue-modal-team-info-container"}>
-                            <ModalCompNormal labelName={"팀이름"} labelIcon={"issue-modal-team-icon"} viewData={""}/>
-                            <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"} inCharge={"jdj881204@naver.com"}/>
-                            <ModalCompBtnStyle labelName={"참여자"} labelIcon={"issue-modal-participants-icon"} participants={["jdj8812042@naver.com","hanmail.net"]}/>
+                            <ModalCompNormal labelName={"팀이름"}
+                                             labelIcon={"issue-modal-team-icon"}
+                                             viewData={""}/>
+
+                            <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
+                                               optionType={{inCharge: "jdj881204@naver.com"}}/>
+
+                            <ModalCompBtnStyle labelName={"참여자"}
+                                               labelIcon={"issue-modal-participants-icon"}
+                                               optionType={{participants: ["jdj8812042@naver.com", "hanmail.net"]}}
+                                               styleType={"participants"}/>
                         </div>
                     }
 
-                    <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""} btnName={"Long Term"}/>
-                    <ModalCompBtnStyle labelName={"상태"} labelIcon={""} btnName={"On Working"}/>
-                    <ModalCompBtnStyle labelName={"카테고리"} labelIcon={""} btnName={"카테고리"}/>
-                    <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""} btnName={"2023-10-10"}/>
+                    <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
+                                       btnName={"Long Term"}
+                                       styleType={"priority"}
+                                       optionType={{priority: IssuePriority.LONG_TERM}}/>
+
+                    <ModalCompBtnStyle labelName={"상태"} labelIcon={""} btnName={"On Working"} styleType={"default"}/>
+                    <ModalCompBtnStyle labelName={"카테고리"} labelIcon={""} btnName={"카테고리"} styleType={"default"}/>
+                    <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""} btnName={"2023-10-10"} styleType={"default"}/>
 
                 </div>
 
