@@ -3,7 +3,7 @@ import {KeyboardEvent, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
-import {IssuePriority} from "../../../common";
+import {IssuePriority, IssueStatus} from "../../../common";
 
 type IssueModalProps = {
     isTeamModal: boolean
@@ -71,11 +71,14 @@ export default function IssueModal(props: IssueModalProps) {
                     }
 
                     <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
-                                       btnName={"Long Term"}
                                        styleType={"priority"}
-                                       optionType={{priority: IssuePriority.LONG_TERM}}/>
+                                       optionType={{priority: IssuePriority.URGENT}}/>
 
-                    <ModalCompBtnStyle labelName={"상태"} labelIcon={""} btnName={"On Working"} styleType={"default"}/>
+                    <ModalCompBtnStyle labelName={"상태"}
+                                       labelIcon={""}
+                                       styleType={"priority"}
+                                       optionType={{status: IssueStatus.STUCK}}/>
+
                     <ModalCompBtnStyle labelName={"카테고리"} labelIcon={""} btnName={"카테고리"} styleType={"default"}/>
                     <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""} btnName={"2023-10-10"} styleType={"default"}/>
 
