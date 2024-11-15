@@ -4,7 +4,7 @@ import {ChangeEvent, useEffect, useState} from "react";
 import {userEmailStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant";
+import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {SignUpRequest} from "../../../interface/request";
 import {signUpRequest} from "../../../api/authApi";
 import {ResponseDto, SignUpResponse} from "../../../interface/response";

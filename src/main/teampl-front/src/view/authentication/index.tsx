@@ -16,7 +16,7 @@ import {
     HOME_PATH,
     PERSONAL_PROJECT_HOME_PATH,
     SIGN_IN_PATH
-} from "../../constant";
+} from "../../constant/path";
 import {useCookies} from "react-cookie";
 import {userEmailStore} from "../../store";
 

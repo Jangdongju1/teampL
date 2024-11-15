@@ -11,7 +11,7 @@ import {
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
     SIGN_IN_PATH
-} from "./constant";
+} from "./constant/path";
 import Authentication from "./view/authentication";
 import PasswordRegistration from "./view/authentication/passwordRegistration";
 import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm";

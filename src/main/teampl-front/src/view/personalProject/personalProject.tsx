@@ -7,7 +7,7 @@ import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response"
 import ResponseCode from "../../common/enum/responseCode";
 import {personalPrjStore, userEmailStore} from "../../store";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../constant";
+import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../constant/path";
 
 export default function PersonalProject() {
     //* navigate : 네비게이트 함수

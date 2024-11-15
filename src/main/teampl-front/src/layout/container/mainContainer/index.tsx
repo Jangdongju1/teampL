@@ -2,7 +2,7 @@ import "./style.css";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
-import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant";
+import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
 import {modalStore,headerMenuStore} from "../../../store";

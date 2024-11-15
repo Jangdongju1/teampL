@@ -38,15 +38,21 @@
     font-family: "Noto Sans KR Sans KR";
     font-size: 16px;
     color: rgba(0,0,0,1);
+    /*position: relative;*/
 }
 .issue-modal-btn-style-participants{
     display: flex;
     gap: 5px;
 }
-.issue-modal-btn-style-priority{
+.issue-modal-btn-style-status{
     font-family: "Noto Sans KR Sans KR";
     font-size: 16px;
     color: rgba(255,255,255,1);
+}
+.issue-modal-btn-style-category{
+    font-size: 16px;
+    font-family: "Noto Sans KR Sans KR";
+    color: rgba(0,0,0,0.8);
 }
 
 

@@ -1,7 +1,7 @@
 //component: 컨테이너
 import {Outlet, useLocation} from "react-router-dom";
 import Footer from "../../footer";
-import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant";
+import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import AuthHeader from "../../header/authHeader";
 import MainHeader from "../../header/mainHeader";
 

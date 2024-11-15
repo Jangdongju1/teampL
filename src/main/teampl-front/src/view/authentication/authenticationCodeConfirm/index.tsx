@@ -2,7 +2,7 @@ import "./style.css";
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from "react";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant";
+import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {userEmailStore} from "../../../store";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
 import {authCodeConfirmRequest} from "../../../api/authApi";
