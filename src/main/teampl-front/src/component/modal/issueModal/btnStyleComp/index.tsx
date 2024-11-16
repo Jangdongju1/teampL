@@ -1,82 +1,55 @@
 import "./style.css"
-import React, {useState} from "react";
-import InitialsImg from "../../../InitialsImg";
-import {IssuePriority, IssueStatus} from "../../../../common";
+import React, {useEffect, useState} from "react";
+import {IssueCategory, IssuePriority, IssueStatus} from "../../../../common";
 import {IssueCategories, IssuePriorities, IssueStats} from "../../../../constant/issueConstants";
 import CommonDatePicker from "../../../datepicker";
 import {getFormattedDateToString} from "../../../../util";
+import BtnPopUp from "./btnPopUp";
+import InitialsImg from "../../../InitialsImg";
 
-type ModalCompBtnStyleProps = {
+type ModalCompBtnStyleProps<T> = {
     labelName: string,
     labelIcon: string,
     btnName?: string,
-    optionType?: {
-        inCharge?: string,
-        participants?: string[],
-        priority?: number,
-        status?: number,
-        category?: number
-        expireDate?: string
-    }
-    styleType?: "status" | "category" | "participants" | "default"  // 1) priority,2)category,3)participants,4)default
+    hooks: {
+        clickState: boolean,
+        setClickState: React.Dispatch<React.SetStateAction<boolean>>
+        value: T,
+        setValue: React.Dispatch<React.SetStateAction<T>>
+    },
+    compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default",
+    // styleType?: "status" | "category" | "participants" | "default", // 1) priority,2)category,3)participants,4)default
+
 }
 
 
-export default function ModalCompBtnStyle(props: ModalCompBtnStyleProps) {
+export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
 
-    const {labelName, btnName, labelIcon, styleType} = props;
+    const {labelName, btnName, labelIcon} = props;
     // 옵션타입
-    const {optionType} = props;
+    const {compType, hooks} = props;
+
+    const {value, setValue, setClickState, clickState} = hooks;
 
 
-    // function : expire date에 대한 유효성 체크
-    const expireCondition = (): undefined | Date => {
-        if (!optionType) return undefined;
-        const date = optionType.expireDate;
-        if (date === undefined || date.length == 0) return undefined;
-
-        return new Date(date);
+    //* optionValue: popUp용 카테고리 값에 대한 배열
+    const categoryList = (): IssueCategory[] => {
+        return Object.values(IssueCategory)
+            .filter(value => typeof value === "number")
+            .map(value => value as IssueCategory);
     }
-
-    // state: expire Date 상태 //date picker 와 상호작용
-    const [date, setDate] = useState<Date | undefined>(expireCondition());
-    // state : expire Date 항목 클릭 상태
-    const [expireDateClickSate, setExpireDateClickState] = useState<boolean>(false);
-
-
-    // 여러 속성을 동시에 주지 못하도록 우선손위를 둔다.
-    const handleConflictingOptions = () => {
-        if (!optionType) return;
-
-        const options = [optionType?.priority, optionType?.status, optionType?.inCharge, optionType?.participants];
-        const nonEmptyOptions =
-            options.filter(option => option !== undefined && option !== null);
-
-
-        if (nonEmptyOptions.length > 1) {
-            console.warn("Only one of 'priority', 'status', 'inCharge', or 'participants' should be provided.");
-            // 예시로 우선순위대로 처리 (priority > status > inCharge > participants)
-            if (optionType.priority) {
-                return {priority: optionType.priority};
-            } else if (optionType.status) {
-                return {status: optionType.status};
-            } else if (optionType.inCharge) {
-                return {inCharge: optionType.inCharge}
-            } else if (optionType.participants) {
-                return {participants: optionType.participants}
-            } else if (optionType.category) {
-                return {category: optionType.category}
-            } else if (optionType.expireDate) {
-                return {expireDate: date?.toDateString()};  // 상태 값에서 가져옴
-            }
-        }
-        // 옵션이 1개만 존재하는 경우
-        return optionType;
-    };
-
-    // 우선순위에 따른 최종 옵션
-    const finalOption = handleConflictingOptions();
-
+    //* statusValue: popUp용 Status 값에 대한 배열
+    const statusList = (): IssueStatus[] => {
+        return Object.values(IssueStatus)
+            .filter(value => typeof value === "number")
+            .map(value => value as IssueStatus);
+    }
+    //* priorityValue: popUp용 priority 값에 대한 배열
+    const priorityList = (): IssuePriority[] => {
+        return Object.values(IssuePriority)
+            .filter(value => typeof value === "number")
+            .map(value => value as IssuePriority)
+    }
 
     // function:  우선순위(priority)별 텍스트 및 배경색 반환 함수
     const priorityBackgroundCss = (priority: number) => {
@@ -88,7 +61,7 @@ export default function ModalCompBtnStyle(props: ModalCompBtnStyleProps) {
     const statusBackgroundCss = (status: number) => {
         return IssueStats[status.toString()];
     }
-    // function: 카테고리에 따른 텍스트 반화함수
+    // function: 카테고리에 따른 텍스트 반환함수
     const categoryNames = (category: number): string => {
         return IssueCategories[category.toString()];
     }
@@ -98,28 +71,25 @@ export default function ModalCompBtnStyle(props: ModalCompBtnStyleProps) {
     const getBtnStyle = (): { btnName: string | undefined, background: { backgroundColor: string } | undefined } => {
         const defaultVal = {btnName: "", background: undefined};
 
-        if (!finalOption) return defaultVal;
+        if (compType === "default") return defaultVal;
 
-        if (finalOption.priority != undefined) {
+        if (compType === "priority" && typeof value === "number") {
 
-            const key: number = finalOption.priority
+            const key: number = value;
             const btnName: string = priorityBackgroundCss(key).text;
             const background: { backgroundColor: string } = {backgroundColor: priorityBackgroundCss(key).color};
             return {btnName: btnName, background: background};
 
-        } else if (finalOption.status !== undefined) {
-
-            const key = finalOption.status
+        } else if (compType === "status" && typeof value === "number") {
+            const key = value;
             const btnName: string = statusBackgroundCss(key).text;
             const background: { backgroundColor: string } = {backgroundColor: statusBackgroundCss(key).color};
             return {btnName: btnName, background: background};
-        } else if (finalOption.category !== undefined) {
-
-            const key = finalOption.category;
-            const btnName = categoryNames(key);
+        } else if (compType === "category" && typeof value === "number") {
+            const btnName = categoryNames(value);
             return {btnName: btnName, background: undefined};
-        } else if (finalOption.expireDate !== undefined) {
-            const btnName = date ? getFormattedDateToString(date) : undefined;
+        } else if (compType === "expireTime" && value instanceof Date) {
+            const btnName = value ? getFormattedDateToString(value) : undefined;
             return {btnName: btnName, background: undefined}
         }
         // 그 외에는 기본 스타일
@@ -127,21 +97,17 @@ export default function ModalCompBtnStyle(props: ModalCompBtnStyleProps) {
     }
 
     const getBtnFontColor = (): string => {
-        if (!finalOption) return "";
-        if (!styleType) return "default"
+        if (compType === "priority" && value === 0) return "default";
+        if (compType === "status" && value === 0) return "default"
 
-        if (finalOption.priority === IssuePriority.NORMAL) return "default";
-        if (finalOption.status === IssueStatus.NOT_START) return "default"
-
-        return styleType;
+        return compType;
     }
 
     // eventHandler: 마우스 클릭 이벤트 처리
     const onClickEventHandler = () => {
-        if (finalOption?.expireDate) {  // optionType expire일때 버튼 클릭시
-            setExpireDateClickState(!expireDateClickSate);
-        }
+        setClickState(!clickState)
     }
+
 
     return (
 
@@ -154,25 +120,57 @@ export default function ModalCompBtnStyle(props: ModalCompBtnStyleProps) {
             <div className={"issue-modal-btn-style-comp-content-box"}
                  style={getBtnStyle().background}
                  onClick={onClickEventHandler}>
-                {optionType?.expireDate ? <CommonDatePicker
-                        date={date}
-                        setDate={setDate}
-                        clickState={expireDateClickSate}/> :
-                    null}
 
-                <div className={`issue-modal-btn-style-${getBtnFontColor()}`}>
+
+                {compType === "expireTime" && value instanceof Date ? <CommonDatePicker
+                    date={value}
+                    setDate={setValue as React.Dispatch<React.SetStateAction<Date>>}
+                    clickState={clickState}
+                    setClickSate={setClickState}/> : null}
+
+                <div
+                    className={`issue-modal-btn-style-${getBtnFontColor() == "priority" ? "status" : getBtnFontColor()}`}>
 
                     {!btnName ? getBtnStyle().btnName : btnName}
-                    {!optionType?.inCharge ? null : <InitialsImg name={optionType.inCharge} width={26} height={26}/>}
-                    {!optionType?.participants ? null :
-                        optionType?.participants.map((item, index) =>
-                            <InitialsImg key={index} name={item} width={26} height={26}/>
-                        )
+                    {compType === "inCharge" && typeof value === "string" ?
+                        <InitialsImg name={value} width={26} height={26}/> : null}
+
+                    {compType === "participants" &&
+                        Array.isArray(value) &&
+                        value.every(item => typeof item === "string") &&
+                        (value.map(value => <InitialsImg key={value} name={value} width={26} height={26}/>))
                     }
                 </div>
 
-
             </div>
+            {(compType === "category" && clickState) &&
+                (<BtnPopUp menu={categoryList()}
+                           popupType={compType}
+                           cssOption={{
+                               offset: {right: 160, bottom: 325}
+                           }}
+                           setPopUpClickState={setClickState}
+                           setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
+                />)}
+            {compType === "status" && clickState && (
+                <BtnPopUp menu={statusList()}
+                          popupType={compType}
+                          cssOption={{
+                              offset: {right: 160, bottom: 240}
+                          }}
+                          setPopUpClickState={setClickState}
+                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}/>
+            )}
+
+            {compType === "priority" && clickState && (
+                <BtnPopUp menu={priorityList()}
+                          popupType={compType}
+                          cssOption={{
+                              offset: {right: 160, bottom: 240}
+                          }}
+                          setPopUpClickState={setClickState}
+                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}/>
+            )}
         </div>
     )
 }

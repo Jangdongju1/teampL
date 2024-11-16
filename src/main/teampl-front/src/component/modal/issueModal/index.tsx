@@ -5,6 +5,7 @@ import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
 import {IssueCategory, IssuePriority, IssueStatus} from "../../../common";
 
+// 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
     isTeamModal: boolean
 }
@@ -16,6 +17,35 @@ export default function IssueModal(props: IssueModalProps) {
     // state:  제목 상태
     const [title, setTitle] = useState<string>("");
 
+    // state : 담당자 상태
+    const [inCharge, setInCharge] = useState<string>("jdj881204@naver.com");
+    // state : 담당자 클릭 상태
+    const [inChargeClickSate, setInChargeClickSate] = useState<boolean>(false);
+
+    // state : 참여자 상태
+    const [participants, setParticipants] = useState<string[]>(["jdj88", "siedj22"]);
+    // state : 참여자 클릭상태
+    const [participantsClickState, setParticipantsClickState] = useState<boolean>(false);
+
+    // state : category 상태
+    const [category, setCategory] = useState<number>(IssueCategory.BUG_FIX);
+    // state : category 버튼 클릭상태
+    const [categoryBtnClickState, setCategoryBtnClickState] = useState<boolean>(false);
+
+    // state : issueStatus 상태
+    const [status, setStatus] = useState<number>(IssueStatus.DONE);
+    // state : status 버튼 클릭상태
+    const [statusBtnClickState, setStateBtnClickState] = useState<boolean>(false);
+
+    // state : priority 상태
+    const [priority, setPriority] = useState<number>(IssuePriority.URGENT);
+    // state : priority 클릭상태
+    const [priorityClickState, setPriorityClickState] = useState<boolean>(false);
+
+    // state: expire Date 상태 //date picker 와 상호작용
+    const [date, setDate] = useState<Date>(new Date("2024-12-04"));
+    // state : expire Date 항목 클릭 상태
+    const [expireDateClickSate, setExpireDateClickState] = useState<boolean>(false);
 
 
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
@@ -65,31 +95,64 @@ export default function IssueModal(props: IssueModalProps) {
                                              viewData={""}/>
 
                             <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
-                                               optionType={{inCharge: "jdj881204@naver.com"}}/>
+                                               hooks={{
+                                                   value: inCharge,
+                                                   setValue: setInCharge,
+                                                   clickState: inChargeClickSate,
+                                                   setClickState: setInChargeClickSate
+                                               }}
+                                               compType={"inCharge"}/>
 
                             <ModalCompBtnStyle labelName={"참여자"}
                                                labelIcon={"issue-modal-participants-icon"}
-                                               optionType={{participants: ["jdj8812042@naver.com", "hanmail.net"]}}
-                                               styleType={"participants"}/>
+                                               hooks={{
+                                                   value: participants,
+                                                   setValue: setParticipants,
+                                                   clickState: participantsClickState,
+                                                   setClickState: setParticipantsClickState
+                                               }}
+                                               compType={"participants"}/>
                         </div>
                     }
 
                     <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
-                                       styleType={"status"}
-                                       optionType={{priority: IssuePriority.URGENT}}/>
+                                       hooks={{
+                                           value: priority,
+                                           setValue: setPriority,
+                                           clickState: priorityClickState,
+                                           setClickState: setPriorityClickState
+                                       }}
+                                       compType={"priority"}/>
 
                     <ModalCompBtnStyle labelName={"상태"}
                                        labelIcon={""}
-                                       styleType={"status"}
-                                       optionType={{status: IssueStatus.STUCK}}/>
+                                       hooks={{
+                                           value: status,
+                                           setValue: setStatus,
+                                           clickState: statusBtnClickState,
+                                           setClickState: setStateBtnClickState
+                                       }}
+                                       compType={"status"}
+                    />
 
                     <ModalCompBtnStyle labelName={"카테고리"}
                                        labelIcon={""}
-                                       optionType={{category: IssueCategory.BUG_FIX}}
-                                       styleType={"category"}/>
+                                       hooks={{
+                                           value: category,
+                                           setValue: setCategory,
+                                           clickState: categoryBtnClickState,
+                                           setClickState: setCategoryBtnClickState
+                                       }}
+                                       compType={"category"}/>
+
                     <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
-                                       styleType={"default"}
-                                       optionType={{expireDate: "2024-12-12"}}/>
+                                       compType={"expireTime"}
+                                       hooks={{
+                                           value : date,
+                                           setValue : setDate,
+                                           clickState : expireDateClickSate,
+                                           setClickState : setExpireDateClickState
+                                       }}/>
 
 
                 </div>

@@ -5,8 +5,8 @@ export const IssueCategories: { [key: string]: string } = {
     [IssueCategory.BUG_FIX]: "Bug fix",
     [IssueCategory.NEW_DEVELOPMENT]: "New Dev",
     [IssueCategory.TEST]: "Test Req",
-    [IssueCategory.FEATURE_ENHANCEMENT]: "Feature Enhancement",
-    [IssueCategory.PERFORMANCE_IMPROVE]: "Performance Improvement",
+    [IssueCategory.FEATURE_ENHANCEMENT]: "Feat. Enh.",
+    [IssueCategory.PERFORMANCE_IMPROVE]: "Perf. Tuning",
     [IssueCategory.ETC]: "기타"
 }
 // 이슈의 우선순위별 배경색에 대한 css를 정의해 놓음

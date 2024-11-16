@@ -135,14 +135,16 @@ export default function KanbanBoard(props: KanbanType) {
             {topMenu === "kanban" ?
                 <div className={"kanban-board-bottom-container"}>
                     <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"Not Start"} itemArray={notStartState}
+                        <KanbanBoardPanel boardName={"Not Start"}
+                                          itemArray={notStartState}
                                           stat={IssueStatus.NOT_START}
                                           setArray={setNotStartState}
                                           isTeamKanban={isTeamKanban}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"On Working"} itemArray={onWorkingState}
+                        <KanbanBoardPanel boardName={"On Working"}
+                                          itemArray={onWorkingState}
                                           stat={IssueStatus.ON_WORKING}
                                           setArray={setOnWorkingState}
                                           isTeamKanban={isTeamKanban}/>

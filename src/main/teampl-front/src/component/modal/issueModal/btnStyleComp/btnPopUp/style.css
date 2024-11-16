@@ -1,0 +1,37 @@
+#btn-popup-wrapper{
+    width: 200px;
+    max-height: 280px;
+    overflow-y: auto;
+    background-color: rgba(255,255,255,1);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 16px 24px;
+    position: absolute;
+    z-index: 1011;
+}
+.btn-popup-option-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn-popup-option{
+    width: 144px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+
+    border-radius: 5px;
+}
+.btn-popup-option:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.05);
+}
