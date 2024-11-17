@@ -2,7 +2,7 @@ import "./style.css"
 import React, {useEffect, useState} from "react";
 import {IssueCategory, IssuePriority, IssueStatus} from "../../../../common";
 import {IssueCategories, IssuePriorities, IssueStats} from "../../../../constant/issueConstants";
-import CommonDatePicker from "../../../datepicker";
+import CommonDatePicker from "../../../datePicker";
 import {getFormattedDateToString} from "../../../../util";
 import BtnPopUp from "./btnPopUp";
 import InitialsImg from "../../../InitialsImg";

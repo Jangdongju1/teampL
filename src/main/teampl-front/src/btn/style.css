@@ -1,0 +1,18 @@
+.default-btn{
+    width: 120px;
+    height: 30px;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 50;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+
+}
+
+.default-btn:hover{
+    cursor: pointer;
+}

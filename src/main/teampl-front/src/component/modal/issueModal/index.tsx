@@ -1,9 +1,13 @@
 import "./style.css"
-import {KeyboardEvent, useState} from "react";
+import {KeyboardEvent, useMemo, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
 import {IssueCategory, IssuePriority, IssueStatus} from "../../../common";
+import Editor from "../../editor";
+import CommonBtn from "../../../btn";
+import DOMPurify from "dompurify";
+
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -47,7 +51,18 @@ export default function IssueModal(props: IssueModalProps) {
     // state : expire Date 항목 클릭 상태
     const [expireDateClickSate, setExpireDateClickState] = useState<boolean>(false);
 
+    // state : issueDetail 상태
+    const [issueDetail, setIssueDetail] = useState<string>("");
+    // state : issueDetailVeiw 상태
+    const [issueDetailView, setIssueDetailView] = useState<string>("")
+    // state : issueDetail 클릭 상태.
+    const [issueDetailClickState, setIssueDetailClickState] = useState<boolean>(true);
 
+
+    // dangerouslySetInnerHTML 는 보안문제 때문에 신중하게 사용해야 한다.
+    // 사용자가 임의로 악성 스크립트를 삽입할 수 있기 때문이다.
+    // DOMPurify와 같은 라이브러리로  입력값에 대한 보안검사를 할 수 있다.
+    const protectedDetailViewValue = DOMPurify.sanitize(issueDetailView);
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
     const onTitleClickEventHandler = () => {
         setIsChange(true);
@@ -59,8 +74,22 @@ export default function IssueModal(props: IssueModalProps) {
             setIsChange(false);
         }
     }
+    // eventHandler : 에디터 저장버튼 클릭 이벤트 헨들러
+    const onDetailSaveBtnClickEventHandler = () => {
+        setIssueDetailView(issueDetail);
+        setIssueDetailClickState(prevState => false);
+    }
 
-    // eventHandler
+    // eventHandler : 에디터 취소버튼 클릭 이벤트 헨들러
+    const onDetailCancelBtnClickEventHandler = () => {
+        setIssueDetail(issueDetailView);
+        setIssueDetailClickState(false);
+    }
+    // eventHandler : 에이터 뷰 영역 클릭 이벤트 헨들러
+    const onDetailViewAreaClickEventHandler = () => {
+        setIssueDetailClickState(true);
+    }
+
 
     return (
         <div id={"issue-modal-wrapper"}>
@@ -132,8 +161,7 @@ export default function IssueModal(props: IssueModalProps) {
                                            clickState: statusBtnClickState,
                                            setClickState: setStateBtnClickState
                                        }}
-                                       compType={"status"}
-                    />
+                                       compType={"status"}/>
 
                     <ModalCompBtnStyle labelName={"카테고리"}
                                        labelIcon={""}
@@ -148,10 +176,10 @@ export default function IssueModal(props: IssueModalProps) {
                     <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
                                        compType={"expireTime"}
                                        hooks={{
-                                           value : date,
-                                           setValue : setDate,
-                                           clickState : expireDateClickSate,
-                                           setClickState : setExpireDateClickState
+                                           value: date,
+                                           setValue: setDate,
+                                           clickState: expireDateClickSate,
+                                           setClickState: setExpireDateClickState
                                        }}/>
 
 
@@ -161,6 +189,52 @@ export default function IssueModal(props: IssueModalProps) {
             </div>
 
             <div className={"issue-modal-right-container"}>
+                <div className={"issue-modal-right-edit-box"}>
+                    <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
+
+
+                    {issueDetailClickState ?
+                        <div className={"issue-modal-right-edit"}>
+                            <Editor
+                                value={issueDetail}
+                                setValue={setIssueDetail}
+                                clickState={issueDetailClickState}
+                                setClickState={setIssueDetailClickState}/>
+
+                            <div className={"issue-modal-right-edit-btn-box"}>
+                                <CommonBtn
+                                    style={
+                                        {
+                                            size: {width: 52, height: 32},
+                                            btnName: "저장",
+                                            backgroundColor: "#0C66E4",
+                                            hoverColor: "#0052CC",
+                                            fontSize: 16,
+                                            fontColor: "rgba(255,255,255,1)"
+                                        }
+                                    }
+                                    onClick={onDetailSaveBtnClickEventHandler}/>
+
+                                <CommonBtn
+                                    style={
+                                        {
+                                            size: {width: 52, height: 32},
+                                            btnName: "취소",
+                                            fontSize: 16,
+                                        }
+                                    }
+                                    onClick={onDetailCancelBtnClickEventHandler}/>
+                            </div>
+
+                        </div> :
+                        <div className={"issue-editor-view"}
+                             dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
+                             onClick={onDetailViewAreaClickEventHandler}></div>}
+
+                </div>
+                <div className={"issue-modal-right-comment-box"}>
+
+                </div>
 
             </div>
 

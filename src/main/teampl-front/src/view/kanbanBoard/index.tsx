@@ -19,7 +19,7 @@ type KanbanType = {
     isTeamKanban: boolean
 }
 
-export default function KanbanBoard(props: KanbanType) {
+export default function Index(props: KanbanType) {
     // pros:칸반타입 >> 1)개인프로젝트 칸반보드 2) 팀프로젝트 칸반보드
     const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
