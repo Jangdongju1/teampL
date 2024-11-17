@@ -5,7 +5,7 @@ import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
 import {IssueCategory, IssuePriority, IssueStatus} from "../../../common";
 import Editor from "../../editor";
-import CommonBtn from "../../../btn";
+import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
 
 
