@@ -1,0 +1,41 @@
+#comment-comp-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-comp-content-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.comment-comp-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 3px;
+}
+
+.comment-comp-user-email {
+    color: #42526E;
+}
+
+.comment-comp-reg-info {
+    color: rgba(0,0,0,0.4);
+}
+.comment-comp-btn-box{
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+}
+
+.comment-comp-info-font-style {
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 14px;
+    font-weight: 500;
+}
+.modification-element-wrapper{
+    width: 100%;
+
+}

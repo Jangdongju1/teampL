@@ -114,11 +114,14 @@
 
     box-sizing: border-box;
     padding: 28px;
-
     overflow-y: auto;
+    overflow-x: auto;
+
+    gap: 25px;
 }
 .issue-modal-right-edit-box{
     width: 100%;
+    min-height: 130px;
     margin-top: 60px;
     display: flex;
     flex-direction: column;
@@ -141,6 +144,60 @@
     align-items:center;
     gap: 5px;
 }
+.issue-editor-view{
+    width: 100%;
+    min-height: 130px;
+}
+.issue-editor-view-none{
+    font-size: 26px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 600;
+    color: rgba(0,0,0,0.3);
+}
+.issue-modal-right-comment-box{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    gap: 10px;
+}
+.issue-modal-right-comment-title{
+    width: 100%;
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    font-weight: 600;
 
+}
+.issue-modal-right-comment{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.issue-modal-right-comment-editor{
+    width: 100%;
+    min-height: 85px;
+}
+.issue-modal-right-comment-btn-box{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.issue-modal-right-comment-item-box{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.issue-modal-right-comment-item{
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+}
+.issue-modal-right-pagination{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 

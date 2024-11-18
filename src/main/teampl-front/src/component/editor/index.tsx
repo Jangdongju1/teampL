@@ -6,8 +6,8 @@ import React, {SetStateAction, useMemo, useState} from "react";
 type EditProps = {
     value: string,
     setValue: React.Dispatch<SetStateAction<string>>,
-    clickState: boolean,
-    setClickState: React.Dispatch<SetStateAction<boolean>>
+    clickState?: boolean,
+    setClickState?: React.Dispatch<SetStateAction<boolean>>
 }
 export default function Editor(props: EditProps) {
     const {value, setValue, clickState, setClickState} = props
@@ -29,18 +29,30 @@ export default function Editor(props: EditProps) {
         }
     }), []);
 
+    const getCssClass = ():string =>{
+        if (clickState === undefined) return "";  // 정의되지 않은 경우
+        return clickState ? "" : "no-toolbar";
+    }
+
+    const getClickState = ():boolean=>{
+        if (clickState === undefined) return false;
+
+        return !clickState;
+    }
+
+
+
     return (
         <>
-            <div id={"edit-wrapper"}>
+        <div id={"edit-wrapper"}>
                 <ReactQuill theme={"snow"}
                             value={value}
                             onChange={setValue}
                             modules={modules}
-                            readOnly={!clickState}
-                            className={clickState ? "" : "no-toolbar"}/>
+                            readOnly={getClickState()}
+                            className={getCssClass()}/>
 
             </div>
-
         </>
 
     )

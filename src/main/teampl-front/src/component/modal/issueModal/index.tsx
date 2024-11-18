@@ -7,7 +7,8 @@ import {IssueCategory, IssuePriority, IssueStatus} from "../../../common";
 import Editor from "../../editor";
 import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
-
+import CommentComp from "./commentComp";
+import Pagination from "../../pagination";
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -53,16 +54,21 @@ export default function IssueModal(props: IssueModalProps) {
 
     // state : issueDetail 상태
     const [issueDetail, setIssueDetail] = useState<string>("");
-    // state : issueDetailVeiw 상태
+    // state : issueDetailView 상태
     const [issueDetailView, setIssueDetailView] = useState<string>("")
     // state : issueDetail 클릭 상태.
     const [issueDetailClickState, setIssueDetailClickState] = useState<boolean>(true);
+
+    // state: comment 입력 상태
+    const [comment, setComment] = useState<string>("");
+
 
 
     // dangerouslySetInnerHTML 는 보안문제 때문에 신중하게 사용해야 한다.
     // 사용자가 임의로 악성 스크립트를 삽입할 수 있기 때문이다.
     // DOMPurify와 같은 라이브러리로  입력값에 대한 보안검사를 할 수 있다.
     const protectedDetailViewValue = DOMPurify.sanitize(issueDetailView);
+
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
     const onTitleClickEventHandler = () => {
         setIsChange(true);
@@ -76,7 +82,7 @@ export default function IssueModal(props: IssueModalProps) {
     }
     // eventHandler : 에디터 저장버튼 클릭 이벤트 헨들러
     const onDetailSaveBtnClickEventHandler = () => {
-        setIssueDetailView(issueDetail);
+        issueDetail === "<p><br></p>"? setIssueDetailView("") : setIssueDetailView(issueDetail)
         setIssueDetailClickState(prevState => false);
     }
 
@@ -192,7 +198,6 @@ export default function IssueModal(props: IssueModalProps) {
                 <div className={"issue-modal-right-edit-box"}>
                     <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
 
-
                     {issueDetailClickState ?
                         <div className={"issue-modal-right-edit"}>
                             <Editor
@@ -209,6 +214,7 @@ export default function IssueModal(props: IssueModalProps) {
                                             btnName: "저장",
                                             backgroundColor: "#0C66E4",
                                             hoverColor: "#0052CC",
+                                            hoverStyle : "background",
                                             fontSize: 16,
                                             fontColor: "rgba(255,255,255,1)"
                                         }
@@ -226,13 +232,49 @@ export default function IssueModal(props: IssueModalProps) {
                                     onClick={onDetailCancelBtnClickEventHandler}/>
                             </div>
 
-                        </div> :
-                        <div className={"issue-editor-view"}
-                             dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
-                             onClick={onDetailViewAreaClickEventHandler}></div>}
+                        </div> : issueDetailView.length === 0 ?
+                            <div className={"issue-editor-view-none"} onClick={onDetailViewAreaClickEventHandler}>{"이슈에 대한 설명"}</div> :
+
+                            <div className={"issue-editor-view"}
+                                 dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
+                                 onClick={onDetailViewAreaClickEventHandler}></div>}
 
                 </div>
                 <div className={"issue-modal-right-comment-box"}>
+                    <div className={"issue-modal-right-comment-title"}>{"Comment"}</div>
+
+                    <div className={"issue-modal-right-comment"}>
+                        <div className={"issue-modal-right-comment-editor"}>
+                            <Editor value={comment} setValue={setComment}/>
+                        </div>
+
+                        <div className={"issue-modal-right-comment-btn-box"}>
+                            <CommonBtn
+                                style={
+                                    {
+                                        size: {width: 52, height: 32},
+                                        btnName: "저장",
+                                        backgroundColor: "#0C66E4",
+                                        hoverColor: "#0052CC",
+                                        hoverStyle : "background",
+                                        fontSize: 16,
+                                        fontColor: "rgba(255,255,255,1)"
+                                    }
+                                }
+                                onClick={()=> console.log("reg comment ")}/>
+
+                        </div>
+                    </div>
+                    <div className={"issue-modal-right-comment-item-box"}>
+
+                        <div className={"issue-modal-right-comment-item"}>
+                            <CommentComp/>
+                        </div>
+
+                        <div className={"issue-modal-right-pagination"}>
+                            <Pagination/>
+                        </div>
+                    </div>
 
                 </div>
 

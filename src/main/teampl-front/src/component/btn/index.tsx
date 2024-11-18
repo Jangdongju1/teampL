@@ -7,6 +7,7 @@ type CommonBtnProps = {
         size: { width: number, height: number },
         backgroundColor?: string,
         hoverColor?: string,
+        hoverStyle?: "background" | "innerHTML"
         btnName?: string,
         fontSize?: number,
         fontColor?: string
@@ -19,22 +20,38 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
         backgroundColor,
         fontSize,
         fontColor,
-        hoverColor
+        hoverColor,
+        hoverStyle
     } = style;
 
     // eventHandler : 마우스 엔터시 이벤트
     const onMouseEnterEventHandler = (e: MouseEvent<HTMLDivElement>) => {
+        if (!hoverStyle || !hoverColor) return;
         const element = e.target as HTMLDivElement;
-        if (!hoverColor) return;
 
-        element.style.backgroundColor = hoverColor;
+        if (hoverStyle === "background") {
+            element.style.backgroundColor = hoverColor;
+        } else {
+            element.style.color = hoverColor;
+            element.style.textDecoration = "underline"
+
+        }
+
     }
     //eventHandler : 마우스 리브시 이벤트
     const onMouseLeaveEventHandler = (e: MouseEvent<HTMLDivElement>) => {
+        if (!hoverStyle || !hoverColor) return;
         const element = e.target as HTMLDivElement;
-        if (!backgroundColor) return;
+        if (hoverStyle === "background") {
+            if (!backgroundColor) return;
+            element.style.backgroundColor = backgroundColor;
+        }else {
+            if (!fontColor) return;
+            element.style.color = fontColor;
+            element.style.textDecoration = "none"
+        }
 
-        element.style.backgroundColor = backgroundColor;
+
     }
 
     return (
