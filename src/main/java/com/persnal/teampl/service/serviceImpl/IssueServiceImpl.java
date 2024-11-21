@@ -6,7 +6,8 @@ import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueResponse;
+import com.persnal.teampl.dto.response.issue.GetPersonalIssueByNumResponse;
+import com.persnal.teampl.dto.response.issue.GetPersonalIssueListResponse;
 import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
 import com.persnal.teampl.entities.IssueEntity;
 import com.persnal.teampl.entities.ProjectEntity;
@@ -76,14 +77,14 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueList(String email, int projectNum) {
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(String email, int projectNum) {
         List<IssueEntity> entities = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
             boolean isExistProject = projectRepository.existsById(projectNum);
 
-            if (!isExistUser) return GetPersonalIssueResponse.notExistUser();
-            if (!isExistProject) return GetPersonalIssueResponse.notExistProject();
+            if (!isExistUser) return GetPersonalIssueListResponse.notExistUser();
+            if (!isExistProject) return GetPersonalIssueListResponse.notExistProject();
 
             entities = issueRepository.findAllByProjectEntityProjectNum(projectNum);
 
@@ -92,18 +93,18 @@ public class IssueServiceImpl implements IssueService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPersonalIssueResponse.success(entities);
+        return GetPersonalIssueListResponse.success(entities);
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueListByStatus(String email, int projectNum, int status) {
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(String email, int projectNum, int status) {
         List<IssueEntity> entities = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
             boolean isExistProject = projectRepository.existsById(projectNum);
 
-            if (!isExistUser) return GetPersonalIssueResponse.notExistUser();
-            if (!isExistProject) return GetPersonalIssueResponse.notExistProject();
+            if (!isExistUser) return GetPersonalIssueListResponse.notExistUser();
+            if (!isExistProject) return GetPersonalIssueListResponse.notExistProject();
 
             entities = issueRepository.findAllByProjectEntityProjectNumAndStat(projectNum, status);
 
@@ -112,7 +113,7 @@ public class IssueServiceImpl implements IssueService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPersonalIssueResponse.success(entities);
+        return GetPersonalIssueListResponse.success(entities);
     }
 
 
@@ -133,10 +134,30 @@ public class IssueServiceImpl implements IssueService {
 
             issueRepository.save(issueEntity);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
         return PatchIssueTitleResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(String email, int issueNum) {
+        IssueEntity issueEntity = null;
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+
+            if (!isExistUser) return GetPersonalIssueByNumResponse.notExistUser();
+
+            issueEntity = issueRepository.findByIssueNum(issueNum);
+
+            if (issueEntity == null) return GetPersonalIssueByNumResponse.notExistIssue();
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetPersonalIssueByNumResponse.success(issueEntity);
     }
 }

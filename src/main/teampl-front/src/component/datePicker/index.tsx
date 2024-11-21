@@ -5,7 +5,7 @@ import "./style.css"
 
 
 type DatePickerProps = {
-    date: Date | undefined
+    date: Date | null,
     setDate: React.Dispatch<React.SetStateAction<Date>>,
     clickState : boolean
     setClickSate: React.Dispatch<React.SetStateAction<boolean>>
@@ -34,7 +34,7 @@ export default function CommonDatePicker(props: DatePickerProps) {
                         selected={date}
                         onChange={onDateChangeEventHandler}
                         open={clickState}
-                        popperClassName={"popper-offset"}
+                        popperClassName={date? "popper-offset" : ""}
                         dateFormat={"yyyy-MM-dd"}
                         minDate={new Date()}
             />

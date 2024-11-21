@@ -1,5 +1,6 @@
 package com.persnal.teampl.entities;
 
+import com.persnal.teampl.common.Enum.issue.IssueCategory;
 import com.persnal.teampl.common.Enum.issue.IssuePriority;
 import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
@@ -60,11 +61,15 @@ public class IssueEntity {
     public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence) {
         return IssueEntity.builder()
                 .title("제목을 지정해 주세요.")  // 기본 값
+                .content("")
+                .inCharge("") //
                 .stat(stat)
+                .priority(IssuePriority.NORMAL.getValue())
+                .category(IssueCategory.ETC.getValue())
                 .userEntity(userEntity)
                 .projectEntity(projectEntity)
                 .writeDate(Utils.getNowTime(LocalDateTime.now()))
-                .priority(IssuePriority.NORMAL.getValue())
+                .expireDate(null)
                 .isDeleted(false)
                 .issueSequence(sequence)
                 .build();
@@ -86,14 +91,31 @@ public class IssueEntity {
                     .expireDate(entity.getExpireDate())
                     .stat(entity.getStat())
                     .category(entity.getCategory())
-                    //.isAssigned(entity.getIsAssigned())
-                    .isDeleted(entity.getIsDeleted())
                     .issueSequence(entity.getIssueSequence())
                     .ref(entity.getRef())
                     .build();
             list.add(listElement);
         }
         return list;
+    }
+
+    public static IssueObj getIssue(IssueEntity entity){
+        return IssueObj.builder()
+                .issueNum(entity.getIssueNum())
+                .projectNum(entity.getProjectEntity().getProjectNum())
+                .email(entity.getUserEntity().getEmail())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .inCharge(entity.getInCharge())
+                .priority(entity.getPriority())
+                .writeDate(entity.getWriteDate())
+                .expireDate(entity.getExpireDate())
+                .stat(entity.getStat())
+                .category(entity.getCategory())
+                .issueSequence(entity.getIssueSequence())
+                .ref(entity.getRef())
+                .build();
+
     }
 
 

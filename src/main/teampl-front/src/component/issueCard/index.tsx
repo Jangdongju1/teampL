@@ -9,7 +9,7 @@ import ResponseCode from "../../common/enum/responseCode";
 import FlexibleInput from "../inputCmponent/flexibleInput";
 import {PatchIssueTitleRequest} from "../../interface/request";
 import {patchIssueTitleRequest} from "../../api/issueApi";
-import {modalStore} from "../../store";
+import {issueStore, modalStore} from "../../store";
 
 type IssueCardProps = {
     data: Issue
@@ -27,6 +27,8 @@ export default function IssueCard(props: IssueCardProps) {
     const {commentCnt, subIssueCnt} = props;
 
 
+    // global state: 이슈 넘버 세팅.
+    const {issueNum, setIssueNum} = issueStore();
     // global state: 모달 상태
     const {setIsModalOpen,setModalType} = modalStore();
     // state:쿠키 상태
@@ -39,6 +41,7 @@ export default function IssueCard(props: IssueCardProps) {
 
     // eventHandler: 이슈카드 클릭 이벤트 헨들러
     const onIssueCardClickEventHandler = ()=>{
+        setIssueNum(data.issueNum);  // 이슈넘버를 세팅
         setIsModalOpen(true);
         setModalType(ModalType.ISSUE_INFO);
     }

@@ -44,6 +44,8 @@ export default function InitialsImg(props: InitialsImgProps) {
 
 
     }, [name]);
+
+    if (!name) return null;
     return (
         <canvas className={"initial-canvas"} ref={canvasRef} width={width} height={height}/>
     )

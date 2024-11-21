@@ -1,15 +1,14 @@
 import "./style.css";
-import {ForwardedRef, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {Issue} from "../../interface/types";
 import {useCookies} from "react-cookie";
-import {createIssueRequest, getPersonalIssueByStatus} from "../../api/issueApi";
+import {createIssueRequest} from "../../api/issueApi";
 import CreateIssueResponse from "../../interface/response/issue/personal/createIssueResponse";
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {useParams} from "react-router-dom";
 import CreateIssueRequest from "../../interface/request/issue/personal/createIssueRequest";
 import IssueCard from "../issueCard";
-import GetPersonalIssueListResponse from "../../interface/response/issue/personal/getPersonalIssueListResponse";
 
 // 개시물 데이터 받아야함.
 type KanbanBoardPanelProps = {
@@ -49,31 +48,26 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
         let currentElement: Issue | undefined = issues.reduce((previousValue, currentValue) => {
             return currentValue.issueNum < previousValue.issueNum ? currentValue : previousValue;
         }, issues[0]);
+        //console.log(currentElement)
 
         // currentElement가 undefined일 경우 처리
         if (!currentElement) return [];
 
+        // issue가 1개일경우
         if (!currentElement.ref) {
             sortedIssue.push(currentElement);
             return sortedIssue;
         }
 
-        const firstElement: Issue | undefined = issues.find(issue => !issue.ref);
-
-        if (firstElement !== undefined) {
-            sortedIssue.push(firstElement);
-        }
 
         // ref 참조 값으로 다음엘리먼트를 순차적으로 배열에 넣은뒤 반환.
         while (currentElement) {
-            if (currentElement.ref) {
-                sortedIssue.push(currentElement);
-            }
+            sortedIssue.push(currentElement);
             currentElement = issueMap.get(currentElement.ref);
             if (!currentElement) break;
         }
 
-        return sortedIssue;
+        return sortedIssue.reverse();
     }
 
 
@@ -84,6 +78,7 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
         if (code !== ResponseCode.SUCCESS) alert(message);
 
         const {data} = responseBody as CreateIssueResponse;
+        console.log(data)
         setSequence(data.sequence);
     }
 

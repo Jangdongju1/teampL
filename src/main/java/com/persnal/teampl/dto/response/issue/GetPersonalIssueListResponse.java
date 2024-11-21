@@ -13,18 +13,18 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-public class GetPersonalIssueResponse {
+public class GetPersonalIssueListResponse {
     private final List<IssueObj> list;
 
-    public GetPersonalIssueResponse(List<IssueEntity> entities) {
+    public GetPersonalIssueListResponse(List<IssueEntity> entities) {
         list = IssueEntity.getList(entities);
     }
 
-    public static ResponseEntity<ApiResponse<GetPersonalIssueResponse>> success(List<IssueEntity> entities) {
-        ApiResponse<GetPersonalIssueResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<GetPersonalIssueListResponse>> success(List<IssueEntity> entities) {
+        ApiResponse<GetPersonalIssueListResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPersonalIssueResponse(entities));
+                new GetPersonalIssueListResponse(entities));
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

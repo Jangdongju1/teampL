@@ -15,4 +15,4 @@ const personalPrjStore = create<PersonalPrj>(setState => ({
 
 export default personalPrjStore;
 
-//() => ({}}   객체의 암묵적 반환에 대한 문법임*/
+//() => ({})   객체의 암묵적 반환에 대한 문법임*/

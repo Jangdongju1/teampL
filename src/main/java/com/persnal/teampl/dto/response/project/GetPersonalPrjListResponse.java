@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-
 public class GetPersonalPrjListResponse {
     private  final List<ProjectObj> list;
 

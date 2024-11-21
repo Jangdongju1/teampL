@@ -1,5 +1,5 @@
 import "./style.css"
-import {KeyboardEvent, useMemo, useState} from "react";
+import {KeyboardEvent, useEffect, useMemo, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
@@ -9,6 +9,11 @@ import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
 import CommentComp from "./commentComp";
 import Pagination from "../../pagination";
+import {issueStore} from "../../../store";
+import {useCookies} from "react-cookie";
+import {getPersonalIssueByIssueNum} from "../../../api/issueApi";
+import {GetPersonalIssueByNumResponse, ResponseDto} from "../../../interface/response";
+import ResponseCode from "../../../common/enum/responseCode";
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -48,7 +53,7 @@ export default function IssueModal(props: IssueModalProps) {
     const [priorityClickState, setPriorityClickState] = useState<boolean>(false);
 
     // state: expire Date 상태 //date picker 와 상호작용
-    const [date, setDate] = useState<Date>(new Date("2024-12-04"));
+    const [expireDate, setExpireDate] = useState<Date | null>(null);
     // state : expire Date 항목 클릭 상태
     const [expireDateClickSate, setExpireDateClickState] = useState<boolean>(false);
 
@@ -57,11 +62,10 @@ export default function IssueModal(props: IssueModalProps) {
     // state : issueDetailView 상태
     const [issueDetailView, setIssueDetailView] = useState<string>("")
     // state : issueDetail 클릭 상태.
-    const [issueDetailClickState, setIssueDetailClickState] = useState<boolean>(true);
+    const [issueDetailClickState, setIssueDetailClickState] = useState<boolean>(false);
 
     // state: comment 입력 상태
     const [comment, setComment] = useState<string>("");
-
 
 
     // dangerouslySetInnerHTML 는 보안문제 때문에 신중하게 사용해야 한다.
@@ -82,7 +86,7 @@ export default function IssueModal(props: IssueModalProps) {
     }
     // eventHandler : 에디터 저장버튼 클릭 이벤트 헨들러
     const onDetailSaveBtnClickEventHandler = () => {
-        issueDetail === "<p><br></p>"? setIssueDetailView("") : setIssueDetailView(issueDetail)
+        issueDetail === "<p><br></p>" ? setIssueDetailView("") : setIssueDetailView(issueDetail)
         setIssueDetailClickState(prevState => false);
     }
 
@@ -96,12 +100,64 @@ export default function IssueModal(props: IssueModalProps) {
         setIssueDetailClickState(true);
     }
 
+    // function : 이슈 데이터 api호출에 대한 응답처리
+    const getPersonalIssueResponse = (responseBody: GetPersonalIssueByNumResponse | ResponseDto | null) => {
+        const {code, message} = responseBody as ResponseDto;
 
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetPersonalIssueByNumResponse;
+        const {
+            title,
+            stat,
+            priority,
+            inCharge,
+            email,
+            category,
+            content,
+            expireDate,
+            writeDate,
+
+        } = data.issue;
+
+        setTitle(title);
+        setStatus(stat);
+        setPriority(priority);
+        setInCharge(inCharge);
+        setCategory(category);
+        setIssueDetail(content);
+        setIssueDetailView(content); // 뷰영역또한 새팅
+        setExpireDate(expireDate? new Date(expireDate) : null);
+
+    }
+
+    // global state : 세팅된 전역상태
+    const {issueNum, setIssueNum} = issueStore();
+    const [cookies, setCookies] = useCookies();
+
+    useEffect(() => {
+        // 특정 issue에 해당하는 데이터를 불러오는 api호출
+        const accessToken = cookies.accessToken_Main;
+        if (!accessToken || !issueNum) return;
+
+        const fetchIssueData = async () => {
+            const responseBody = await getPersonalIssueByIssueNum(issueNum, accessToken);
+
+            getPersonalIssueResponse(responseBody);
+        }
+
+        fetchIssueData();
+
+
+    }, []);
     return (
         <div id={"issue-modal-wrapper"}>
             <div className={"issue-modal-left-container"}>
                 <div
-                    className={"issue-modal-title"}>{"title-title-title-title-titletitletitletitletitletitletitle"}</div>
+                    className={"issue-modal-title"}>{title}</div>
                 <div className={"issue-modal-content-container"}>
 
                     <div className={"issue-modal-content-box-style"}>
@@ -182,8 +238,8 @@ export default function IssueModal(props: IssueModalProps) {
                     <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
                                        compType={"expireTime"}
                                        hooks={{
-                                           value: date,
-                                           setValue: setDate,
+                                           value: expireDate,
+                                           setValue: setExpireDate,
                                            clickState: expireDateClickSate,
                                            setClickState: setExpireDateClickState
                                        }}/>
@@ -214,7 +270,7 @@ export default function IssueModal(props: IssueModalProps) {
                                             btnName: "저장",
                                             backgroundColor: "#0C66E4",
                                             hoverColor: "#0052CC",
-                                            hoverStyle : "background",
+                                            hoverStyle: "background",
                                             fontSize: 16,
                                             fontColor: "rgba(255,255,255,1)"
                                         }
@@ -233,7 +289,8 @@ export default function IssueModal(props: IssueModalProps) {
                             </div>
 
                         </div> : issueDetailView.length === 0 ?
-                            <div className={"issue-editor-view-none"} onClick={onDetailViewAreaClickEventHandler}>{"이슈에 대한 설명"}</div> :
+                            <div className={"issue-editor-view-none"}
+                                 onClick={onDetailViewAreaClickEventHandler}>{"이슈에 대한 설명"}</div> :
 
                             <div className={"issue-editor-view"}
                                  dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
@@ -256,12 +313,12 @@ export default function IssueModal(props: IssueModalProps) {
                                         btnName: "저장",
                                         backgroundColor: "#0C66E4",
                                         hoverColor: "#0052CC",
-                                        hoverStyle : "background",
+                                        hoverStyle: "background",
                                         fontSize: 16,
                                         fontColor: "rgba(255,255,255,1)"
                                     }
                                 }
-                                onClick={()=> console.log("reg comment ")}/>
+                                onClick={() => console.log("reg comment ")}/>
 
                         </div>
                     </div>

@@ -21,7 +21,6 @@ public class IssueObj {
     private Integer stat;
     private Integer category;
   //  private Boolean isAssigned;
-    private Boolean isDeleted;
     private String ref;
     private String issueSequence;
 

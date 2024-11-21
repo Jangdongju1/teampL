@@ -6,6 +6,7 @@ import LoginUserResponse from "./user/loginUserResponse";
 import SignInResponse from "./auth/signInResponse";
 import GetPersonalPrjListResponse from "./project/personal/getPersonalPrjListResponse";
 import PatchIssueTitleResponse from "./issue/personal/patchIssueTitleResponse";
+import GetPersonalIssueByNumResponse from "./issue/personal/getPersonalIssueByNumResponse";
 
 export type {
     AuthCodeResponse,
@@ -15,5 +16,6 @@ export type {
     LoginUserResponse,
     SignInResponse,
     GetPersonalPrjListResponse,
-    PatchIssueTitleResponse
+    PatchIssueTitleResponse,
+    GetPersonalIssueByNumResponse
 }

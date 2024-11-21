@@ -122,11 +122,14 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                  onClick={onClickEventHandler}>
 
 
-                {compType === "expireTime" && value instanceof Date ? <CommonDatePicker
-                    date={value}
+                {compType === "expireTime" ?
+                    <CommonDatePicker
+                    date={value instanceof Date? value : null}
                     setDate={setValue as React.Dispatch<React.SetStateAction<Date>>}
                     clickState={clickState}
-                    setClickSate={setClickState}/> : null}
+                    setClickSate={setClickState}/> :
+
+                    null}
 
                 <div
                     className={`issue-modal-btn-style-${getBtnFontColor() == "priority" ? "status" : getBtnFontColor()}`}>

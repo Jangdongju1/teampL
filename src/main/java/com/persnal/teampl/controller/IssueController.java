@@ -4,7 +4,8 @@ import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
 import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueResponse;
+import com.persnal.teampl.dto.response.issue.GetPersonalIssueByNumResponse;
+import com.persnal.teampl.dto.response.issue.GetPersonalIssueListResponse;
 import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
 import com.persnal.teampl.service.IssueService;
 import lombok.RequiredArgsConstructor;
@@ -27,27 +28,37 @@ public class IssueController {
     }
 
     @GetMapping("/issue-list/{projectNum}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueList(
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(
             @AuthenticationPrincipal String email,
             @PathVariable("projectNum") int projectNum) {
 
         return issueService.getPersonalIssueList(email, projectNum);
     }
 
-    @GetMapping("/issue-list/{projectNum}/{status}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueListByStatus(
+    @GetMapping("/{issueNum}")
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(
             @AuthenticationPrincipal String email,
-            @PathVariable("projectNum") int projectNum,
-            @PathVariable("status") int status) {
+            @PathVariable("issueNum") int issueNum) {
 
-
-        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
+        return issueService.getPersonalIssue(email,issueNum);
     }
+
+
+//    @GetMapping("/issue-list/{projectNum}/{status}")
+//    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueListByStatus(
+//            @AuthenticationPrincipal String email,
+//            @PathVariable("projectNum") int projectNum,
+//            @PathVariable("status") int status) {
+//
+//
+//        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
+//    }
+
 
     @PatchMapping("/revision/issue-title")
     public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchTitle(
             @AuthenticationPrincipal String email,
-            @RequestBody PatchIssueTitleRequest req){
+            @RequestBody PatchIssueTitleRequest req) {
 
         return issueService.patchIssueTitle(email, req);
     }
