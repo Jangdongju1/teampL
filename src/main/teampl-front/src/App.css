@@ -131,6 +131,10 @@
 .incharge-icon{
     background-image: url("asset/inCharge_icon.png");
 }
+.close-icon{
+    background-image: url("asset/close_icon.png");
+}
+
 .divider{
     height: 0;
     border: 1px solid rgba(0,0,0,0.3);

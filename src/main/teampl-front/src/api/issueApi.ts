@@ -1,16 +1,21 @@
 import axios from "axios";
 import {
-    CREATE_PERSONAL_ISSUE_URL, GET_PERSONAL_ISSUE_BY_NUMBER_URL,
+    CREATE_PERSONAL_ISSUE_URL,
+    GET_PERSONAL_ISSUE_BY_NUMBER_URL,
     GET_PERSONAL_ISSUE_BY_STATUS_URL,
-    GET_PERSONAL_ISSUE_LIST_URL,
+    GET_PERSONAL_ISSUE_LIST_URL, PATCH_ISSUE_PRIORITY_URL,
     PATCH_ISSUE_TITLE_URL
 } from "../common/apiEndPoint";
-import CreateIssueResponse from "../interface/response/issue/personal/createIssueResponse";
-import {GetPersonalIssueByNumResponse, PatchIssueTitleResponse, ResponseDto} from "../interface/response";
-import CreateIssueRequest from "../interface/request/issue/personal/createIssueRequest";
-import GetPersonalIssueListResponse from "../interface/response/issue/personal/getPersonalIssueListResponse";
-import {PatchIssueTitleRequest} from "../interface/request";
-import {clearConfig} from "dompurify";
+import {
+    GetPersonalIssueByNumResponse,
+    PatchIssueTitleResponse,
+    ResponseDto,
+    PatchIssuePriorityResponse,
+    GetPersonalIssueListResponse,
+    CreateIssueResponse
+} from "../interface/response";
+import {PatchIssueTitleRequest, PatchPriorityRequest, CreateIssueRequest} from "../interface/request";
+
 
 const DOMAIN = "http://localhost:4000";
 const apiEndPoint = (domain: string, indicator: string) => `${domain}${indicator}`;
@@ -63,20 +68,20 @@ export const getPersonalIssueListRequest = async (projectNum: string, accessToke
 }
 
 //특정 issueNum에 대한 이슈 데이터가져오기
-export const getPersonalIssueByIssueNum = async (issueNum:number , accessToken:string)=>{
+export const getPersonalIssueByIssueNum = async (issueNum: number, accessToken: string) => {
     try {
         const result =
-            await axios.get(apiEndPoint(DOMAIN,GET_PERSONAL_ISSUE_BY_NUMBER_URL(issueNum)), Authorization(accessToken));
+            await axios.get(apiEndPoint(DOMAIN, GET_PERSONAL_ISSUE_BY_NUMBER_URL(issueNum)), Authorization(accessToken));
 
-        const responseBody : GetPersonalIssueByNumResponse = result.data;
+        const responseBody: GetPersonalIssueByNumResponse = result.data;
         return responseBody;
 
-    }catch (error){
-        if (axios.isAxiosError(error)){
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
             if (!error.response) return null;
-            const responseBody : ResponseDto  = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else{
+        } else {
             console.log("unexpected Error", error);
             return null;
         }
@@ -84,24 +89,25 @@ export const getPersonalIssueByIssueNum = async (issueNum:number , accessToken:s
 }
 
 // state 별 이슈 리스트 가져오기
-// export const getPersonalIssueByStatus = async (projectNum: string, status: number, accessToken: string) => {
-//     try {
-//         const result =
-//             await axios.get(apiEndPoint(DOMAIN, GET_PERSONAL_ISSUE_BY_STATUS_URL(projectNum, status)), Authorization(accessToken));
-//
-//         const responseBody: GetPersonalIssueListResponse = result.data;
-//         return responseBody;
-//     } catch (error) {
-//         if (axios.isAxiosError(error)) {
-//             if (!error.response) return null;
-//             const responseBody: ResponseDto = error.response.data;
-//             return responseBody;
-//         } else {
-//             console.log("unexpected Error", error);
-//             return null;
-//         }
-//     }
-// }
+export const getPersonalIssueByStatus = async (projectNum: string, status: number, accessToken: string) => {
+    try {
+        const result =
+            await axios.get(apiEndPoint(DOMAIN, GET_PERSONAL_ISSUE_BY_STATUS_URL(projectNum, status)), Authorization(accessToken));
+
+        const responseBody: GetPersonalIssueListResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.log("unexpected Error", error);
+            return null;
+        }
+    }
+}
+
 // 간단한 이슈 제목 수정요청
 export const patchIssueTitleRequest = async (requestBody: PatchIssueTitleRequest, accessToken: string) => {
     try {
@@ -110,14 +116,36 @@ export const patchIssueTitleRequest = async (requestBody: PatchIssueTitleRequest
         const responseBody: PatchIssueTitleResponse = result.data;
         return responseBody;
     } catch (error) {
-        if (axios.isAxiosError(error)){
+        if (axios.isAxiosError(error)) {
             if (!error.response) return null;
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
+        } else {
             console.log("unexpected Error", error);
             return null;
         }
 
+    }
+}
+
+// 이슈 priority 수정 요청
+
+export const patchPriorityRequest = async (requestBody: PatchPriorityRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.patch(apiEndPoint(DOMAIN, PATCH_ISSUE_PRIORITY_URL()), requestBody, Authorization(accessToken));
+
+        const responseBody: PatchIssuePriorityResponse = result.data;
+
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.log("unexpected Error", error);
+            return null;
+        }
     }
 }

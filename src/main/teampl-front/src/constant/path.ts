@@ -7,3 +7,4 @@ export const PERSONAL_PAGE_PATH = (email: string) => `${email}`;
 export const PERSONAL_PROJECT_HOME_PATH = (email: string) => `${email}/personal-project`;
 export const PERSONAL_PROJECT_BOARD_PATH = (email:string,projectNum: string) => `${email}/personal-project/${projectNum}`;
 
+

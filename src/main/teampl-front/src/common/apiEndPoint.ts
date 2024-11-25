@@ -11,6 +11,7 @@ export const GET_PERSONAL_ISSUE_LIST_URL = (projectNum: string) => `/api/v1/issu
 export const GET_PERSONAL_ISSUE_BY_STATUS_URL =
     (projectNum:string,status:number)=>`/api/v1/issue/issue-list/${projectNum}/${status}`;  // 사용안함
 export const GET_PERSONAL_ISSUE_BY_NUMBER_URL =(issueNum:number) => `/api/v1/issue/${issueNum}`;
-export const PATCH_ISSUE_TITLE_URL = ()=>"/api/v1/issue/revision/issue-title";
+export const PATCH_ISSUE_TITLE_URL = ()=>"/api/v1/issue/modification/issue-title";
+export const PATCH_ISSUE_PRIORITY_URL =()=>"/api/v1/issue/modification/issue-priority";
 
 

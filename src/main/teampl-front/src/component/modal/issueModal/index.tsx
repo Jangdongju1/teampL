@@ -9,11 +9,12 @@ import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
 import CommentComp from "./commentComp";
 import Pagination from "../../pagination";
-import {issueStore} from "../../../store";
+import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
-import {getPersonalIssueByIssueNum} from "../../../api/issueApi";
-import {GetPersonalIssueByNumResponse, ResponseDto} from "../../../interface/response";
+import {getPersonalIssueByIssueNum, patchIssueTitleRequest} from "../../../api/issueApi";
+import {GetPersonalIssueByNumResponse, PatchIssueTitleResponse, ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
+import {PatchIssueTitleRequest} from "../../../interface/request";
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -22,10 +23,20 @@ type IssueModalProps = {
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
     const {isTeamModal} = props
+
+    //state: 프로젝트 번호 상태
+    const [projectNum ,setProjectNum] = useState<number | undefined>(undefined);
+    // global state : 세팅된 전역상태
+    const {issueNum, setIssueNum} = issueStore();
+    // 쿠키 상태
+    const [cookies, setCookies] = useCookies();
+
     // state:  제목 변경상태
     const [isChange, setIsChange] = useState<boolean>(false);
     // state:  제목 상태
     const [title, setTitle] = useState<string>("");
+    // state : 제목 view 상태
+    const [titleView, setTitleView] = useState<string>("")
 
     // state : 담당자 상태
     const [inCharge, setInCharge] = useState<string>("jdj881204@naver.com");
@@ -43,12 +54,12 @@ export default function IssueModal(props: IssueModalProps) {
     const [categoryBtnClickState, setCategoryBtnClickState] = useState<boolean>(false);
 
     // state : issueStatus 상태
-    const [status, setStatus] = useState<number>(IssueStatus.DONE);
+    const [status, setStatus] = useState<number>(IssueStatus.NOT_START);
     // state : status 버튼 클릭상태
     const [statusBtnClickState, setStateBtnClickState] = useState<boolean>(false);
 
     // state : priority 상태
-    const [priority, setPriority] = useState<number>(IssuePriority.URGENT);
+    const [priority, setPriority] = useState<number>(IssuePriority.NORMAL);
     // state : priority 클릭상태
     const [priorityClickState, setPriorityClickState] = useState<boolean>(false);
 
@@ -66,21 +77,56 @@ export default function IssueModal(props: IssueModalProps) {
 
     // state: comment 입력 상태
     const [comment, setComment] = useState<string>("");
+    // global state: 모달 상태
+    const {setIsModalOpen} = modalStore();
 
+    // accessToken
+    const accessToken = cookies.accessToken_Main;
 
     // dangerouslySetInnerHTML 는 보안문제 때문에 신중하게 사용해야 한다.
     // 사용자가 임의로 악성 스크립트를 삽입할 수 있기 때문이다.
     // DOMPurify와 같은 라이브러리로  입력값에 대한 보안검사를 할 수 있다.
     const protectedDetailViewValue = DOMPurify.sanitize(issueDetailView);
 
+
+    // function : title 변경 api 결과처리함수
+    const patchTitleResponse = (responseBody : PatchIssueTitleResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+        const {code,message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+    }
+
+    //eventHandler: 모달 닫기버튼 클릭 이벤트 헨들러
+    const onIssueModalCloseBtnClickEventHandler = ()=>{
+        setIsModalOpen(false);
+    }
+
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
     const onTitleClickEventHandler = () => {
         setIsChange(true);
     }
+
+
     //eventHandler: 인풋 전달용 keydown 이벤트 헨들러
-    const onTitleKeyDownEventHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    const onTitleKeyDownEventHandler = async (e: KeyboardEvent<HTMLInputElement>) => {
         const key = e.key;
         if (key === "Enter") {
+            if (!accessToken || !projectNum || !issueNum) return;
+            const requestBody:PatchIssueTitleRequest = {title, issueNum, projectNum};
+
+            const responseBody = await patchIssueTitleRequest(requestBody, accessToken);
+
+            patchTitleResponse(responseBody);
+
+
+            setTitleView(title);
+            setIsChange(false);
+        }else if (key === "Escape"){
             setIsChange(false);
         }
     }
@@ -111,6 +157,7 @@ export default function IssueModal(props: IssueModalProps) {
 
         const {data} = responseBody as GetPersonalIssueByNumResponse;
         const {
+            projectNum,
             title,
             stat,
             priority,
@@ -123,24 +170,23 @@ export default function IssueModal(props: IssueModalProps) {
 
         } = data.issue;
 
+        setProjectNum(projectNum);
         setTitle(title);
+        setTitleView(title);
         setStatus(stat);
         setPriority(priority);
         setInCharge(inCharge);
         setCategory(category);
         setIssueDetail(content);
-        setIssueDetailView(content); // 뷰영역또한 새팅
+        setIssueDetailView(content); // 뷰영역 또한 세팅
         setExpireDate(expireDate? new Date(expireDate) : null);
 
     }
 
-    // global state : 세팅된 전역상태
-    const {issueNum, setIssueNum} = issueStore();
-    const [cookies, setCookies] = useCookies();
+
 
     useEffect(() => {
         // 특정 issue에 해당하는 데이터를 불러오는 api호출
-        const accessToken = cookies.accessToken_Main;
         if (!accessToken || !issueNum) return;
 
         const fetchIssueData = async () => {
@@ -151,13 +197,12 @@ export default function IssueModal(props: IssueModalProps) {
 
         fetchIssueData();
 
-
-    }, []);
+    }, [issueNum]);
     return (
         <div id={"issue-modal-wrapper"}>
             <div className={"issue-modal-left-container"}>
                 <div
-                    className={"issue-modal-title"}>{title}</div>
+                    className={"issue-modal-title"}>{titleView}</div>
                 <div className={"issue-modal-content-container"}>
 
                     <div className={"issue-modal-content-box-style"}>
@@ -169,7 +214,7 @@ export default function IssueModal(props: IssueModalProps) {
                         <div className={"issue-modal-label-content-style"} style={{}}>
                             {!isChange ?
                                 <div className={"issue-modal-content-show-style"}
-                                     onClick={onTitleClickEventHandler}>{title}</div> :
+                                     onClick={onTitleClickEventHandler}>{titleView}</div> :
                                 <CommonInputComponent value={title}
                                                       setValue={setTitle}
                                                       onKeyDown={onTitleKeyDownEventHandler}
@@ -251,6 +296,9 @@ export default function IssueModal(props: IssueModalProps) {
             </div>
 
             <div className={"issue-modal-right-container"}>
+                <div className={"issue-modal-close-box"}>
+                    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>
+                </div>
                 <div className={"issue-modal-right-edit-box"}>
                     <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
 

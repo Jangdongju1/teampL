@@ -1,14 +1,18 @@
 import "./style.css";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Issue} from "../../interface/types";
 import {useCookies} from "react-cookie";
-import {createIssueRequest} from "../../api/issueApi";
+import {createIssueRequest, getPersonalIssueByStatus} from "../../api/issueApi";
 import CreateIssueResponse from "../../interface/response/issue/personal/createIssueResponse";
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {useParams} from "react-router-dom";
 import CreateIssueRequest from "../../interface/request/issue/personal/createIssueRequest";
 import IssueCard from "../issueCard";
+import GetPersonalIssueListResponse from "../../interface/response/issue/personal/getPersonalIssueListResponse";
+import {unmountComponentAtNode} from "react-dom";
+import {Simulate} from "react-dom/test-utils";
+import submit = Simulate.submit;
 
 // 개시물 데이터 받아야함.
 type KanbanBoardPanelProps = {
@@ -48,7 +52,6 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
         let currentElement: Issue | undefined = issues.reduce((previousValue, currentValue) => {
             return currentValue.issueNum < previousValue.issueNum ? currentValue : previousValue;
         }, issues[0]);
-        //console.log(currentElement)
 
         // currentElement가 undefined일 경우 처리
         if (!currentElement) return [];
@@ -71,15 +74,35 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
     }
 
 
+    // function: 이슈리스트 갱신함수
+    const personalIssueListResponse = (responseBody:GetPersonalIssueListResponse | ResponseDto | null)=>{
+        if (!responseBody) return ;
+
+        const {code, message} = responseBody as ResponseDto;
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetPersonalIssueListResponse;
+        setArray(data.list);
+    }
+
     //function: 이슈 추가요청에 대한 응답처리함수.
-    const createIssueResponse = (responseBody: CreateIssueResponse | ResponseDto | null) => {
+    const createIssueResponse = async (responseBody: CreateIssueResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
         if (code !== ResponseCode.SUCCESS) alert(message);
 
         const {data} = responseBody as CreateIssueResponse;
-        console.log(data)
         setSequence(data.sequence);
+
+        if (!projectNum) return;
+
+        const issueList = await getPersonalIssueByStatus(projectNum, stat, cookies.accessToken_Main);
+
+        personalIssueListResponse(issueList);
+
     }
 
 
@@ -93,7 +116,7 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
         const responseBody = await createIssueRequest(requestBody, token);
 
         // 응답처리
-        createIssueResponse(responseBody);
+        await createIssueResponse(responseBody);
 
     }
 
@@ -111,6 +134,9 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
         return boardTitleColor[boardName];
     }
 
+    useEffect(() => {
+        // 검색시  재 랜더링
+    }, [itemArray]);
     return (
         <div id={"kanban-board-panel-wrapper"}>
             <div className={"kanban-board-panel-name-box"} style={{

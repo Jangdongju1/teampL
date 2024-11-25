@@ -19,7 +19,7 @@ type KanbanType = {
     isTeamKanban: boolean
 }
 
-export default function Index(props: KanbanType) {
+export default function KanbanBoard(props: KanbanType) {
     // pros:칸반타입 >> 1)개인프로젝트 칸반보드 2) 팀프로젝트 칸반보드
     const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
@@ -36,8 +36,6 @@ export default function Index(props: KanbanType) {
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
 
-    //* 전체 IssueCard상태
-    const [totalIssues, setTotalIssues] = useState<Issue[]>([]);
     // 4개의 칸반보드 상태.
     //* state : 칸반보드(Not Start) 상태
     const [notStartState, setNotStartState] = useState<Issue[]>([]);
@@ -48,7 +46,8 @@ export default function Index(props: KanbanType) {
     //* state : 칸반보드(Done)상태
     const [doneState, setDoneState] = useState<Issue[]>([]);
 
-
+    // accessToken
+    const accessToken = cookies.accessToken_Main;
 
     //* function : 상태별 필터링
     const filterIssue = (array: Issue[], stat: number): Issue[] => {
@@ -56,6 +55,7 @@ export default function Index(props: KanbanType) {
     }
     //* function : 상태별 이슈 세팅
     const setIssueArray = (array: Issue[]) => {
+
         const states: KanbanState[] = [
             {status: IssueStatus.NOT_START, setState: setNotStartState},
             {status: IssueStatus.ON_WORKING, setState: setOnWorkingState},
@@ -80,7 +80,7 @@ export default function Index(props: KanbanType) {
         }
 
         const {data} = responseBody as GetPersonalIssueListResponse;
-        setTotalIssues(data.list)
+
         setIssueArray(data.list);
     }
 
@@ -98,25 +98,31 @@ export default function Index(props: KanbanType) {
         setProjectInfo(data.projectInfo);
     }
 
-    //* useEffect : 마운트시 실행할 함수 1)프로젝트 관련 정보 api 호출
-    useEffect(() => {
-        const token = cookies.accessToken_Main;
-        if (!token || projectNum === undefined) return;
 
+    useEffect(() => {
         const fetchProjectInfo = async () => {
-            const responseBody = await getPersonalPrjInfoRequest(projectNum, token);
+            if (!accessToken || projectNum === undefined) return;
+            const responseBody = await getPersonalPrjInfoRequest(projectNum, accessToken);
 
             getPersonalPrjInfoResponse(responseBody);
+
         }
+        fetchProjectInfo();
+    }, []);
+
+    useEffect(() => {
+
+        if (!accessToken || projectNum === undefined) return;
 
         const fetchIssueList = async () => {
-            const responseBody = await getPersonalIssueListRequest(projectNum, token);
+            const responseBody = await getPersonalIssueListRequest(projectNum, accessToken);
             getPersonalIssueResponse(responseBody);
         }
 
-        fetchProjectInfo();
         fetchIssueList();
-    }, [totalIssues]);
+
+    }, []);
+
 
     return (
         <div id={"kanban-board-wrapper"}>

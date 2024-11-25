@@ -98,7 +98,9 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
 
     const getBtnFontColor = (): string => {
         if (compType === "priority" && value === 0) return "default";
-        if (compType === "status" && value === 0) return "default"
+        if (compType === "status" && value ===
+            0) return "default"
+
 
         return compType;
     }
