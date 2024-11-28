@@ -5,12 +5,14 @@ import SignUpResponse from "./auth/SignUpResponse";
 import LoginUserResponse from "./user/loginUserResponse";
 import SignInResponse from "./auth/signInResponse";
 import GetPersonalPrjListResponse from "./project/personal/getPersonalPrjListResponse";
-import PatchIssueTitleResponse from "./issue/personal/patchIssueTitleResponse";
-import GetPersonalIssueByNumResponse from "./issue/personal/getPersonalIssueByNumResponse";
-import PatchIssuePriorityResponse from "./issue/personal/patchIssuePriorityResponse";
-import GetPersonalIssueListResponse from "./issue/personal/getPersonalIssueListResponse";
-import CreateIssueResponse from "./issue/personal/createIssueResponse";
-
+import PatchIssueTitleResponse from "./issue/patchIssueTitleResponse";
+import GetPersonalIssueByNumResponse from "./issue/getPersonalIssueByNumResponse";
+import PatchIssuePriorityResponse from "./issue/patchIssuePriorityResponse";
+import GetPersonalIssueListResponse from "./issue/getPersonalIssueListResponse";
+import CreateIssueResponse from "./issue/createIssueResponse";
+import PatchIssueStatusResponse from "./issue/patchIssueStatusResponse";
+import PatchIssueCategoryResponse from "./issue/patchIssueCategoryResponse";
+import PatchIssueExpireDateResponse from "./issue/patchIssueExpireDateResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -22,6 +24,10 @@ export type {
     PatchIssueTitleResponse,
     GetPersonalIssueByNumResponse,
     PatchIssuePriorityResponse,
+    PatchIssueStatusResponse,
+    PatchIssueCategoryResponse,
     GetPersonalIssueListResponse,
-    CreateIssueResponse
+    PatchIssueExpireDateResponse,
+    CreateIssueResponse,
+
 }

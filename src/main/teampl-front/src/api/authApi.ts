@@ -1,7 +1,7 @@
 import AuthCodeRequest from "../interface/request/auth/authCodeRequest";
 import axios from "axios";
 import {AuthCodeConfirmResponse, AuthCodeResponse, ResponseDto, SignUpResponse} from "../interface/response";
-import {AUTH_CODE_CONFIRM_URL, EMAIL_AUTH_URL, LOGIN_USER_URL, SIGN_IN_URL, SIGN_UP_URL} from "../common/apiEndPoint";
+import {AUTH_CODE_CONFIRM_URL, EMAIL_AUTH_URL, LOGIN_USER_URL, SIGN_IN_URL, SIGN_UP_URL} from "../constant/indicator";
 import {AuthCodeConfirmRequest, SignInRequest, SignUpRequest} from "../interface/request";
 import SignInResponse from "../interface/response/auth/signInResponse";
 import LoginUserResponse from "../interface/response/user/loginUserResponse";

@@ -6,22 +6,12 @@ import "./style.css"
 
 type DatePickerProps = {
     date: Date | null,
-    setDate: React.Dispatch<React.SetStateAction<Date>>,
-    clickState : boolean
-    setClickSate: React.Dispatch<React.SetStateAction<boolean>>
+    clickState : boolean,
+    onChange : (date: Date | null) => void
 }
 export default function CommonDatePicker(props: DatePickerProps) {
-    const {date, setDate, clickState,setClickSate} = props;
+    const {date,  clickState,onChange} = props;
 
-    //eventHandler:날짜 선택시 변경이벤트 처리
-    const onDateChangeEventHandler = (date: Date | null) => {
-        if (!date) return;
-        setDate(date);
-        setClickSate(false);
-
-        /// 변경 api 요청 보내기
-
-    }
     const preventEventBubbling = (e: React.MouseEvent) => {
         e.stopPropagation();  // 부모 컴포넌트로 이벤트 전파를 막음
     }
@@ -32,7 +22,7 @@ export default function CommonDatePicker(props: DatePickerProps) {
         <div id={"date-picker-wrapper"} onClick={preventEventBubbling}>
             <DatePicker className={"date-picker-container"}
                         selected={date}
-                        onChange={onDateChangeEventHandler}
+                        onChange={onChange}
                         open={clickState}
                         popperClassName={date? "popper-offset" : ""}
                         dateFormat={"yyyy-MM-dd"}

@@ -11,7 +11,7 @@ import ResponseCode from "../../common/enum/responseCode";
 import {Issue, KanbanState, Project} from "../../interface/types";
 import {IssueStatus, ModalType} from "../../common";
 import {getPersonalIssueListRequest} from "../../api/issueApi";
-import GetPersonalIssueListResponse from "../../interface/response/issue/personal/getPersonalIssueListResponse";
+import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import IssueModal from "../../component/modal/issueModal";
 import {modalStore} from "../../store";
 

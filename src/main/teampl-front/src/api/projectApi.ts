@@ -4,7 +4,7 @@ import {
     CREATE_PERSONAL_PROJECT_URL,
     GET_PERSONAL_PROJECT_INFO_URL,
     GET_PERSONAL_PROJECT_LIST_URL
-} from "../common/apiEndPoint";
+} from "../constant/indicator";
 import CreateProjectResponse from "../interface/response/project/personal/createProjectResponse";
 import {GetPersonalPrjListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/personal/getPersonalPrjInfoResponse";

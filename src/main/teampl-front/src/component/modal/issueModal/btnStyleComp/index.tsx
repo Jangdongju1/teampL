@@ -17,7 +17,8 @@ type ModalCompBtnStyleProps<T> = {
         value: T,
         setValue: React.Dispatch<React.SetStateAction<T>>
     },
-    compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default",
+    onChange? : (date : Date | null) => void,
+    compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default"
     // styleType?: "status" | "category" | "participants" | "default", // 1) priority,2)category,3)participants,4)default
 
 }
@@ -27,7 +28,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
 
     const {labelName, btnName, labelIcon} = props;
     // 옵션타입
-    const {compType, hooks} = props;
+    const {compType, hooks, onChange} = props;
 
     const {value, setValue, setClickState, clickState} = hooks;
 
@@ -126,10 +127,9 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
 
                 {compType === "expireTime" ?
                     <CommonDatePicker
-                    date={value instanceof Date? value : null}
-                    setDate={setValue as React.Dispatch<React.SetStateAction<Date>>}
-                    clickState={clickState}
-                    setClickSate={setClickState}/> :
+                        date={value instanceof Date ? value : null}
+                        clickState={clickState}
+                        onChange={onChange? onChange : () =>{}}/> :
 
                     null}
 

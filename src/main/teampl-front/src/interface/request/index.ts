@@ -4,9 +4,12 @@ import SignUpRequest from "./auth/signUpRequest";
 import SignInRequest from "./auth/signInRequest";
 import CreateProjectListRequest from "./project/personal/createProjectListRequest";
 import GetPersonalPrjInfoRequest from "./project/personal/getPersonalPrjInfoRequest";
-import PatchIssueTitleRequest from "./issue/personal/patchIssueTitleRequest";
-import PatchPriorityRequest from "./issue/personal/patchPriorityRequest";
-import CreateIssueRequest from "./issue/personal/createIssueRequest";
+import PatchIssueTitleRequest from "./issue/patchIssueTitleRequest";
+import PatchPriorityRequest from "./issue/patchPriorityRequest";
+import CreateIssueRequest from "./issue/createIssueRequest";
+import PatchIssueStatusRequest from "./issue/patchIssueStatusRequest";
+import PatchIssueCategoryRequest from "./issue/patchIssueCategoryRequest";
+import PatchIssueExpireDateRequest from "./issue/patchIssueExpireDateRequest";
 
 export type {
     AuthCodeRequest,
@@ -17,6 +20,8 @@ export type {
     GetPersonalPrjInfoRequest,
     PatchIssueTitleRequest,
     PatchPriorityRequest,
-    CreateIssueRequest
-
+    CreateIssueRequest,
+    PatchIssueStatusRequest,
+    PatchIssueCategoryRequest,
+    PatchIssueExpireDateRequest
 }

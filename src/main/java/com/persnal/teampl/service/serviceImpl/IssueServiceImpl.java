@@ -1,14 +1,10 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
-import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
+import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueByNumResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueListResponse;
-import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
+import com.persnal.teampl.dto.response.issue.*;
 import com.persnal.teampl.entities.IssueEntity;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
@@ -43,7 +39,7 @@ public class IssueServiceImpl implements IssueService {
             ProjectEntity projectEntity = projectRepository.findByProjectNum(req.getProjectNum());
 
             if (!isExistUser) return CreateIssueResponse.notExistUser();
-            if (projectEntity == null) return ResponseDto.notExistProject();
+            if (projectEntity == null) return CreateIssueResponse.notExistProject();
 
             IssueEntity currentIssueEntity =
                     issueRepository.findTopByProjectEntityProjectNumOrderByIssueNumDesc(req.getProjectNum());
@@ -121,14 +117,15 @@ public class IssueServiceImpl implements IssueService {
     public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchIssueTitle(String Email, PatchIssueTitleRequest req) {
         try {
             boolean isExistUser = userRepository.existsById(Email);
-            boolean isExistProject = projectRepository.existsById(req.getProjectNum());
-            boolean isExistIssue = issueRepository.existsById(req.getIssueNum());
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
 
             if (!isExistUser) return PatchIssueTitleResponse.notExistUser();
             else if (!isExistProject) return PatchIssueTitleResponse.notExistProject();
-            else if (!isExistIssue) return PatchIssueTitleResponse.notExistIssue();
 
             IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+            if (issueEntity == null) return PatchIssueTitleResponse.notExistIssue();
+
 
             issueEntity.setTitle(req.getTitle());
 
@@ -139,6 +136,105 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return PatchIssueTitleResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssuePriorityResponse>> patchIssuePriority(String email, PatchIssuePriorityRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsById(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+
+            if (!isExistUser) return PatchIssuePriorityResponse.notExistUser();
+            else if (!isExistProject) return PatchIssuePriorityResponse.notExistProject();
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+            if (issueEntity == null) return PatchIssuePriorityResponse.notExistIssue();
+
+            issueEntity.setPriority(req.getPriority());
+
+            issueRepository.save(issueEntity);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssuePriorityResponse.success();
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchIssueStatus(String email, PatchIssueStatusRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+            if (!isExistUser) return PatchIssueStatusResponse.notExistUser();
+            else if (!isExistProject) return PatchIssueStatusResponse.notExistProject();
+
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (issueEntity == null) return PatchIssueStatusResponse.notExistIssue();
+
+            issueEntity.setStat(req.getStat());
+
+            issueRepository.save(issueEntity);
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueStatusResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueCategoryResponse>> patchIssueCategory(String email, PatchIssueCategoryRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+            if (!isExistUser) return PatchIssueCategoryResponse.notExistUser();
+            else if (!isExistProject) return PatchIssueCategoryResponse.notExistProject();
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (issueEntity == null) return PatchIssueCategoryResponse.notExistIssue();
+
+            issueEntity.setCategory(req.getCategory());
+
+            issueRepository.save(issueEntity);
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueCategoryResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueExpireDateResponse>> patchIssueExpireDate(String email, PatchIssueExpireDateRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+            if (!isExistUser) return PatchIssueExpireDateResponse.notExistUser();
+            else if (!isExistProject) return PatchIssueExpireDateResponse.notExistProject();
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (issueEntity == null) return PatchIssueExpireDateResponse.notExistIssue();
+
+            issueEntity.setExpireDate(req.getExpireDate());
+            issueRepository.save(issueEntity);
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return null;
     }
 
     @Override
@@ -160,4 +256,5 @@ public class IssueServiceImpl implements IssueService {
         }
         return GetPersonalIssueByNumResponse.success(issueEntity);
     }
+
 }

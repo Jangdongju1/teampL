@@ -1,12 +1,8 @@
 package com.persnal.teampl.controller;
 
-import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
-import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
+import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
-import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueByNumResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueListResponse;
-import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
+import com.persnal.teampl.dto.response.issue.*;
 import com.persnal.teampl.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,23 +40,52 @@ public class IssueController {
     }
 
 
-//    @GetMapping("/issue-list/{projectNum}/{status}")
-//    public ResponseEntity<? super ApiResponse<GetPersonalIssueResponse>> getPersonalIssueListByStatus(
-//            @AuthenticationPrincipal String email,
-//            @PathVariable("projectNum") int projectNum,
-//            @PathVariable("status") int status) {
-//
-//
-//        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
-//    }
+    @GetMapping("/issue-list/{projectNum}/{status}")
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(
+            @AuthenticationPrincipal String email,
+            @PathVariable("projectNum") int projectNum,
+            @PathVariable("status") int status) {
+
+        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
+    }
 
 
-    @PatchMapping("/revision/issue-title")
+    @PatchMapping("/modification/issue-title")
     public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchTitle(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueTitleRequest req) {
 
         return issueService.patchIssueTitle(email, req);
+    }
+    @PatchMapping("/modification/issue-priority")
+    public ResponseEntity<? super ApiResponse<PatchIssuePriorityResponse>> patchPriority(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssuePriorityRequest req){
+
+
+        return issueService.patchIssuePriority(email, req);
+    }
+
+    @PatchMapping("/modification/issue-status")
+    public ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchStatus(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssueStatusRequest req){
+        return issueService.patchIssueStatus(email,req);
+    }
+
+    @PatchMapping("/modification/issue-category")
+    public ResponseEntity<? super ApiResponse<PatchIssueCategoryResponse>> patchCategory(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssueCategoryRequest req){
+        return issueService.patchIssueCategory(email, req);
+    }
+
+    @PatchMapping("/modification/issue-expire-date")
+    public ResponseEntity<? super ApiResponse<PatchIssueExpireDateResponse>> patchExpireDate(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssueExpireDateRequest req){
+
+        return issueService.patchIssueExpireDate(email,req);
     }
 
 }

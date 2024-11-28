@@ -11,10 +11,16 @@ import CommentComp from "./commentComp";
 import Pagination from "../../pagination";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
-import {getPersonalIssueByIssueNum, patchIssueTitleRequest} from "../../../api/issueApi";
-import {GetPersonalIssueByNumResponse, PatchIssueTitleResponse, ResponseDto} from "../../../interface/response";
+import {getPersonalIssueByIssueNum, patchExpireDateRequest, patchIssueTitleRequest} from "../../../api/issueApi";
+import {
+    GetPersonalIssueByNumResponse,
+    PatchIssueExpireDateResponse,
+    PatchIssueTitleResponse,
+    ResponseDto
+} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
-import {PatchIssueTitleRequest} from "../../../interface/request";
+import {PatchIssueExpireDateRequest, PatchIssueTitleRequest} from "../../../interface/request";
+import {getFormattedDateToString} from "../../../util";
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -25,7 +31,7 @@ export default function IssueModal(props: IssueModalProps) {
     const {isTeamModal} = props
 
     //state: 프로젝트 번호 상태
-    const [projectNum ,setProjectNum] = useState<number | undefined>(undefined);
+    const [projectNum, setProjectNum] = useState<number | undefined>(undefined);
     // global state : 세팅된 전역상태
     const {issueNum, setIssueNum} = issueStore();
     // 쿠키 상태
@@ -90,11 +96,11 @@ export default function IssueModal(props: IssueModalProps) {
 
 
     // function : title 변경 api 결과처리함수
-    const patchTitleResponse = (responseBody : PatchIssueTitleResponse | ResponseDto | null)=>{
+    const patchTitleResponse = (responseBody: PatchIssueTitleResponse | ResponseDto | null) => {
         if (!responseBody) return;
-        const {code,message} = responseBody as ResponseDto;
+        const {code, message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -102,7 +108,7 @@ export default function IssueModal(props: IssueModalProps) {
     }
 
     //eventHandler: 모달 닫기버튼 클릭 이벤트 헨들러
-    const onIssueModalCloseBtnClickEventHandler = ()=>{
+    const onIssueModalCloseBtnClickEventHandler = () => {
         setIsModalOpen(false);
     }
 
@@ -117,7 +123,7 @@ export default function IssueModal(props: IssueModalProps) {
         const key = e.key;
         if (key === "Enter") {
             if (!accessToken || !projectNum || !issueNum) return;
-            const requestBody:PatchIssueTitleRequest = {title, issueNum, projectNum};
+            const requestBody: PatchIssueTitleRequest = {title, issueNum, projectNum};
 
             const responseBody = await patchIssueTitleRequest(requestBody, accessToken);
 
@@ -126,7 +132,7 @@ export default function IssueModal(props: IssueModalProps) {
 
             setTitleView(title);
             setIsChange(false);
-        }else if (key === "Escape"){
+        } else if (key === "Escape") {
             setIsChange(false);
         }
     }
@@ -141,11 +147,40 @@ export default function IssueModal(props: IssueModalProps) {
         setIssueDetail(issueDetailView);
         setIssueDetailClickState(false);
     }
-    // eventHandler : 에이터 뷰 영역 클릭 이벤트 헨들러
+    // eventHandler : 에디터 뷰 영역 클릭 이벤트 헨들러
     const onDetailViewAreaClickEventHandler = () => {
         setIssueDetailClickState(true);
     }
 
+    //* eventHandler : 날짜 선택시 실행할 이벤트 핸들러 DatePicker 전달용
+    const onDateChangeEventHandler = async (date : Date | null) => {
+        if (!accessToken)  {
+            alert("accessToken is Expired!!");
+            return;
+        }
+        if (!projectNum || !issueNum) return;
+
+        const requestBody : PatchIssueExpireDateRequest =
+            {projectNum, issueNum, expireDate : date? getFormattedDateToString(date) : ""};
+
+       const responseBody  = await patchExpireDateRequest(requestBody, accessToken);
+
+       patchExpireDateResponse(responseBody);
+
+
+        date? setExpireDate(date) : setExpireDate(null);
+        setExpireDateClickState(false);
+    }
+    // function : 이슈 마감기한 수정 호출에 대한 응답처리함수.
+    const patchExpireDateResponse = (responseBody:PatchIssueExpireDateResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+        const {code,message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+    }
     // function : 이슈 데이터 api호출에 대한 응답처리
     const getPersonalIssueResponse = (responseBody: GetPersonalIssueByNumResponse | ResponseDto | null) => {
         const {code, message} = responseBody as ResponseDto;
@@ -179,10 +214,9 @@ export default function IssueModal(props: IssueModalProps) {
         setCategory(category);
         setIssueDetail(content);
         setIssueDetailView(content); // 뷰영역 또한 세팅
-        setExpireDate(expireDate? new Date(expireDate) : null);
+        setExpireDate(expireDate ? new Date(expireDate) : null);
 
     }
-
 
 
     useEffect(() => {
@@ -282,6 +316,7 @@ export default function IssueModal(props: IssueModalProps) {
 
                     <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
                                        compType={"expireTime"}
+                                       onChange={onDateChangeEventHandler}
                                        hooks={{
                                            value: expireDate,
                                            setValue: setExpireDate,

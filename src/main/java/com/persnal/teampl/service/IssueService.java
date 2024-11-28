@@ -1,12 +1,8 @@
 package com.persnal.teampl.service;
 
-import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
-import com.persnal.teampl.dto.request.issue.PatchIssueTitleRequest;
+import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
-import com.persnal.teampl.dto.response.issue.CreateIssueResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueByNumResponse;
-import com.persnal.teampl.dto.response.issue.GetPersonalIssueListResponse;
-import com.persnal.teampl.dto.response.issue.PatchIssueTitleResponse;
+import com.persnal.teampl.dto.response.issue.*;
 import org.springframework.http.ResponseEntity;
 
 public interface IssueService {
@@ -19,4 +15,13 @@ public interface IssueService {
     ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchIssueTitle(String Email, PatchIssueTitleRequest req);
 
     ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(String email, int issueNum);
+
+    ResponseEntity<? super ApiResponse<PatchIssuePriorityResponse>> patchIssuePriority(String email, PatchIssuePriorityRequest req);
+
+    ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchIssueStatus(String email,  PatchIssueStatusRequest req);
+
+    ResponseEntity<? super ApiResponse<PatchIssueCategoryResponse>> patchIssueCategory(String email, PatchIssueCategoryRequest req);
+
+    ResponseEntity<? super ApiResponse<PatchIssueExpireDateResponse>> patchIssueExpireDate(String email , PatchIssueExpireDateRequest req);
+
 }

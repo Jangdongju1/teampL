@@ -9,28 +9,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class PatchIssuePriorityResponse {
+public class PatchIssueExpireDateResponse {
 
 
-    public static ResponseEntity<ApiResponse<PatchIssuePriorityResponse>> success() {
-        ApiResponse<PatchIssuePriorityResponse> responseBody = new ApiResponse<>(
+    public ResponseEntity<ApiResponse<PatchIssueExpireDateResponse>> success() {
+        ApiResponse<PatchIssueExpireDateResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                null);
-
+                null
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> notExistUser() {
+    public static ResponseEntity<ResponseDto> notExistUser(){
         return ResponseDto.notExistedUser();
     }
-
-    public static ResponseEntity<ResponseDto> notExistProject() {
+    public static ResponseEntity<ResponseDto> notExistProject(){
         return ResponseDto.notExistProject();
     }
-
-    public static ResponseEntity<ResponseDto> notExistIssue() {
+    public static ResponseEntity<ResponseDto> notExistIssue(){
         return ResponseDto.notExistIssue();
     }
 }

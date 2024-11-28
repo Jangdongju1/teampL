@@ -3,13 +3,20 @@ import {IssueCategory, IssuePriority, IssueStatus} from "../../../../../common";
 import {IssueCategories, IssuePriorities, IssueStats} from "../../../../../constant/issueConstants";
 import React, {useEffect, useRef} from "react";
 import {useCookies} from "react-cookie";
-import PatchIssuePriorityResponse from "../../../../../interface/response/issue/personal/patchIssuePriorityResponse";
+import PatchIssuePriorityResponse from "../../../../../interface/response/issue/patchIssuePriorityResponse";
 import {ResponseDto} from "../../../../../interface/response";
 import responseCode from "../../../../../common/enum/responseCode";
 import {useParams} from "react-router-dom";
 import {issueStore} from "../../../../../store";
-import {PatchPriorityRequest} from "../../../../../interface/request";
-import {patchPriorityRequest} from "../../../../../api/issueApi";
+import {
+    PatchIssueCategoryRequest,
+    PatchIssueStatusRequest,
+    PatchPriorityRequest
+} from "../../../../../interface/request";
+import {patchCategoryRequest, patchPriorityRequest, patchStatusRequest} from "../../../../../api/issueApi";
+import {PatchIssueStatusResponse,PatchIssueCategoryResponse} from "../../../../../interface/response";
+import ResponseCode from "../../../../../common/enum/responseCode";
+
 
 type BtnPopUpProps = {
     menu: IssueCategory[] | IssuePriority[] | IssueStatus[],
@@ -90,6 +97,30 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         return defaultVal;
     }
 
+    // function: 카테고리 변경에 대한 응답 처리 함수.
+    const patchCategoryResponse = (responseBody: PatchIssueCategoryResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+    }
+
+    // function: 상태 변경에 대한 응답 처리 함수.
+    const patchStatusResponse = (responseBody: PatchIssueStatusResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+    }
+
     // function: 우선 순위 수정에 대한 응답 처리 함수.
     const patchPriorityResponse = (responseBody: PatchIssuePriorityResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -120,7 +151,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
 
         //  type 별 api호출
         if (popupType === "priority") {
-
+            // 우선순위 변경시 api호출
             const requestBody: PatchPriorityRequest = {
                 projectNum: parseInt(projectNum, 10),
                 issueNum: issueNum,
@@ -130,6 +161,23 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             const responseBody = await patchPriorityRequest(requestBody, accessToken);
 
             patchPriorityResponse(responseBody);
+
+        } else if (popupType === "status") {
+            // 이슈 상태 변경시 api 호출
+            const requestBody: PatchIssueStatusRequest =
+                {projectNum: parseInt(projectNum, 10), issueNum, stat: value};
+            const responseBody = await patchStatusRequest(requestBody, accessToken);
+
+            patchStatusResponse(responseBody);
+
+        } else if (popupType === "category") {
+            // 카테고리 변경시 api 호출.
+            const requestBody: PatchIssueCategoryRequest =
+                {projectNum: parseInt(projectNum, 10), issueNum, category: value};
+
+            const responseBody = await patchCategoryRequest(requestBody, accessToken);
+
+            patchCategoryResponse(responseBody);
 
         }
         setPopUpClickState(false);
