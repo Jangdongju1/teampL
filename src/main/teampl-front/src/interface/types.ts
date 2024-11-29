@@ -25,7 +25,8 @@ export type Issue = {
     stat: number,
     category: number,
     ref : string,
-    issueSequence :string
+    issueSequence :string,
+    isFirstIssue:boolean
 }
 
 export type KanbanState = {

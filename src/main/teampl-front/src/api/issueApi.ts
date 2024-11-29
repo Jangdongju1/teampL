@@ -3,7 +3,12 @@ import {
     CREATE_PERSONAL_ISSUE,
     GET_PERSONAL_ISSUE_BY_NUMBER,
     GET_PERSONAL_ISSUE_BY_STATUS,
-    GET_PERSONAL_ISSUE_LIST, PATCH_CATEGORY, PATCH_EXPIRE_DATE, PATCH_ISSUE_PRIORITY, PATCH_ISSUE_STATUS,
+    GET_PERSONAL_ISSUE_LIST,
+    PATCH_ISSUE_CATEGORY,
+    PATCH_ISSUE_DETAIL,
+    PATCH_ISSUE_EXPIRE_DATE,
+    PATCH_ISSUE_PRIORITY,
+    PATCH_ISSUE_STATUS,
     PATCH_ISSUE_TITLE
 } from "../constant/indicator";
 import {
@@ -20,8 +25,9 @@ import {
     PatchIssueTitleRequest,
     PatchPriorityRequest,
     CreateIssueRequest,
-    PatchIssueStatusRequest, PatchIssueCategoryRequest, PatchIssueExpireDateRequest
+    PatchIssueStatusRequest, PatchIssueCategoryRequest, PatchIssueExpireDateRequest, PatchIssueDetailRequest
 } from "../interface/request";
+import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
 
 
 const DOMAIN = "http://localhost:4000";
@@ -182,7 +188,7 @@ export const patchStatusRequest = async (requestBody: PatchIssueStatusRequest, a
 export const patchCategoryRequest = async (requestBody: PatchIssueCategoryRequest, accessToken: string) => {
     try {
         const result =
-            await axios.patch(apiEndPoint(PATCH_CATEGORY()), requestBody, Authorization(accessToken));
+            await axios.patch(apiEndPoint(PATCH_ISSUE_CATEGORY()), requestBody, Authorization(accessToken));
 
         const responseBody: PatchIssueCategoryResponse = result.data;
         return responseBody;
@@ -202,7 +208,7 @@ export const patchCategoryRequest = async (requestBody: PatchIssueCategoryReques
 export const patchExpireDateRequest = async (requestBody: PatchIssueExpireDateRequest, accessToken: string) => {
     try {
         const result =
-            await axios.patch(apiEndPoint(PATCH_EXPIRE_DATE()), requestBody, Authorization(accessToken));
+            await axios.patch(apiEndPoint(PATCH_ISSUE_EXPIRE_DATE()), requestBody, Authorization(accessToken));
 
         const responseBody : PatchIssueExpireDateResponse = result.data;
         return responseBody;
@@ -217,4 +223,26 @@ export const patchExpireDateRequest = async (requestBody: PatchIssueExpireDateRe
         }
     }
 
+}
+
+// 이슈 디테일 수정 요청
+export const patchIssueDetailRequest = async (requestBody : PatchIssueDetailRequest, accessToken : string) =>{
+    try {
+        const result =
+           await axios.patch(apiEndPoint(PATCH_ISSUE_DETAIL()), requestBody, Authorization(accessToken));
+
+        const responseBody : PatchIssueDetailResponse = result.data;
+
+        return responseBody;
+
+    }catch (error){
+        if (axios.isAxiosError(error)){
+            if (!error.response) return null;
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        }else {
+            console.log("unexpected Error!!");
+            return null;
+        }
+    }
 }

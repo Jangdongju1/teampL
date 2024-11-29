@@ -15,9 +15,10 @@ type ModalCompBtnStyleProps<T> = {
         clickState: boolean,
         setClickState: React.Dispatch<React.SetStateAction<boolean>>
         value: T,
-        setValue: React.Dispatch<React.SetStateAction<T>>
+        setValue: React.Dispatch<React.SetStateAction<T>>,
+        setRefresh: React.Dispatch<React.SetStateAction<number>>
     },
-    onChange? : (date : Date | null) => void,
+    onChange?: (date: Date | null) => void,
     compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default"
     // styleType?: "status" | "category" | "participants" | "default", // 1) priority,2)category,3)participants,4)default
 
@@ -30,7 +31,13 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
     // 옵션타입
     const {compType, hooks, onChange} = props;
 
-    const {value, setValue, setClickState, clickState} = hooks;
+    const {
+        value,
+        setValue,
+        setClickState,
+        clickState,
+        setRefresh
+    } = hooks;
 
 
     //* optionValue: popUp용 카테고리 값에 대한 배열
@@ -129,7 +136,8 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                     <CommonDatePicker
                         date={value instanceof Date ? value : null}
                         clickState={clickState}
-                        onChange={onChange? onChange : () =>{}}/> :
+                        onChange={onChange ? onChange : () => {
+                        }}/> :
 
                     null}
 
@@ -155,8 +163,9 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                                offset: {right: 160, bottom: 325}
                            }}
                            setPopUpClickState={setClickState}
+                           value={value as number}
                            setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
-                />)}
+                           setRefresh={setRefresh}/>)}
             {compType === "status" && clickState && (
                 <BtnPopUp menu={statusList()}
                           popupType={compType}
@@ -164,7 +173,9 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                               offset: {right: 160, bottom: 240}
                           }}
                           setPopUpClickState={setClickState}
-                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}/>
+                          value={value as number}
+                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
+                          setRefresh={setRefresh}/>
             )}
 
             {compType === "priority" && clickState && (
@@ -174,7 +185,9 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                               offset: {right: 160, bottom: 240}
                           }}
                           setPopUpClickState={setClickState}
-                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}/>
+                          value={value as number}
+                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
+                          setRefresh={setRefresh}/>
             )}
         </div>
     )

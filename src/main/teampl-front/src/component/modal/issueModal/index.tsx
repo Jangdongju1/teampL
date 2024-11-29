@@ -1,5 +1,5 @@
 import "./style.css"
-import {KeyboardEvent, useEffect, useMemo, useState} from "react";
+import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
@@ -11,7 +11,12 @@ import CommentComp from "./commentComp";
 import Pagination from "../../pagination";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
-import {getPersonalIssueByIssueNum, patchExpireDateRequest, patchIssueTitleRequest} from "../../../api/issueApi";
+import {
+    getPersonalIssueByIssueNum,
+    patchExpireDateRequest,
+    patchIssueDetailRequest,
+    patchIssueTitleRequest
+} from "../../../api/issueApi";
 import {
     GetPersonalIssueByNumResponse,
     PatchIssueExpireDateResponse,
@@ -19,16 +24,18 @@ import {
     ResponseDto
 } from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
-import {PatchIssueExpireDateRequest, PatchIssueTitleRequest} from "../../../interface/request";
+import {PatchIssueDetailRequest, PatchIssueExpireDateRequest, PatchIssueTitleRequest} from "../../../interface/request";
 import {getFormattedDateToString} from "../../../util";
+import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
     isTeamModal: boolean
+    setRefresh: React.Dispatch<React.SetStateAction<number>>
 }
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
-    const {isTeamModal} = props
+    const {isTeamModal, setRefresh} = props
 
     //state: 프로젝트 번호 상태
     const [projectNum, setProjectNum] = useState<number | undefined>(undefined);
@@ -95,6 +102,17 @@ export default function IssueModal(props: IssueModalProps) {
     const protectedDetailViewValue = DOMPurify.sanitize(issueDetailView);
 
 
+    // function : detail 변경 api 결과 처리 함수.
+    const patchIssueDetailResponse = (responseBody:PatchIssueDetailResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+    }
     // function : title 변경 api 결과처리함수
     const patchTitleResponse = (responseBody: PatchIssueTitleResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -104,6 +122,8 @@ export default function IssueModal(props: IssueModalProps) {
             alert(message);
             return;
         }
+
+        setRefresh(prevState => prevState * -1);
 
     }
 
@@ -136,9 +156,26 @@ export default function IssueModal(props: IssueModalProps) {
             setIsChange(false);
         }
     }
+
+
     // eventHandler : 에디터 저장버튼 클릭 이벤트 헨들러
-    const onDetailSaveBtnClickEventHandler = () => {
-        issueDetail === "<p><br></p>" ? setIssueDetailView("") : setIssueDetailView(issueDetail)
+    const onDetailSaveBtnClickEventHandler = async () => {
+
+        if (!accessToken) {
+            alert("accessToken is Expired!!");
+            return;
+        }
+        if (!projectNum || !issueNum) return;
+
+        const requestBody : PatchIssueDetailRequest = {projectNum, issueNum, issueDetail};
+
+        const responseBody = await patchIssueDetailRequest(requestBody, accessToken);
+
+        patchIssueDetailResponse(responseBody);
+
+
+
+        issueDetail === "<p><br></p>" ? setIssueDetailView("") : setIssueDetailView(issueDetail);
         setIssueDetailClickState(prevState => false);
     }
 
@@ -153,30 +190,31 @@ export default function IssueModal(props: IssueModalProps) {
     }
 
     //* eventHandler : 날짜 선택시 실행할 이벤트 핸들러 DatePicker 전달용
-    const onDateChangeEventHandler = async (date : Date | null) => {
-        if (!accessToken)  {
+    const onDateChangeEventHandler = async (date: Date | null) => {
+        if (!accessToken) {
             alert("accessToken is Expired!!");
             return;
         }
         if (!projectNum || !issueNum) return;
 
-        const requestBody : PatchIssueExpireDateRequest =
-            {projectNum, issueNum, expireDate : date? getFormattedDateToString(date) : ""};
+        const requestBody: PatchIssueExpireDateRequest =
+            {projectNum, issueNum, expireDate: date ? getFormattedDateToString(date) : ""};
 
-       const responseBody  = await patchExpireDateRequest(requestBody, accessToken);
+        const responseBody = await patchExpireDateRequest(requestBody, accessToken);
 
-       patchExpireDateResponse(responseBody);
+        patchExpireDateResponse(responseBody);
 
-
-        date? setExpireDate(date) : setExpireDate(null);
+        date ? setExpireDate(date) : setExpireDate(null);
         setExpireDateClickState(false);
     }
-    // function : 이슈 마감기한 수정 호출에 대한 응답처리함수.
-    const patchExpireDateResponse = (responseBody:PatchIssueExpireDateResponse | ResponseDto | null)=>{
-        if (!responseBody) return;
-        const {code,message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+
+    // function : 이슈 마감기한 수정 호출에 대한 응답처리함수.
+    const patchExpireDateResponse = (responseBody: PatchIssueExpireDateResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -269,7 +307,8 @@ export default function IssueModal(props: IssueModalProps) {
                                                    value: inCharge,
                                                    setValue: setInCharge,
                                                    clickState: inChargeClickSate,
-                                                   setClickState: setInChargeClickSate
+                                                   setClickState: setInChargeClickSate,
+                                                   setRefresh: setRefresh
                                                }}
                                                compType={"inCharge"}/>
 
@@ -279,7 +318,8 @@ export default function IssueModal(props: IssueModalProps) {
                                                    value: participants,
                                                    setValue: setParticipants,
                                                    clickState: participantsClickState,
-                                                   setClickState: setParticipantsClickState
+                                                   setClickState: setParticipantsClickState,
+                                                   setRefresh: setRefresh
                                                }}
                                                compType={"participants"}/>
                         </div>
@@ -290,7 +330,8 @@ export default function IssueModal(props: IssueModalProps) {
                                            value: priority,
                                            setValue: setPriority,
                                            clickState: priorityClickState,
-                                           setClickState: setPriorityClickState
+                                           setClickState: setPriorityClickState,
+                                           setRefresh: setRefresh
                                        }}
                                        compType={"priority"}/>
 
@@ -300,7 +341,8 @@ export default function IssueModal(props: IssueModalProps) {
                                            value: status,
                                            setValue: setStatus,
                                            clickState: statusBtnClickState,
-                                           setClickState: setStateBtnClickState
+                                           setClickState: setStateBtnClickState,
+                                           setRefresh: setRefresh
                                        }}
                                        compType={"status"}/>
 
@@ -310,7 +352,8 @@ export default function IssueModal(props: IssueModalProps) {
                                            value: category,
                                            setValue: setCategory,
                                            clickState: categoryBtnClickState,
-                                           setClickState: setCategoryBtnClickState
+                                           setClickState: setCategoryBtnClickState,
+                                           setRefresh: setRefresh
                                        }}
                                        compType={"category"}/>
 
@@ -321,7 +364,8 @@ export default function IssueModal(props: IssueModalProps) {
                                            value: expireDate,
                                            setValue: setExpireDate,
                                            clickState: expireDateClickSate,
-                                           setClickState: setExpireDateClickState
+                                           setClickState: setExpireDateClickState,
+                                           setRefresh: setRefresh
                                        }}/>
 
 

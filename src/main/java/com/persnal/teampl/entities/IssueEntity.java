@@ -54,11 +54,13 @@ public class IssueEntity {
     private String issueSequence;
     @Setter
     private String ref;
+    @Setter
+    private Boolean isFirstIssue;
 
     @OneToMany(mappedBy = "issueEntity", fetch = FetchType.LAZY)
     Set<IssueCommentEntity> issueCommentEntities;
 
-    public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence) {
+    public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence, boolean isFirstIssue) {
         return IssueEntity.builder()
                 .title("제목을 지정해 주세요.")  // 기본 값
                 .content("")
@@ -72,6 +74,7 @@ public class IssueEntity {
                 .expireDate(null)
                 .isDeleted(false)
                 .issueSequence(sequence)
+                .isFirstIssue(isFirstIssue)
                 .build();
     }
 
@@ -93,6 +96,7 @@ public class IssueEntity {
                     .category(entity.getCategory())
                     .issueSequence(entity.getIssueSequence())
                     .ref(entity.getRef())
+                    .isFirstIssue(entity.getIsFirstIssue())
                     .build();
             list.add(listElement);
         }
@@ -114,8 +118,8 @@ public class IssueEntity {
                 .category(entity.getCategory())
                 .issueSequence(entity.getIssueSequence())
                 .ref(entity.getRef())
+                .isFirstIssue(entity.getIsFirstIssue())
                 .build();
-
     }
 
 

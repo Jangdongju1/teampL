@@ -23,5 +23,6 @@ public class IssueObj {
   //  private Boolean isAssigned;
     private String ref;
     private String issueSequence;
+    private Boolean isFirstIssue;
 
 }

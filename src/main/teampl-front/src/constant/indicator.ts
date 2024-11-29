@@ -23,7 +23,8 @@ export const GET_PERSONAL_ISSUE_BY_NUMBER =(issueNum:number) => `/${issueNum}`;
 export const PATCH_ISSUE_TITLE = ()=>"/modification/issue-title";
 export const PATCH_ISSUE_PRIORITY =()=>"/modification/issue-priority";
 export const PATCH_ISSUE_STATUS = ()=> "/modification/issue-status";
-export const PATCH_CATEGORY = () =>"/modification/issue-category";
-export const PATCH_EXPIRE_DATE = ()=>"/modification/issue-expire-date"
+export const PATCH_ISSUE_CATEGORY = () =>"/modification/issue-category";
+export const PATCH_ISSUE_EXPIRE_DATE = ()=>"/modification/issue-expire-date";
+export const PATCH_ISSUE_DETAIL = () =>"/modification/issue-detail";
 
 

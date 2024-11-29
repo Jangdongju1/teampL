@@ -9,4 +9,8 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Integer> {
     List<IssueEntity> findAllByProjectEntityProjectNum(int projectNum);
     List<IssueEntity> findAllByProjectEntityProjectNumAndStat(int projectNum, int stat);
     IssueEntity findByIssueNum(int issueNum);
+    IssueEntity findByProjectEntityProjectNumAndStatAndRef(int projectNum, int stat, String ref);
+    IssueEntity findByProjectEntityProjectNumAndIssueSequence(int projectNum, String issueSequence);
+    IssueEntity findByProjectEntityProjectNumAndStatAndRefIsNull(int projectNum, int stat);
+
 }

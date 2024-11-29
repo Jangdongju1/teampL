@@ -9,11 +9,12 @@ import GetPersonalPrjInfoResponse from "../../interface/response/project/persona
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, KanbanState, Project} from "../../interface/types";
-import {IssueStatus, ModalType} from "../../common";
+import {IssueStatus, ModalType, ProjectStatus, ProjectType} from "../../common";
 import {getPersonalIssueListRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import IssueModal from "../../component/modal/issueModal";
 import {modalStore} from "../../store";
+import issueStatus from "../../common/enum/IssueStatus";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -23,28 +24,24 @@ export default function KanbanBoard(props: KanbanType) {
     // pros:칸반타입 >> 1)개인프로젝트 칸반보드 2) 팀프로젝트 칸반보드
     const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
-    const [topMenu, setTopMenu] = useState<string>("kanban");
+    const [topMenu, setTopMenu] = useState<"kanban" | "main">("kanban");
     //* Path Variable : 프로젝트의 번호
 
 
     // global state: 모달상태
-    const {isModalOpen, modalType}= modalStore();
+    const {isModalOpen, modalType} = modalStore();
     const {projectNum} = useParams();
     //* state: 쿠키상태
     const [cookies, setCookies] = useCookies();
     //* state: 프로젝트 상태
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
+    const [totalIssues, setTotalIssues] = useState<Issue[]>()
 
-    // 4개의 칸반보드 상태.
-    //* state : 칸반보드(Not Start) 상태
-    const [notStartState, setNotStartState] = useState<Issue[]>([]);
-    //* state : 칸반보드(On Working) 상태
-    const [onWorkingState, setOnWorkingState] = useState<Issue[]>([]);
-    //* state : 칸반보드(Stuck) 상태
-    const [stuckState, setStuckState] = useState<Issue[]>([]);
-    //* state : 칸반보드(Done)상태
-    const [doneState, setDoneState] = useState<Issue[]>([]);
+
+
+    //* state : 컴포넌트 리프레쉬 상태
+    const [refresh, setRefresh] = useState<number>(1);
 
     // accessToken
     const accessToken = cookies.accessToken_Main;
@@ -53,22 +50,8 @@ export default function KanbanBoard(props: KanbanType) {
     const filterIssue = (array: Issue[], stat: number): Issue[] => {
         return array.filter(item => item.stat === stat);
     }
-    //* function : 상태별 이슈 세팅
-    const setIssueArray = (array: Issue[]) => {
 
-        const states: KanbanState[] = [
-            {status: IssueStatus.NOT_START, setState: setNotStartState},
-            {status: IssueStatus.ON_WORKING, setState: setOnWorkingState},
-            {status: IssueStatus.STUCK, setState: setStuckState},
-            {status: IssueStatus.DONE, setState: setDoneState}
-        ]
 
-        states.forEach(({status, setState}) => {
-            const issues: Issue[] = filterIssue(array, status);
-            setState(issues);
-        });
-
-    }
 
     //* function : 개인프로젝트 이슈 목록 api 응답처리 함수.
     const getPersonalIssueResponse = (responseBody: GetPersonalIssueListResponse | ResponseDto | null) => {
@@ -81,7 +64,8 @@ export default function KanbanBoard(props: KanbanType) {
 
         const {data} = responseBody as GetPersonalIssueListResponse;
 
-        setIssueArray(data.list);
+        setTotalIssues(data.list);
+
     }
 
 
@@ -111,30 +95,30 @@ export default function KanbanBoard(props: KanbanType) {
     }, []);
 
     useEffect(() => {
-
         if (!accessToken || projectNum === undefined) return;
 
         const fetchIssueList = async () => {
             const responseBody = await getPersonalIssueListRequest(projectNum, accessToken);
             getPersonalIssueResponse(responseBody);
         }
-
         fetchIssueList();
 
-    }, []);
+    }, [refresh]);
 
 
     return (
         <div id={"kanban-board-wrapper"}>
             {isModalOpen && modalType === ModalType.ISSUE_INFO && (
-                <IssueModal isTeamModal={true}/>
+                <IssueModal
+                    isTeamModal={true}
+                    setRefresh={setRefresh}/>
             )}
 
             <div className={"kanban-board-top-container"}>
                 <KanbanTopComponent isTeamPage={isTeamKanban}
                                     projectName={projectInfo ? projectInfo.projectName : ""}
-                                    projectType={projectInfo ? projectInfo.projectType : -1}
-                                    stat={projectInfo ? projectInfo.stat : -1}
+                                    projectType={projectInfo ? projectInfo.projectType : ProjectType.UNKNOWN}
+                                    stat={projectInfo ? projectInfo.stat : ProjectStatus.UNKNOWN}
                                     topMenuStat={topMenu}
                                     setTopMenuStat={setTopMenu}/>
             </div>
@@ -142,34 +126,36 @@ export default function KanbanBoard(props: KanbanType) {
                 <div className={"kanban-board-bottom-container"}>
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Not Start"}
-                                          itemArray={notStartState}
+                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.NOT_START) : []}
                                           stat={IssueStatus.NOT_START}
-                                          setArray={setNotStartState}
-                                          isTeamKanban={isTeamKanban}/>
+                                          isTeamKanban={isTeamKanban}
+
+                                          setRefresh={setRefresh}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"On Working"}
-                                          itemArray={onWorkingState}
+                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.ON_WORKING) : []}
                                           stat={IssueStatus.ON_WORKING}
-                                          setArray={setOnWorkingState}
-                                          isTeamKanban={isTeamKanban}/>
+                                          isTeamKanban={isTeamKanban}
+
+                                          setRefresh={setRefresh}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Stuck"}
-                                          itemArray={stuckState}
+                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.STUCK) : []}
                                           stat={IssueStatus.STUCK}
-                                          setArray={setStuckState}
-                                          isTeamKanban={isTeamKanban}/>
+                                          isTeamKanban={isTeamKanban}
+                                          setRefresh={setRefresh}/>
                     </div>
 
                     <div className={"kanban-board-box"}>
                         <KanbanBoardPanel boardName={"Done"}
-                                          itemArray={doneState}
+                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.DONE) : []}
                                           stat={IssueStatus.DONE}
-                                          setArray={setDoneState}
-                                          isTeamKanban={isTeamKanban}/>
+                                          isTeamKanban={isTeamKanban}
+                                          setRefresh={setRefresh}/>
                     </div>
                 </div> :
 

@@ -1,24 +1,26 @@
 package com.persnal.teampl.dto.response.issue;
 
 import com.persnal.teampl.common.ResponseCode;
+import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
+import com.persnal.teampl.entities.IssueEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
 public class CreateIssueResponse {
-    private final String sequence;
+    private final IssueObj addedIssue;
 
-    public CreateIssueResponse(String sequence) {
-        this.sequence = sequence;
+    public CreateIssueResponse(IssueEntity entity) {
+        this.addedIssue = IssueEntity.getIssue(entity);
     }
-    public static ResponseEntity<ApiResponse<CreateIssueResponse>> success(String sequence) {
+    public static ResponseEntity<ApiResponse<CreateIssueResponse>> success(IssueEntity entity) {
         ApiResponse<CreateIssueResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseCode.SUCCESS,
-                new CreateIssueResponse(sequence));
+                new CreateIssueResponse(entity));
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 

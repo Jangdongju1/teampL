@@ -24,4 +24,7 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<PatchIssueExpireDateResponse>> patchIssueExpireDate(String email , PatchIssueExpireDateRequest req);
 
+    ResponseEntity<? super ApiResponse<PatchIssueDetailResponse>> patchIssueDetail(String email, PatchIssueDetailRequest req);
+
+
 }

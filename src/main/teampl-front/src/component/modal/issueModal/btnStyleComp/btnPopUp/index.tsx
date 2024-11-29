@@ -14,7 +14,7 @@ import {
     PatchPriorityRequest
 } from "../../../../../interface/request";
 import {patchCategoryRequest, patchPriorityRequest, patchStatusRequest} from "../../../../../api/issueApi";
-import {PatchIssueStatusResponse,PatchIssueCategoryResponse} from "../../../../../interface/response";
+import {PatchIssueStatusResponse, PatchIssueCategoryResponse} from "../../../../../interface/response";
 import ResponseCode from "../../../../../common/enum/responseCode";
 
 
@@ -29,14 +29,16 @@ type BtnPopUpProps = {
         }
     },
     popupType: "category" | "priority" | "status",
-    setPopUpClickState: React.Dispatch<React.SetStateAction<boolean>>
-    setValue: React.Dispatch<React.SetStateAction<number>>
+    setPopUpClickState: React.Dispatch<React.SetStateAction<boolean>>,
+    value: number
+    setValue: React.Dispatch<React.SetStateAction<number>>,
+    setRefresh: React.Dispatch<React.SetStateAction<number>>
 }
 export default function BtnPopUp(props: BtnPopUpProps) {
     // 값과 관련된 prop
     const {menu, cssOption, popupType} = props;
     // 상태 변경과 관련되 props
-    const {setPopUpClickState, setValue} = props
+    const {setPopUpClickState, setValue, value, setRefresh} = props
 
     // path variable : 프로젝트 넘버 (api 호출시 요청 변수)
     const {projectNum} = useParams();
@@ -102,7 +104,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -118,6 +120,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             alert(message);
             return;
         }
+        setRefresh(prevState => prevState * -1);
 
     }
 
@@ -129,6 +132,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             alert(message);
             return;
         }
+        setRefresh(prevState => prevState * -1);
     }
 
     // eventHandler: 외부클릭 감지 함수
@@ -141,7 +145,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
     }
 
     // eventHandler: option 클릭 이벤트 헨들러
-    const onOptionClickEventHandler = async (value: number) => {
+    const onOptionClickEventHandler = async (newValue: number) => {
         if (!accessToken) {
             alert("accessToken is expired!!");
             return;
@@ -149,13 +153,19 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         // 이슈넘버와 프로젝트 넘버가 없는 경우
         if (!issueNum || !projectNum) return;
 
+        if (value === newValue) {  // 기존의 값과 같은 값을 선택하는 경우에는 api 요청을 보낼 필요가 없음
+            setPopUpClickState(false);
+            return;
+        }
+
+
         //  type 별 api호출
         if (popupType === "priority") {
             // 우선순위 변경시 api호출
             const requestBody: PatchPriorityRequest = {
                 projectNum: parseInt(projectNum, 10),
                 issueNum: issueNum,
-                priority: value
+                priority: newValue
             }
 
             const responseBody = await patchPriorityRequest(requestBody, accessToken);
@@ -165,7 +175,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         } else if (popupType === "status") {
             // 이슈 상태 변경시 api 호출
             const requestBody: PatchIssueStatusRequest =
-                {projectNum: parseInt(projectNum, 10), issueNum, stat: value};
+                {projectNum: parseInt(projectNum, 10), issueNum, stat: newValue};
             const responseBody = await patchStatusRequest(requestBody, accessToken);
 
             patchStatusResponse(responseBody);
@@ -173,7 +183,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         } else if (popupType === "category") {
             // 카테고리 변경시 api 호출.
             const requestBody: PatchIssueCategoryRequest =
-                {projectNum: parseInt(projectNum, 10), issueNum, category: value};
+                {projectNum: parseInt(projectNum, 10), issueNum, category: newValue};
 
             const responseBody = await patchCategoryRequest(requestBody, accessToken);
 
@@ -181,7 +191,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
 
         }
         setPopUpClickState(false);
-        setValue(value);
+        setValue(newValue);
     }
     // useEffect : 마운트시 실행할 함수
     useEffect(() => {

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(CreateIssueRequest req, String email) {
-        String sequence;
+        IssueEntity issueEntity = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
             ProjectEntity projectEntity = projectRepository.findByProjectNum(req.getProjectNum());
@@ -41,27 +42,35 @@ public class IssueServiceImpl implements IssueService {
             if (!isExistUser) return CreateIssueResponse.notExistUser();
             if (projectEntity == null) return CreateIssueResponse.notExistProject();
 
+            // 시퀀스 지정을 위한 최근이슈를 찾는 부분.
             IssueEntity currentIssueEntity =
                     issueRepository.findTopByProjectEntityProjectNumOrderByIssueNumDesc(req.getProjectNum());
 
             // 시퀀스 지정
-            sequence = "";
+            String sequence = "";
             if (currentIssueEntity == null) {
                 sequence = issueSequenceService.initSequenceValue();  // 초기값 세팅
             } else {
                 sequence = issueSequenceService.addSequenceNumber(currentIssueEntity.getIssueSequence());  // 최근 이슈+1
             }
 
+
+            boolean isFirstIssue = true;
             // 최근 이슈의 ref 설정 => 새로 만들어지는 이슈를 참조 하도록 이슈의 상태를 고려해서 꼬리에 꼬리를 물어 참조할 수 있도록 한다.
             currentIssueEntity = issueRepository.findTopByProjectEntityProjectNumAndStatOrderByIssueNumDesc(req.getProjectNum(), req.getStat());
+
+            //  상태별 이슈가 하나이상 있는 경우  => 기존에 존재하던 이슈의 ref를 새로생긴 이슈의 sequence로 세팅함.
             if (currentIssueEntity != null) {
                 currentIssueEntity.setRef(sequence);
+                // null이 아닌경우 새로 생기는 이슈는 맨첫 이슈가 아님.
+                isFirstIssue = false;
             }
 
             // 1) projectNum, stat(Issue) ,  email
             //ProjectEntity projectEntity = ProjectEntity.fromRequest(req);
             UserEntity userEntity = UserEntity.fromRequest(email);
-            IssueEntity issueEntity = IssueEntity.fromRequest(req.getStat(), userEntity, projectEntity, sequence);
+            issueEntity = IssueEntity.fromRequest(req.getStat(), userEntity, projectEntity, sequence, isFirstIssue);
+
             issueRepository.save(issueEntity);
 
 
@@ -69,7 +78,7 @@ public class IssueServiceImpl implements IssueService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return CreateIssueResponse.success(sequence);
+        return CreateIssueResponse.success(issueEntity);
     }
 
     @Override
@@ -164,6 +173,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
 
+    @Transactional
     @Override
     public ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchIssueStatus(String email, PatchIssueStatusRequest req) {
         try {
@@ -174,13 +184,66 @@ public class IssueServiceImpl implements IssueService {
             else if (!isExistProject) return PatchIssueStatusResponse.notExistProject();
 
 
-            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+            IssueEntity currentIssueEntity = issueRepository.findByIssueNum(req.getIssueNum());
 
-            if (issueEntity == null) return PatchIssueStatusResponse.notExistIssue();
+            if (currentIssueEntity == null) return PatchIssueStatusResponse.notExistIssue();
 
-            issueEntity.setStat(req.getStat());
 
-            issueRepository.save(issueEntity);
+            // 기존 이슈와 그 이전이슈, 그리고 기존이슈의 다음 이슈의 sequence참조관계를 명확히 해야함.
+            String nextIssue = currentIssueEntity.getRef(); // 다음 이슈의 sequence
+
+            // 해당 프로젝트의 해당 상태에서 해당이슈를 Ref로 하고 있는 이슈 == 이전 이슈
+            IssueEntity prevIssueEntity = null;
+            boolean isFirstIssue = false;
+
+            // 이전 이슈와 현재 이슈 참조 관계 처리
+            if (nextIssue == null || nextIssue.isEmpty()) {
+                // nextIssue가 없으면 이전 이슈의 참조를 비움
+                prevIssueEntity =
+                        issueRepository.findByProjectEntityProjectNumAndStatAndRef(req.getProjectNum(), currentIssueEntity.getStat(), currentIssueEntity.getIssueSequence());
+                if (prevIssueEntity != null) {
+                    prevIssueEntity.setRef(null);
+                }
+                //currentIssueEntity.setIsFirstIssue(false);
+            } else {
+                // 이전 이슈가 있을 경우, 다음 이슈의 참조를 이어주기
+                prevIssueEntity =
+                        issueRepository.findByProjectEntityProjectNumAndStatAndRef(req.getProjectNum(), currentIssueEntity.getStat(), currentIssueEntity.getIssueSequence());
+                if (prevIssueEntity != null) {
+                    prevIssueEntity.setRef(nextIssue);
+                } else {
+                    // 이전 이슈가 없으면 현재 이슈의 ref를 비움
+                    IssueEntity nextIssueEntity = issueRepository.findByProjectEntityProjectNumAndIssueSequence(req.getProjectNum(), nextIssue);
+                    if (nextIssueEntity != null) {
+                        // 다음 이슈를 첫번째 이슈로 올림과 동시에 이동되는 이슈를 첫번째이슈에서 제거
+                        nextIssueEntity.setIsFirstIssue(currentIssueEntity.getIsFirstIssue());
+                        currentIssueEntity.setRef(null);
+                    }
+//                    currentIssueEntity.setIsFirstIssue(false);
+                }
+            }
+
+
+            // ref가 null인  가장 마지막이슈의 하위 ref로 설정함.
+            prevIssueEntity = issueRepository.findByProjectEntityProjectNumAndStatAndRefIsNull(req.getProjectNum(), req.getStat());
+            if (prevIssueEntity != null) {
+                prevIssueEntity.setRef(currentIssueEntity.getIssueSequence());
+            } else {
+                // 이동되는 자리에 아무런 이슈도 없는경우
+                isFirstIssue = true;
+            }
+
+            // 상태 업데이트
+            currentIssueEntity.setStat(req.getStat());
+            // 첫번째이슈 여부 업데이트
+            currentIssueEntity.setIsFirstIssue(isFirstIssue);
+
+            // DB에 저장
+            issueRepository.save(currentIssueEntity);
+
+            if (prevIssueEntity != null) {
+                issueRepository.save(prevIssueEntity); // 수정된 prevIssueEntity도 저장
+            }
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
@@ -207,7 +270,7 @@ public class IssueServiceImpl implements IssueService {
             issueRepository.save(issueEntity);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -230,11 +293,35 @@ public class IssueServiceImpl implements IssueService {
             issueEntity.setExpireDate(req.getExpireDate());
             issueRepository.save(issueEntity);
 
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueExpireDateResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueDetailResponse>> patchIssueDetail(String email, PatchIssueDetailRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+            if (!isExistUser) return PatchIssueDetailResponse.notExistUser();
+            else if (!isExistProject) return PatchIssueDetailResponse.notExistProject();
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (issueEntity == null) return PatchIssueDetailResponse.notExistIssue();
+
+            issueEntity.setContent(req.getIssueDetail());
+
+            issueRepository.save(issueEntity);
+
         }catch (Exception e){
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return null;
+        return PatchIssueDetailResponse.success();
     }
 
     @Override

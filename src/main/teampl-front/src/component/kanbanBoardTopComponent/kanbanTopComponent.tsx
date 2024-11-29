@@ -2,6 +2,7 @@ import "./style.css";
 import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
 import SearchBar from "../searchBar/searchBar";
 import {ProjectType, ProjectStatus} from "../../common";
+import * as domain from "node:domain";
 
 type KanbanTopCompProps = {
     isTeamPage: boolean,
@@ -10,7 +11,7 @@ type KanbanTopCompProps = {
     stat: number,
     // 상단 메뉴상태
     topMenuStat: string,
-    setTopMenuStat: Dispatch<SetStateAction<string>>
+    setTopMenuStat: Dispatch<SetStateAction<"kanban" | "main">>
 }
 export default function KanbanTopComponent(props: KanbanTopCompProps) {
     //* 칸반보드 관련 데이터 prop
@@ -60,8 +61,12 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     // eventHandler : 상단 home 메뉴 버튼 클릭 헨들러
     const onTopMenuBtnClickEventHandler= (e:React.MouseEvent<HTMLLIElement>)=>{
         const menuStat = e.currentTarget.dataset.value;
+        console.log(menuStat)
         if (menuStat === undefined) return;
-        setTopMenuStat(menuStat);
+        if (menuStat ==="kanban" || menuStat == "main"){
+            setTopMenuStat(menuStat);
+        }
+
 
     }
 
@@ -79,7 +84,7 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
             <div className={"kanban-board-mode-btn-container"}>
                 <div className={"kanban-board-mode-btn-box"}>
                     <ul className={"kanban-board-mode-btn"}>
-                        <li data-value={"home"} style={topMenuStat === "home" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
+                        <li data-value={"main"} style={topMenuStat === "home" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
                             onClick={onTopMenuBtnClickEventHandler}>
                             <span className={"icon kanban-home-icon home-icon"}></span>{"Main Table"}
                         </li>

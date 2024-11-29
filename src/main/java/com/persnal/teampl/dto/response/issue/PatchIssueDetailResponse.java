@@ -9,15 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class PatchIssueExpireDateResponse {
+public class PatchIssueDetailResponse {
 
-
-    public static ResponseEntity<ApiResponse<PatchIssueExpireDateResponse>> success() {
-        ApiResponse<PatchIssueExpireDateResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<PatchIssueDetailResponse>> success() {
+        ApiResponse<PatchIssueDetailResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                null
-        );
+                null);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
