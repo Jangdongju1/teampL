@@ -88,12 +88,20 @@ public class IssueController {
         return issueService.patchIssueExpireDate(email,req);
     }
 
-    @PatchMapping("modification/issue-detail")
+    @PatchMapping("/modification/issue-detail")
     public ResponseEntity<? super ApiResponse<PatchIssueDetailResponse>> patchDetail(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueDetailRequest req){
 
         return issueService.patchIssueDetail(email,req);
+    }
+
+    @PostMapping("/create/issue-comment")
+    public ResponseEntity<? super ApiResponse<PostIssueCommentResponse>> postComment(
+            @AuthenticationPrincipal String email,
+            @RequestBody PostIssueCommentRequest req){
+
+        return issueService.postIssueComment(email,req);
     }
 
 }

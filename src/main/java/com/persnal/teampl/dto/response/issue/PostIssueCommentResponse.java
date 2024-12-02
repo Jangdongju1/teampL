@@ -4,19 +4,23 @@ import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class PatchIssueTitleResponse {
+@Getter
+public class PostIssueCommentResponse {
 
-
-    public static ResponseEntity<ApiResponse<PatchIssueTitleResponse>> success() {
-        ApiResponse<PatchIssueTitleResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<PostIssueCommentResponse>> success() {
+        ApiResponse<PostIssueCommentResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                null);
+                null
+        );
+
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
 
     public static ResponseEntity<ResponseDto> notExistUser(){
         return ResponseDto.notExistedUser();
@@ -29,4 +33,6 @@ public class PatchIssueTitleResponse {
     public static ResponseEntity<ResponseDto> notExistProject(){
         return ResponseDto.notExistProject();
     }
+
 }
+

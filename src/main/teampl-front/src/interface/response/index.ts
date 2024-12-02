@@ -13,6 +13,7 @@ import CreateIssueResponse from "./issue/createIssueResponse";
 import PatchIssueStatusResponse from "./issue/patchIssueStatusResponse";
 import PatchIssueCategoryResponse from "./issue/patchIssueCategoryResponse";
 import PatchIssueExpireDateResponse from "./issue/patchIssueExpireDateResponse";
+import PostIssueCommentResponse from "./issue/postIssueCommentResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -29,5 +30,5 @@ export type {
     GetPersonalIssueListResponse,
     PatchIssueExpireDateResponse,
     CreateIssueResponse,
-
+    PostIssueCommentResponse
 }

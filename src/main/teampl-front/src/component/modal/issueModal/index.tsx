@@ -15,16 +15,21 @@ import {
     getPersonalIssueByIssueNum,
     patchExpireDateRequest,
     patchIssueDetailRequest,
-    patchIssueTitleRequest
+    patchIssueTitleRequest, postIssueCommentRequest
 } from "../../../api/issueApi";
 import {
     GetPersonalIssueByNumResponse,
     PatchIssueExpireDateResponse,
-    PatchIssueTitleResponse,
+    PatchIssueTitleResponse, PostIssueCommentResponse,
     ResponseDto
 } from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
-import {PatchIssueDetailRequest, PatchIssueExpireDateRequest, PatchIssueTitleRequest} from "../../../interface/request";
+import {
+    PostIssueCommentRequest,
+    PatchIssueDetailRequest,
+    PatchIssueExpireDateRequest,
+    PatchIssueTitleRequest
+} from "../../../interface/request";
 import {getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
 
@@ -103,11 +108,11 @@ export default function IssueModal(props: IssueModalProps) {
 
 
     // function : detail 변경 api 결과 처리 함수.
-    const patchIssueDetailResponse = (responseBody:PatchIssueDetailResponse | ResponseDto | null)=>{
+    const patchIssueDetailResponse = (responseBody: PatchIssueDetailResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -167,12 +172,11 @@ export default function IssueModal(props: IssueModalProps) {
         }
         if (!projectNum || !issueNum) return;
 
-        const requestBody : PatchIssueDetailRequest = {projectNum, issueNum, issueDetail};
+        const requestBody: PatchIssueDetailRequest = {projectNum, issueNum, issueDetail};
 
         const responseBody = await patchIssueDetailRequest(requestBody, accessToken);
 
         patchIssueDetailResponse(responseBody);
-
 
 
         issueDetail === "<p><br></p>" ? setIssueDetailView("") : setIssueDetailView(issueDetail);
@@ -208,6 +212,33 @@ export default function IssueModal(props: IssueModalProps) {
         setExpireDateClickState(false);
     }
 
+    // eventHandler: 댓글 입력버튼 클릭 이벤트 헨들러
+    const onCommentSaveBtnClickEventHandler = async () => {
+        if (!accessToken) {
+            alert("accessToken is expired!!");
+            return;
+        }
+        if (!projectNum || !issueNum) return;
+
+        const requestBody: PostIssueCommentRequest = {projectNum, issueNum, comment}
+
+        const responseBody = await postIssueCommentRequest(requestBody, accessToken);
+
+        postIssueResponse(responseBody);
+
+    }
+
+    // function : 이슈에 대한 댓글 게시 요청에 대한 응답함수
+    const postIssueResponse = (responseBody : PostIssueCommentResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
+        const {code,message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+    }
 
     // function : 이슈 마감기한 수정 호출에 대한 응답처리함수.
     const patchExpireDateResponse = (responseBody: PatchIssueExpireDateResponse | ResponseDto | null) => {
@@ -235,7 +266,7 @@ export default function IssueModal(props: IssueModalProps) {
             stat,
             priority,
             inCharge,
-            email,
+            email,  // 작성자 추후에 로그인된 유저와 비교해서 자신이 등록한 이슈가 아닐시 수정이 불가하도록 만들 예정.
             category,
             content,
             expireDate,
@@ -445,7 +476,7 @@ export default function IssueModal(props: IssueModalProps) {
                                         fontColor: "rgba(255,255,255,1)"
                                     }
                                 }
-                                onClick={() => console.log("reg comment ")}/>
+                                onClick={onCommentSaveBtnClickEventHandler}/>
 
                         </div>
                     </div>

@@ -1,13 +1,16 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
+import com.persnal.teampl.dto.obj.IssueCommentReq;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.issue.*;
+import com.persnal.teampl.entities.IssueCommentEntity;
 import com.persnal.teampl.entities.IssueEntity;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
+import com.persnal.teampl.repository.CommentRepository;
 import com.persnal.teampl.repository.IssueRepository;
 import com.persnal.teampl.repository.ProjectRepository;
 import com.persnal.teampl.repository.UserRepository;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.border.AbstractBorder;
 import java.util.List;
 
 @Service
@@ -30,7 +34,9 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final CommentRepository commentRepository;
     private final IssueSequenceService issueSequenceService;
+
 
     @Override
     public ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(CreateIssueRequest req, String email) {
@@ -344,4 +350,47 @@ public class IssueServiceImpl implements IssueService {
         return GetPersonalIssueByNumResponse.success(issueEntity);
     }
 
+    @Override
+    public ResponseEntity<? super ApiResponse<PostIssueCommentResponse>> postIssueComment(String email, PostIssueCommentRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+
+
+            if (!isExistUser) return PostIssueCommentResponse.notExistUser();
+            else if (!isExistProject) return PostIssueCommentResponse.notExistProject();
+
+            IssueEntity parentIssueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (parentIssueEntity == null) return PostIssueCommentResponse.notExistIssue();
+
+
+            int commentOrder = commentRepository.countByIssueEntityIssueNumAndCommentGroupIsNull(req.getIssueNum());
+
+
+            IssueEntity issueEntity = IssueEntity.builder().issueNum(req.getIssueNum()).build();
+            UserEntity userEntity = UserEntity.builder().email(email).build();
+
+
+            // 전달용 객체에 세팅
+            IssueCommentReq request = IssueCommentReq.builder()
+                    .issueEntity(issueEntity)
+                    .userEntity(userEntity)
+                    .content(req.getComment())
+                    .commentOrder(commentOrder)
+                    .build();
+
+            IssueCommentEntity commentEntity = IssueCommentEntity.fromRequest(request);
+
+
+            commentRepository.save(commentEntity);
+
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PostIssueCommentResponse.success();
+    }
 }

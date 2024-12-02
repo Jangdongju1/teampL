@@ -9,7 +9,7 @@ import {
     PATCH_ISSUE_EXPIRE_DATE,
     PATCH_ISSUE_PRIORITY,
     PATCH_ISSUE_STATUS,
-    PATCH_ISSUE_TITLE
+    PATCH_ISSUE_TITLE, POST_ISSUE_COMMENT
 } from "../constant/indicator";
 import {
     GetPersonalIssueByNumResponse,
@@ -19,13 +19,17 @@ import {
     GetPersonalIssueListResponse,
     CreateIssueResponse,
     PatchIssueStatusResponse,
-    PatchIssueCategoryResponse, PatchIssueExpireDateResponse
+    PatchIssueCategoryResponse, PatchIssueExpireDateResponse, PostIssueCommentResponse
 } from "../interface/response";
 import {
     PatchIssueTitleRequest,
     PatchPriorityRequest,
     CreateIssueRequest,
-    PatchIssueStatusRequest, PatchIssueCategoryRequest, PatchIssueExpireDateRequest, PatchIssueDetailRequest
+    PatchIssueStatusRequest,
+    PatchIssueCategoryRequest,
+    PatchIssueExpireDateRequest,
+    PatchIssueDetailRequest,
+    PostIssueCommentRequest
 } from "../interface/request";
 import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
 
@@ -245,4 +249,26 @@ export const patchIssueDetailRequest = async (requestBody : PatchIssueDetailRequ
             return null;
         }
     }
+}
+
+// 이슈에 대한 comment 등록 요청
+export const postIssueCommentRequest = async (requestBody : PostIssueCommentRequest, accessToken : string)=>{
+    try {
+        const result =
+            await axios.post(apiEndPoint(POST_ISSUE_COMMENT()), requestBody , Authorization(accessToken));
+
+        const responseBody : PostIssueCommentResponse  = result.data;
+
+        return responseBody;
+    }catch (error){
+        if (axios.isAxiosError(error)){
+            if (!error.response) return null;
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        }else {
+            console.log("unexpected Error!!");
+            return null;
+        }
+    }
+
 }
