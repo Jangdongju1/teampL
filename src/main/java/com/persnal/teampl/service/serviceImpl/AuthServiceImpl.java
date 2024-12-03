@@ -1,17 +1,15 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.request.auth.SignInRequest;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.auth.AuthCodeConfirmResponse;
 import com.persnal.teampl.dto.response.auth.AuthCodeResponse;
-import com.persnal.teampl.dto.response.auth.SignInResponse;
 import com.persnal.teampl.dto.response.auth.SignUpResponse;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.jwt.WebTokenProvider;
-import com.persnal.teampl.repository.UserRepository;
+import com.persnal.teampl.repository.jpa.UserRepository;
 import com.persnal.teampl.service.AuthService;
 import com.persnal.teampl.service.MailAuthService;
 import com.persnal.teampl.service.RedisCacheService;

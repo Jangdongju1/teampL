@@ -4,7 +4,7 @@ import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.user.LoginUserResponse;
-import com.persnal.teampl.repository.UserRepository;
+import com.persnal.teampl.repository.jpa.UserRepository;
 import com.persnal.teampl.service.UserService;
 import com.persnal.teampl.util.Utils;
 import lombok.RequiredArgsConstructor;

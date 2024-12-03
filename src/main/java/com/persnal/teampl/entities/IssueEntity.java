@@ -3,7 +3,6 @@ package com.persnal.teampl.entities;
 import com.persnal.teampl.common.Enum.issue.IssueCategory;
 import com.persnal.teampl.common.Enum.issue.IssuePriority;
 import com.persnal.teampl.dto.obj.IssueObj;
-import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +10,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -58,7 +56,7 @@ public class IssueEntity {
     private Boolean isFirstIssue;
 
     @OneToMany(mappedBy = "issueEntity", fetch = FetchType.LAZY)
-    Set<IssueCommentEntity> issueCommentEntities;
+    List<IssueCommentEntity> issueCommentEntities;
 
     public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence, boolean isFirstIssue) {
         return IssueEntity.builder()

@@ -1,9 +1,11 @@
-package com.persnal.teampl.repository;
+package com.persnal.teampl.repository.jpa;
+import com.persnal.teampl.entities.IssueCommentEntity;
 import com.persnal.teampl.entities.IssueEntity;
+import com.persnal.teampl.repository.queryDSL.IssueCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface IssueRepository extends JpaRepository<IssueEntity, Integer> {
+public interface IssueRepository extends JpaRepository<IssueEntity, Integer>, IssueCustomRepository {
     IssueEntity findTopByProjectEntityProjectNumAndStatOrderByIssueNumDesc(int projectNum, int stat);
     IssueEntity findTopByProjectEntityProjectNumOrderByIssueNumDesc(int projectNum);
     List<IssueEntity> findAllByProjectEntityProjectNum(int projectNum);
@@ -13,4 +15,6 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Integer> {
     IssueEntity findByProjectEntityProjectNumAndIssueSequence(int projectNum, String issueSequence);
     IssueEntity findByProjectEntityProjectNumAndStatAndRefIsNull(int projectNum, int stat);
 
+    @Override
+    List<IssueCommentEntity> queryDSLSelectIssueData(Integer issueNum);
 }

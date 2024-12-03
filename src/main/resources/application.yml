@@ -13,6 +13,7 @@ spring:
     password: 882614
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
 # Redis Config
   data:
     redis:
@@ -48,6 +49,10 @@ spring:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
 #Custom Thread Config
 custom:

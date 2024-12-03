@@ -40,6 +40,7 @@ public class IssueController {
     }
 
 
+    // 사용하지 않는 api EndPoint
     @GetMapping("/issue-list/{projectNum}/{status}")
     public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(
             @AuthenticationPrincipal String email,
@@ -102,6 +103,14 @@ public class IssueController {
             @RequestBody PostIssueCommentRequest req){
 
         return issueService.postIssueComment(email,req);
+    }
+
+    @GetMapping("/test/{issueNum}")
+    public ResponseEntity<? super ApiResponse<IssueDateTest>> issueDataTest(
+            @AuthenticationPrincipal String email,
+            @PathVariable("issueNum") int issueNum){
+
+        return issueService.getIssueTest(email,issueNum);
     }
 
 }

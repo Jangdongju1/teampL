@@ -1,4 +1,4 @@
-package com.persnal.teampl.repository;
+package com.persnal.teampl.repository.jpa;
 
 import com.persnal.teampl.entities.IssueCommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

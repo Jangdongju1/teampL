@@ -2,7 +2,7 @@ package com.persnal.teampl.service.userdetailsService;
 
 import com.persnal.teampl.dto.userDetails.CustomUserDetails;
 import com.persnal.teampl.entities.UserEntity;
-import com.persnal.teampl.repository.UserRepository;
+import com.persnal.teampl.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

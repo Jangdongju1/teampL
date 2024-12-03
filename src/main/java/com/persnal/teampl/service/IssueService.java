@@ -28,5 +28,7 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<PostIssueCommentResponse>> postIssueComment(String email, PostIssueCommentRequest req);
 
+    ResponseEntity<? super ApiResponse<IssueDateTest>> getIssueTest(String email, Integer issueNum);
+
 
 }

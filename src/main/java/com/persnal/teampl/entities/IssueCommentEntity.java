@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "issue_comment")
 public class IssueCommentEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int commentNum;
+    private Integer commentNum;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issueNum")
     private IssueEntity issueEntity;

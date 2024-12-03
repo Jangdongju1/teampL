@@ -10,10 +10,10 @@ import com.persnal.teampl.entities.IssueCommentEntity;
 import com.persnal.teampl.entities.IssueEntity;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
-import com.persnal.teampl.repository.CommentRepository;
-import com.persnal.teampl.repository.IssueRepository;
-import com.persnal.teampl.repository.ProjectRepository;
-import com.persnal.teampl.repository.UserRepository;
+import com.persnal.teampl.repository.jpa.CommentRepository;
+import com.persnal.teampl.repository.jpa.IssueRepository;
+import com.persnal.teampl.repository.jpa.ProjectRepository;
+import com.persnal.teampl.repository.jpa.UserRepository;
 import com.persnal.teampl.service.IssueSequenceService;
 import com.persnal.teampl.service.IssueService;
 import com.persnal.teampl.util.Utils;
@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.border.AbstractBorder;
 import java.util.List;
 
 @Service
@@ -348,6 +347,28 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return GetPersonalIssueByNumResponse.success(issueEntity);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<IssueDateTest>> getIssueTest(String email, Integer issueNum) {
+        try {
+//            IssueEntity issueEntity = issueRepository.findByIssueNum(issueNum);
+//            List<IssueCommentEntity> cEntity = issueEntity.getIssueCommentEntities();
+
+            List<IssueCommentEntity> issueCommentEntities = issueRepository.queryDSLSelectIssueData(issueNum);
+            System.out.println(issueCommentEntities.size());
+
+
+
+
+            System.out.println("종료");
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return null;
     }
 
     @Override

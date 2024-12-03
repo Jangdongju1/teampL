@@ -9,7 +9,6 @@ import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.auth.SignInResponse;
 import com.persnal.teampl.jwt.WebTokenProvider;
-import com.persnal.teampl.repository.UserRepository;
 import com.persnal.teampl.util.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
