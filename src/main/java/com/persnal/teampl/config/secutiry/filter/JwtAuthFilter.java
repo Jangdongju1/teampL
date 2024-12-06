@@ -31,11 +31,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {  // JWT 검증필터
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String requestURI = request.getRequestURI();
 
-            String token = null;
-
-            token = parseToken(request);
+            String token = parseToken(request);
 
 
             if (token == null) {
@@ -50,9 +47,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {  // JWT 검증필터
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            // 나중에 여기서 검증하는 것으로 변경하기
-//            boolean isExistUser = userRepository.existsByEmail(email);
 
             AbstractAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);

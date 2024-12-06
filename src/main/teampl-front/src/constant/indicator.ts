@@ -27,6 +27,8 @@ export const PATCH_ISSUE_CATEGORY = () =>"/modification/issue-category";
 export const PATCH_ISSUE_EXPIRE_DATE = ()=>"/modification/issue-expire-date";
 export const PATCH_ISSUE_DETAIL = () =>"/modification/issue-detail";
 export const POST_ISSUE_COMMENT =()=> "/create/issue-comment";
+export const GET_ISSUE_COMMENT = (issueNum:number) =>`/comment-list/${issueNum}`;
+export const PATCH_ISSUE_COMMENT = ()=>"/modification/issue-comment";
 
 
 

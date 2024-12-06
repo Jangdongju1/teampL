@@ -11,6 +11,7 @@ public interface ResponseCode {
     String NOT_EXIST_USER = "NEU";
     String NOT_EXIST_PROJECT = "NEP";
     String NOT_EXIST_ISSUE = "NEI";
+    String NOT_EXIST_COMMENT = "NEC";
     String EXPIRE_AUTH_CODE="EAC";
     String ALREADY_SENT = "AS";
 

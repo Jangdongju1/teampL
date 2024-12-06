@@ -42,6 +42,7 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
     const onMouseLeaveEventHandler = (e: MouseEvent<HTMLDivElement>) => {
         if (!hoverStyle || !hoverColor) return;
         const element = e.target as HTMLDivElement;
+
         if (hoverStyle === "background") {
             if (!backgroundColor) return;
             element.style.backgroundColor = backgroundColor;

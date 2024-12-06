@@ -1,6 +1,8 @@
 package com.persnal.teampl.jwt.webTokenImpl;
 
+import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.jwt.WebTokenProvider;
+import com.persnal.teampl.util.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -48,7 +50,7 @@ public class JwtProvider implements WebTokenProvider {
                     .compact();
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName() ,Utils.getStackTrace(e));
         }
 
         return token;
@@ -67,7 +69,7 @@ public class JwtProvider implements WebTokenProvider {
             subject = claims.getSubject();
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName() ,Utils.getStackTrace(e));
         }
         return subject;
     }
@@ -85,7 +87,7 @@ public class JwtProvider implements WebTokenProvider {
                     .compact();
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName() ,Utils.getStackTrace(e));
         }
 
         return token;

@@ -22,7 +22,7 @@ export default function ConfirmAuthCode() {
     // state : 쿠키 상태
     const [cookie, setCookie] = useCookies();
     // global state : 유저 이메일 전역상태
-    const {email, setEmail} = userEmailStore();
+    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
     // reference: 인증 코드 input head 및 body refer
     const headRefs = useRef<(HTMLInputElement | null)[]>([]);
     const bodyRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -99,7 +99,7 @@ export default function ConfirmAuthCode() {
         const {code} = responseBody as ResponseDto;
         if (code === ResponseCode.SUCCESS){
 
-            const encodedEmail = btoa(email);
+            const encodedEmail = btoa(loginUserEmail);
             navigator(`${AUTH_PATH()}/${PASSWORD_REGISTRATION_PATH(encodedEmail)}`);
         }
         else if(code === ResponseCode.AUTHENTICATION_FAILED) alert("유효하지 않은 코드입니다.");
@@ -176,8 +176,8 @@ export default function ConfirmAuthCode() {
                         </div>
 
                         <div className={"code-confirm-userEmail-container"}>
-                            {email && (
-                                <div className={"code-confirm-userEmail"}>{`E-mail : ${email}`}</div>
+                            {loginUserEmail && (
+                                <div className={"code-confirm-userEmail"}>{`E-mail : ${loginUserEmail}`}</div>
                             )}
 
                         </div>

@@ -23,7 +23,7 @@ export default function PasswordRegistration() {
     //state : 닉네임(아이디) 상태
     const [nickname, setNickname] = useState<string>("");
     // GlobalState: 유저이메일 전역상태
-    const {email,setEmail} = userEmailStore();
+    const {loginUserEmail,setLoginUserEmail} = userEmailStore();
     // state : 쿠킥 상태
     const [cookie , setCookie] = useCookies();
 

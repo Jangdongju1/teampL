@@ -30,5 +30,9 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<IssueDateTest>> getIssueTest(String email, Integer issueNum);
 
+    ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(String email, Integer issueNum);
+
+    ResponseEntity<? super ApiResponse<PatchIssueCommentResponse>> patchComment(String email, PatchIssueCommentRequest req);
+
 
 }

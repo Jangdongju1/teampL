@@ -38,7 +38,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private WebTokenProvider jwtProvider;
 
-    private static final int TOKEN_EXPIRY_TIME = 10800;
+    private static final int TOKEN_EXPIRE_TIME = 10800;
 
     public LoginFilter(AuthenticationManager authenticationManager, WebTokenProvider jwtProvider) {
         this.authenticationManager = authenticationManager;
@@ -62,7 +62,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String line = "";
         StringBuilder sb = new StringBuilder();
 
-        try (BufferedReader reader = request.getReader()) {
+        try (BufferedReader reader = request.getReader()) {  // try with resource
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
@@ -71,7 +71,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             username = req.getEmail();
             password = req.getPassword();
-
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
@@ -99,7 +98,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         role = grantedAuthority.getAuthority();
 
-        String token = jwtProvider.createWebToken(userEmail, role, TOKEN_EXPIRY_TIME);
+        String token = jwtProvider.createWebToken(userEmail, role, TOKEN_EXPIRE_TIME);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -109,7 +108,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 new ApiResponse<>(
                         ResponseCode.SUCCESS,
                         ResponseMessage.SUCCESS,
-                        new SignInResponse(token, TOKEN_EXPIRY_TIME));
+                        new SignInResponse(token, TOKEN_EXPIRE_TIME));
 
 
         response.getWriter().write(new Gson().toJson(responseBody));

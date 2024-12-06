@@ -39,6 +39,7 @@
 .issue-modal-normal-comp-content-box{
     width: 300px;
     height: 100%;
+    display: flex;
 }
 
 .issue-modal-normal-comp-show-box{
@@ -46,6 +47,7 @@
     height: 100%;
     background-color: rgba(0,0,0,0.03);
     display: flex;
+    justify-content: center;
     align-items: center;
     font-size: 16px;
     line-height: 140%;

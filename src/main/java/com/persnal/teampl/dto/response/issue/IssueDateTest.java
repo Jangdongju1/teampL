@@ -10,6 +10,4 @@ import java.util.List;
 public class IssueDateTest {
     private IssueObj issue;
     private List<CommentObj> list;
-
-
 }

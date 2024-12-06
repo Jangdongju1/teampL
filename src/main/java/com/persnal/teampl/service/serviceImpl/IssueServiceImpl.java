@@ -1,6 +1,7 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
+import com.persnal.teampl.dto.obj.IssueCommentObj;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -355,7 +356,7 @@ public class IssueServiceImpl implements IssueService {
 //            IssueEntity issueEntity = issueRepository.findByIssueNum(issueNum);
 //            List<IssueCommentEntity> cEntity = issueEntity.getIssueCommentEntities();
 
-            List<IssueCommentEntity> issueCommentEntities = issueRepository.queryDSLSelectIssueData(issueNum);
+            List<com.persnal.teampl.entities.IssueCommentEntity> issueCommentEntities = issueRepository.queryDSLSelectIssueData(issueNum);
             System.out.println(issueCommentEntities.size());
 
 
@@ -401,7 +402,7 @@ public class IssueServiceImpl implements IssueService {
                     .commentOrder(commentOrder)
                     .build();
 
-            IssueCommentEntity commentEntity = IssueCommentEntity.fromRequest(request);
+            com.persnal.teampl.entities.IssueCommentEntity commentEntity = com.persnal.teampl.entities.IssueCommentEntity.fromRequest(request);
 
 
             commentRepository.save(commentEntity);
@@ -413,5 +414,51 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return PostIssueCommentResponse.success();
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(String email, Integer issueNum) {
+        List<IssueCommentEntity> entities = null;
+
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            if (!isExistUser) return GetIssueCommentListResponse.notExistUser();
+
+            boolean isExistIssue = issueRepository.existsById(issueNum);
+            if (!isExistIssue) return GetIssueCommentListResponse.notExistIssue();
+
+            entities = issueRepository.getIssueList(issueNum);
+
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetIssueCommentListResponse.success(entities);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueCommentResponse>> patchComment(String email, PatchIssueCommentRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+
+            if (!isExistUser) return PatchIssueCommentResponse.notExistUser();
+
+            boolean isExistIssue = issueRepository.existsById(req.getIssueNum());
+            if (!isExistIssue) return PatchIssueCommentResponse.notExistIssue();
+
+            IssueCommentEntity entity = commentRepository.findByCommentNum(req.getCommentNum());
+
+            entity.setContent(req.getComment());
+
+            commentRepository.save(entity);
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueCommentResponse.success();
     }
 }

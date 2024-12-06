@@ -8,13 +8,12 @@ import {getPersonalPrjInfoRequest} from "../../api/projectApi";
 import GetPersonalPrjInfoResponse from "../../interface/response/project/personal/getPersonalPrjInfoResponse";
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
-import {Issue, KanbanState, Project} from "../../interface/types";
+import {Issue, Project} from "../../interface/types";
 import {IssueStatus, ModalType, ProjectStatus, ProjectType} from "../../common";
 import {getPersonalIssueListRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import IssueModal from "../../component/modal/issueModal";
 import {modalStore} from "../../store";
-import issueStatus from "../../common/enum/IssueStatus";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -110,7 +109,7 @@ export default function KanbanBoard(props: KanbanType) {
         <div id={"kanban-board-wrapper"}>
             {isModalOpen && modalType === ModalType.ISSUE_INFO && (
                 <IssueModal
-                    isTeamModal={true}
+                    isTeamModal={isTeamKanban}
                     setRefresh={setRefresh}/>
             )}
 

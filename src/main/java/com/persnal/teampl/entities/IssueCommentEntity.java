@@ -1,13 +1,13 @@
 package com.persnal.teampl.entities;
 
+import com.persnal.teampl.dto.obj.IssueCommentObj;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -18,11 +18,15 @@ import java.time.LocalDateTime;
 public class IssueCommentEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentNum;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issueNum")
+
     private IssueEntity issueEntity;
+    @Setter
     private String content;
     private String writeDate;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")
@@ -35,7 +39,6 @@ public class IssueCommentEntity {
     private Integer commentOrder;
 
     private Boolean isDeleted;
-
 
 
 
@@ -52,6 +55,29 @@ public class IssueCommentEntity {
                 .commentLevel(0)
                 .isDeleted(false)
                 .build();
+    }
+
+    public static List<IssueCommentObj> getList(List<IssueCommentEntity> entities){
+        List<IssueCommentObj> comentList = new ArrayList<>();
+
+        for (IssueCommentEntity entity: entities) {
+
+            IssueCommentObj comment = IssueCommentObj.builder()
+                    .email(entity.getUserEntity().getEmail())
+                    .picture(entity.getUserEntity().getProfileImg())
+                    .commentNum(entity.getCommentNum())
+                    .issueNum(entity.getIssueEntity().getIssueNum())
+                    .content(entity.getContent())
+                    .writeDate(entity.getWriteDate())
+                    .commentLevel(entity.getCommentLevel())
+                    .commentGroup(entity.getCommentGroup())
+                    .commentOrder(entity.getCommentOrder())
+                    .build();
+
+            comentList.add(comment);
+
+        }
+        return comentList;
     }
 
 }

@@ -24,12 +24,25 @@ export type Issue = {
     expireDate: string,
     stat: number,
     category: number,
-    ref : string,
-    issueSequence :string,
-    isFirstIssue:boolean
+    ref: string,
+    issueSequence: string,
+    isFirstIssue: boolean
+}
+
+// 이슈에 대한 코멘트 정의
+export type IssueComment = {
+    email: string,
+    picture: string | null
+    commentNum: number
+    issueNum: number,
+    content: string,
+    writeDate: string,
+    commentLevel: number,
+    commentGroup: number,
+    commentOrder: number
 }
 
 export type KanbanState = {
-    status : IssueStatus,
-    setState : (issues:Issue[]) => void;
+    status: IssueStatus,
+    setState: (issues: Issue[]) => void;
 }

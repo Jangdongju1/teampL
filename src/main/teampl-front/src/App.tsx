@@ -34,7 +34,7 @@ function App() {
     // global State: 모달상태
     const {isModalOpen} = modalStore();
     //* global State: 로그인된 유저의 이메일 상태
-    const {setEmail} = userEmailStore();
+    const {setLoginUserEmail} = userEmailStore();
     //function : 로그인된 유저인지 확인 후 응답처리 함수.
     const loginUserResponse = (responseBody : LoginUserResponse | ResponseDto | null) =>{
         if (!responseBody) return;
@@ -46,7 +46,7 @@ function App() {
         if (!identifier) return;
 
         const userEmail = atob(identifier);
-        setEmail(userEmail);
+        setLoginUserEmail(userEmail);
 
         //navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
     }

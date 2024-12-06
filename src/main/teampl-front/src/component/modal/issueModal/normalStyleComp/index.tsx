@@ -4,7 +4,7 @@ import "./style.css";
 type ModalCompNormalProps = {
     labelName : string,
     labelIcon : string,
-    viewData: string
+    viewData: string,
 }
 export default function ModalCompNormal(props:ModalCompNormalProps){
     const {viewData,labelIcon,labelName}=props;

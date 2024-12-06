@@ -13,6 +13,12 @@ public class ResponseDto {
     private String code;
     private String message;
 
+
+    public static ResponseEntity<ResponseDto> notExistComment() {
+        ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_COMMENT, ResponseMessage.NOT_EXIST_RESOURCE);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     public static ResponseEntity<ResponseDto> notExistIssue() {
         ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_ISSUE, ResponseMessage.NOT_EXIST_ISSUE);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

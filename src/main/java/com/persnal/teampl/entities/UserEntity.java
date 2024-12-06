@@ -3,6 +3,7 @@ package com.persnal.teampl.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,14 +26,14 @@ public class UserEntity {
     private String role;
 
     // 일대다 관계에서 부모가 주인이 아님을 선언해야 한다.
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private Set<IssueEntity> issueEntities;
-
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private Set<IssueCommentEntity> issueCommentEntities;
-
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private Set<ProjectEntity> projectEntities;
+//    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+//    private Set<IssueEntity> issueEntities;
+//
+//    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+//    private List<IssueCommentEntity> issueCommentEntities;
+//
+//    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+//    private Set<ProjectEntity> projectEntities;
 
     public static UserEntity fromRequest(String password, String nickname, String email){
         return UserEntity.builder()

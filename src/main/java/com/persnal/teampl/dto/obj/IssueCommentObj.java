@@ -1,6 +1,11 @@
 package com.persnal.teampl.dto.obj;
 
-public class CommentObj {
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
+public class IssueCommentObj {
     private String email;
     private String picture;
     private Integer commentNum;

@@ -12,6 +12,7 @@ import PatchIssueCategoryRequest from "./issue/patchIssueCategoryRequest";
 import PatchIssueExpireDateRequest from "./issue/patchIssueExpireDateRequest";
 import PatchIssueDetailRequest from "./issue/patchIssueDetailRequest";
 import PostIssueCommentRequest from "./issue/postIssueCommentRequest";
+import PatchIssueCommentRequest from "./issue/patchIssueCommentRequest";
 
 export type {
     AuthCodeRequest,
@@ -27,5 +28,6 @@ export type {
     PatchIssueCategoryRequest,
     PatchIssueExpireDateRequest,
     PatchIssueDetailRequest,
-    PostIssueCommentRequest
+    PostIssueCommentRequest,
+    PatchIssueCommentRequest
 }

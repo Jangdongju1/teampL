@@ -1,10 +1,10 @@
 import axios from "axios";
 import {
-    CREATE_PERSONAL_ISSUE,
+    CREATE_PERSONAL_ISSUE, GET_ISSUE_COMMENT,
     GET_PERSONAL_ISSUE_BY_NUMBER,
     GET_PERSONAL_ISSUE_BY_STATUS,
     GET_PERSONAL_ISSUE_LIST,
-    PATCH_ISSUE_CATEGORY,
+    PATCH_ISSUE_CATEGORY, PATCH_ISSUE_COMMENT,
     PATCH_ISSUE_DETAIL,
     PATCH_ISSUE_EXPIRE_DATE,
     PATCH_ISSUE_PRIORITY,
@@ -19,7 +19,7 @@ import {
     GetPersonalIssueListResponse,
     CreateIssueResponse,
     PatchIssueStatusResponse,
-    PatchIssueCategoryResponse, PatchIssueExpireDateResponse, PostIssueCommentResponse
+    PatchIssueCategoryResponse, PatchIssueExpireDateResponse, PostIssueCommentResponse, PatchIssueCommentResponse
 } from "../interface/response";
 import {
     PatchIssueTitleRequest,
@@ -29,9 +29,10 @@ import {
     PatchIssueCategoryRequest,
     PatchIssueExpireDateRequest,
     PatchIssueDetailRequest,
-    PostIssueCommentRequest
+    PostIssueCommentRequest, PatchIssueCommentRequest
 } from "../interface/request";
 import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
+import {log} from "node:util";
 
 
 const DOMAIN = "http://localhost:4000";
@@ -214,7 +215,7 @@ export const patchExpireDateRequest = async (requestBody: PatchIssueExpireDateRe
         const result =
             await axios.patch(apiEndPoint(PATCH_ISSUE_EXPIRE_DATE()), requestBody, Authorization(accessToken));
 
-        const responseBody : PatchIssueExpireDateResponse = result.data;
+        const responseBody: PatchIssueExpireDateResponse = result.data;
         return responseBody;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -230,21 +231,21 @@ export const patchExpireDateRequest = async (requestBody: PatchIssueExpireDateRe
 }
 
 // 이슈 디테일 수정 요청
-export const patchIssueDetailRequest = async (requestBody : PatchIssueDetailRequest, accessToken : string) =>{
+export const patchIssueDetailRequest = async (requestBody: PatchIssueDetailRequest, accessToken: string) => {
     try {
         const result =
-           await axios.patch(apiEndPoint(PATCH_ISSUE_DETAIL()), requestBody, Authorization(accessToken));
+            await axios.patch(apiEndPoint(PATCH_ISSUE_DETAIL()), requestBody, Authorization(accessToken));
 
-        const responseBody : PatchIssueDetailResponse = result.data;
+        const responseBody: PatchIssueDetailResponse = result.data;
 
         return responseBody;
 
-    }catch (error){
-        if (axios.isAxiosError(error)){
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
             if (!error.response) return null;
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
+        } else {
             console.log("unexpected Error!!");
             return null;
         }
@@ -252,23 +253,72 @@ export const patchIssueDetailRequest = async (requestBody : PatchIssueDetailRequ
 }
 
 // 이슈에 대한 comment 등록 요청
-export const postIssueCommentRequest = async (requestBody : PostIssueCommentRequest, accessToken : string)=>{
+export const postIssueCommentRequest = async (requestBody: PostIssueCommentRequest, accessToken: string) => {
     try {
         const result =
-            await axios.post(apiEndPoint(POST_ISSUE_COMMENT()), requestBody , Authorization(accessToken));
+            await axios.post(apiEndPoint(POST_ISSUE_COMMENT()), requestBody, Authorization(accessToken));
 
-        const responseBody : PostIssueCommentResponse  = result.data;
+        const responseBody: PostIssueCommentResponse = result.data;
 
         return responseBody;
-    }catch (error){
-        if (axios.isAxiosError(error)){
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
             if (!error.response) return null;
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
-            console.log("unexpected Error!!");
+        } else {
+            console.log("Unexpected Error!!");
             return null;
         }
     }
+}
 
+// 특정 이슈에 대한 comment 리스트를 가져오는 요청.
+export const getIssueCommentRequest = async (issueNum: number, accessToken: string) => {
+    try {
+        const result =
+            await axios.get(apiEndPoint(GET_ISSUE_COMMENT(issueNum)), Authorization(accessToken));
+
+        const responseBody: GetPersonalIssueListResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Request", error.request);
+                console.error("Error is occurred!", error.message)
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+
+        } else {
+            console.log("Unexpected Error!!");
+            return null;
+        }
+    }
+}
+
+// 작성된 이슈의 수정
+
+export const patchIssueCommentRequest = async (requestBody: PatchIssueCommentRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.patch(apiEndPoint(PATCH_ISSUE_COMMENT()), requestBody, Authorization(accessToken));
+
+        const responseBody : PatchIssueCommentResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)){
+            if (!error.response){
+                console.log("Request", error.request);
+                console.error("Error is occurred!", error.message)
+                return null;
+            }
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        }else {
+            console.log("Unexpected Error!!");
+            return null;
+        }
+    }
 }

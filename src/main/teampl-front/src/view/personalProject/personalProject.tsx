@@ -15,7 +15,7 @@ export default function PersonalProject() {
     // global state : 개인프로젝트의 상태
     const {projects, setProjects} = personalPrjStore();
     // global state : 유저의 이메일 상태
-    const {email} = userEmailStore();
+    const {loginUserEmail} = userEmailStore();
     // state : 쿠키 상태
     const [cookies, setCookies] = useCookies();
 
@@ -24,7 +24,7 @@ export default function PersonalProject() {
         const accessToken = cookies.accessToken_Main;
         if (!accessToken) return;
 
-        identifier = btoa(email);
+        identifier = btoa(loginUserEmail);
 
 
         navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_BOARD_PATH(identifier, projectNum)}`);
@@ -124,7 +124,7 @@ export default function PersonalProject() {
                                     projectNum={item.projectNum.toString()}
                                     projectName={item.projectName}
                                     createDate={item.createDate}
-                                    onClick={() => onPrjElementClickEventHandler(email, item.projectNum.toString())}/>)
+                                    onClick={() => onPrjElementClickEventHandler(loginUserEmail, item.projectNum.toString())}/>)
                         }
                     </div>
                 </div>

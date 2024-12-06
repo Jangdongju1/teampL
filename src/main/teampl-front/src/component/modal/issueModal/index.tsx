@@ -12,12 +12,14 @@ import Pagination from "../../pagination";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {
+    getIssueCommentRequest,
     getPersonalIssueByIssueNum,
     patchExpireDateRequest,
     patchIssueDetailRequest,
     patchIssueTitleRequest, postIssueCommentRequest
 } from "../../../api/issueApi";
 import {
+    GetIssueCommentResponse,
     GetPersonalIssueByNumResponse,
     PatchIssueExpireDateResponse,
     PatchIssueTitleResponse, PostIssueCommentResponse,
@@ -30,8 +32,10 @@ import {
     PatchIssueExpireDateRequest,
     PatchIssueTitleRequest
 } from "../../../interface/request";
-import {getFormattedDateToString} from "../../../util";
+import {getFormattedDate, getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
+import {IssueComment} from "../../../interface/types";
+
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
@@ -50,7 +54,7 @@ export default function IssueModal(props: IssueModalProps) {
     const [cookies, setCookies] = useCookies();
 
     // state:  제목 변경상태
-    const [isChange, setIsChange] = useState<boolean>(false);
+    const [isTitleChange, setIsTitleChange] = useState<boolean>(false);
     // state:  제목 상태
     const [title, setTitle] = useState<string>("");
     // state : 제목 view 상태
@@ -65,6 +69,8 @@ export default function IssueModal(props: IssueModalProps) {
     const [participants, setParticipants] = useState<string[]>(["jdj88", "siedj22"]);
     // state : 참여자 클릭상태
     const [participantsClickState, setParticipantsClickState] = useState<boolean>(false);
+    // state: 팀모달이 아닌 경우에 inCharge대신 작성자를 담당자로 전달함.
+    const [writer, setWriter] = useState<string>("");
 
     // state : category 상태
     const [category, setCategory] = useState<number>(IssueCategory.BUG_FIX);
@@ -86,6 +92,10 @@ export default function IssueModal(props: IssueModalProps) {
     // state : expire Date 항목 클릭 상태
     const [expireDateClickSate, setExpireDateClickState] = useState<boolean>(false);
 
+    // state : 작성일자
+    const [writeDate, setWriteDate] = useState<string>("")
+
+
     // state : issueDetail 상태
     const [issueDetail, setIssueDetail] = useState<string>("");
     // state : issueDetailView 상태
@@ -95,8 +105,11 @@ export default function IssueModal(props: IssueModalProps) {
 
     // state: comment 입력 상태
     const [comment, setComment] = useState<string>("");
+    // 댓글 데이터 상태
+    const [issueComments, setIssueComments] = useState<IssueComment[]>([]);
     // global state: 모달 상태
     const {setIsModalOpen} = modalStore();
+
 
     // accessToken
     const accessToken = cookies.accessToken_Main;
@@ -139,7 +152,7 @@ export default function IssueModal(props: IssueModalProps) {
 
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
     const onTitleClickEventHandler = () => {
-        setIsChange(true);
+        setIsTitleChange(true);
     }
 
 
@@ -156,9 +169,9 @@ export default function IssueModal(props: IssueModalProps) {
 
 
             setTitleView(title);
-            setIsChange(false);
+            setIsTitleChange(false);
         } else if (key === "Escape") {
-            setIsChange(false);
+            setIsTitleChange(false);
         }
     }
 
@@ -229,12 +242,12 @@ export default function IssueModal(props: IssueModalProps) {
     }
 
     // function : 이슈에 대한 댓글 게시 요청에 대한 응답함수
-    const postIssueResponse = (responseBody : PostIssueCommentResponse | ResponseDto | null)=>{
+    const postIssueResponse = (responseBody: PostIssueCommentResponse | ResponseDto | null) => {
         if (!responseBody) return;
 
-        const {code,message} = responseBody as ResponseDto;
+        const {code, message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -280,14 +293,32 @@ export default function IssueModal(props: IssueModalProps) {
         setStatus(stat);
         setPriority(priority);
         setInCharge(inCharge);
+        setWriter(email);
         setCategory(category);
         setIssueDetail(content);
         setIssueDetailView(content); // 뷰영역 또한 세팅
         setExpireDate(expireDate ? new Date(expireDate) : null);
+        setWriteDate(writeDate);
 
     }
 
+    // function : 이슈에 대한 댓글 요청후 처리 함수
+    const getIssueCommentResponse = (responseBody: GetIssueCommentResponse | ResponseDto | null) => {
+        if (!responseBody) return;
 
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetIssueCommentResponse;
+
+        setIssueComments(data.commentList);
+    }
+
+    //  마운트시 : 이슈에 대한 데이터를 불러옴.
     useEffect(() => {
         // 특정 issue에 해당하는 데이터를 불러오는 api호출
         if (!accessToken || !issueNum) return;
@@ -299,6 +330,19 @@ export default function IssueModal(props: IssueModalProps) {
         }
 
         fetchIssueData();
+
+    }, [issueNum]);
+
+
+    // 마운트시 : 뎃글 데이터는 별도로 호출해서 불러옴
+    useEffect(() => {
+        if (!accessToken || !issueNum) return;
+        const fetchIssueComment = async () => {
+            const responseBody = await getIssueCommentRequest(issueNum, accessToken);
+            getIssueCommentResponse(responseBody);
+        }
+
+        fetchIssueComment();
 
     }, [issueNum]);
     return (
@@ -315,33 +359,35 @@ export default function IssueModal(props: IssueModalProps) {
                         </div>
 
                         <div className={"issue-modal-label-content-style"} style={{}}>
-                            {!isChange ?
+                            {!isTitleChange ?
                                 <div className={"issue-modal-content-show-style"}
                                      onClick={onTitleClickEventHandler}>{titleView}</div> :
                                 <CommonInputComponent value={title}
                                                       setValue={setTitle}
                                                       onKeyDown={onTitleKeyDownEventHandler}
-                                                      setView={setIsChange}/>
+                                                      setView={setIsTitleChange}/>
                             }
                         </div>
                     </div>
+
+                    <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
+                                       hooks={{
+                                           value: isTeamModal ? inCharge : writer,
+                                           setValue: setInCharge,
+                                           clickState: inChargeClickSate,
+                                           setClickState: setInChargeClickSate,
+                                           setRefresh: setRefresh
+                                       }}
+                                       compType={"inCharge"}/>
 
                     {!isTeamModal ?
                         null :
                         <div className={"issue-modal-team-info-container"}>
                             <ModalCompNormal labelName={"팀이름"}
                                              labelIcon={"issue-modal-team-icon"}
-                                             viewData={""}/>
+                                             viewData={"efe"}
+                            />
 
-                            <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
-                                               hooks={{
-                                                   value: inCharge,
-                                                   setValue: setInCharge,
-                                                   clickState: inChargeClickSate,
-                                                   setClickState: setInChargeClickSate,
-                                                   setRefresh: setRefresh
-                                               }}
-                                               compType={"inCharge"}/>
 
                             <ModalCompBtnStyle labelName={"참여자"}
                                                labelIcon={"issue-modal-participants-icon"}
@@ -399,10 +445,12 @@ export default function IssueModal(props: IssueModalProps) {
                                            setRefresh: setRefresh
                                        }}/>
 
+                    <ModalCompNormal labelName={"작성일자"}
+                                     labelIcon={"issue-modal-team-icon"}
+                                     viewData={getFormattedDate(writeDate)}/>
+
 
                 </div>
-
-
             </div>
 
             <div className={"issue-modal-right-container"}>
@@ -483,7 +531,9 @@ export default function IssueModal(props: IssueModalProps) {
                     <div className={"issue-modal-right-comment-item-box"}>
 
                         <div className={"issue-modal-right-comment-item"}>
-                            <CommentComp/>
+
+                            {issueComments.map((item, index) =>
+                                <CommentComp key={item.commentNum} data={item}/>)}
                         </div>
 
                         <div className={"issue-modal-right-pagination"}>
@@ -494,8 +544,6 @@ export default function IssueModal(props: IssueModalProps) {
                 </div>
 
             </div>
-
-
         </div>
     )
 }

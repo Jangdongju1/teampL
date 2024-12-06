@@ -32,7 +32,7 @@ export default function Authentication() {
     // state : 인증코드 페이지 식별자 상태
 
     // global state : 전역상태  유저의 이메일을 인증 코드 컴포넌트로 전달
-    const {email, setEmail} = userEmailStore();
+    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
 
 
     // effect : 토큰 체크로직
@@ -220,7 +220,7 @@ export default function Authentication() {
             const expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
             setCookie("accessToken_Auth", data.accessToken_Auth, {expires, path: `${AUTH_PATH()}/`});
 
-            setEmail(data.email);  // 전역상태 저장.
+            setLoginUserEmail(data.email);  // 전역상태 저장.
 
             // 세션스토리지에 url식별자를 저장하고,  이메일로 인증페이지에 대한 url을 함께 전송할 예졍.
             const encodedEmail = btoa(data.email);
