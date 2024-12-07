@@ -12,12 +12,15 @@
     transform: translate(-50%, -50%); /* 요소의 중앙을 기준으로 이동 */
     z-index: 1011;
 
-    display: grid;
+    display: flex;
+    /*display: grid;*/
 
-    grid-template-columns: 4fr 5fr;
+    /*grid-template-columns: 4fr 5fr;*/
 }
 .issue-modal-left-container{
-    max-width: 470px;
+    height: 100%;
+    width: 50%;
+    /*max-width: 470px;*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -108,15 +111,17 @@
 
 
 .issue-modal-right-container{
-    display: flex;
+    width: 50%;
+    height: 100%;
+    display: block;
     flex-direction: column;
     align-items: center;
     position: relative;
 
     box-sizing: border-box;
     padding: 28px;
+
     overflow-y: auto;
-    overflow-x: auto;
 
     gap: 25px;
 }
@@ -129,6 +134,7 @@
 
     justify-content: right;
 }
+
 .close-btn{
     width: 26px;
     height: 26px;
@@ -178,7 +184,7 @@
     flex-direction: column;
     align-items: center;
 
-    gap: 10px;
+    margin-top: 20px;
 }
 .issue-modal-right-comment-title{
     width: 100%;
@@ -191,6 +197,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 }
 .issue-modal-right-comment-editor{
     width: 100%;
@@ -219,4 +226,11 @@
     display: flex;
     justify-content: center;
 }
+.test112{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    gap: 10px;
+}

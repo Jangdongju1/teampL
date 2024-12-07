@@ -7,4 +7,6 @@ public interface CommentRepository extends JpaRepository<IssueCommentEntity, Int
     int countByIssueEntityIssueNumAndCommentGroupIsNull(int issueNum);
 
     IssueCommentEntity findByCommentNum(Integer commentNum);
+    Integer countByIssueEntityIssueNum(Integer issueNum);
+
 }

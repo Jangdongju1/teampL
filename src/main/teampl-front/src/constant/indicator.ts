@@ -27,8 +27,11 @@ export const PATCH_ISSUE_CATEGORY = () =>"/modification/issue-category";
 export const PATCH_ISSUE_EXPIRE_DATE = ()=>"/modification/issue-expire-date";
 export const PATCH_ISSUE_DETAIL = () =>"/modification/issue-detail";
 export const POST_ISSUE_COMMENT =()=> "/create/issue-comment";
-export const GET_ISSUE_COMMENT = (issueNum:number) =>`/comment-list/${issueNum}`;
+export const GET_ISSUE_COMMENT_LIST =
+    (issueNum:number, page: number, perPage: number) =>`/comment-list/${issueNum}?page=${page}&perPage=${perPage}`;
 export const PATCH_ISSUE_COMMENT = ()=>"/modification/issue-comment";
+export const GET_TOTAL_COMMENT_COUNT =
+    (issueNum: number)=> `/total-comments-count/${issueNum}`;
 
 
 

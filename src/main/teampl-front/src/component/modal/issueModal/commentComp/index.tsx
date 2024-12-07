@@ -68,9 +68,10 @@ export default function CommentComp({data}: CommentProps) {
 
     // function : 작성일 경과시간 반환함수.
     const ElapsedTime = (date: string) => {
-        const now = dayjs().add(9, "hour");
+        const now = dayjs();
         const writeTime = dayjs(date)
         const gap = now.diff(writeTime, "s");
+
 
         if (gap < 60) return `${gap}초 전`;
         if (gap < 3600) return `${Math.floor(gap / 60)}분 전`;

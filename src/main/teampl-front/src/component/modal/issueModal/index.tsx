@@ -12,13 +12,14 @@ import Pagination from "../../pagination";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {
-    getIssueCommentRequest,
-    getPersonalIssueByIssueNum,
+    getIssueCommentListRequest,
+    getPersonalIssueByIssueNum, getTotalCommentCountRequest,
     patchExpireDateRequest,
     patchIssueDetailRequest,
     patchIssueTitleRequest, postIssueCommentRequest
 } from "../../../api/issueApi";
 import {
+    GetCommentCountResponse,
     GetIssueCommentResponse,
     GetPersonalIssueByNumResponse,
     PatchIssueExpireDateResponse,
@@ -35,6 +36,8 @@ import {
 import {getFormattedDate, getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
 import {IssueComment} from "../../../interface/types";
+import usePagination from "../../../hook/pagination";
+import GetIssueCommentListRequest from "../../../interface/request/issue/GetIssueCommentListRequest";
 
 
 // 이슈에 대한 데이터를 받아올 예정.
@@ -61,7 +64,7 @@ export default function IssueModal(props: IssueModalProps) {
     const [titleView, setTitleView] = useState<string>("")
 
     // state : 담당자 상태
-    const [inCharge, setInCharge] = useState<string>("jdj881204@naver.com");
+    const [inCharge, setInCharge] = useState<string>("");
     // state : 담당자 클릭 상태
     const [inChargeClickSate, setInChargeClickSate] = useState<boolean>(false);
 
@@ -109,6 +112,17 @@ export default function IssueModal(props: IssueModalProps) {
     const [issueComments, setIssueComments] = useState<IssueComment[]>([]);
     // global state: 모달 상태
     const {setIsModalOpen} = modalStore();
+
+    const PER_PAGE: number = 5;
+    // pagination custom hook
+    const {
+        viewPageList,
+        currentSection,
+        currentPage,
+        setCurrentSection,
+        setCurrentPage,
+        setTotalCount
+    } = usePagination(PER_PAGE);  // 1페이지당 5개
 
 
     // accessToken
@@ -241,6 +255,20 @@ export default function IssueModal(props: IssueModalProps) {
 
     }
 
+    // function: 총 댓글의 갯수를 가져오는 api 호출에 대한 응답처리 함수.
+    const getTotalCommentCountResponse = (responseBody: GetCommentCountResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+        const {data} = responseBody as GetCommentCountResponse;
+        setTotalCount(data.totalCount);
+
+    }
+
     // function : 이슈에 대한 댓글 게시 요청에 대한 응답함수
     const postIssueResponse = (responseBody: PostIssueCommentResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -315,6 +343,7 @@ export default function IssueModal(props: IssueModalProps) {
 
         const {data} = responseBody as GetIssueCommentResponse;
 
+
         setIssueComments(data.commentList);
     }
 
@@ -334,22 +363,46 @@ export default function IssueModal(props: IssueModalProps) {
     }, [issueNum]);
 
 
-    // 마운트시 : 뎃글 데이터는 별도로 호출해서 불러옴
+    // 마운트시 : 일단 전체 댓글의 갯수를 불러옴
     useEffect(() => {
-        if (!accessToken || !issueNum) return;
+        if (!issueNum || !accessToken) return;
+
+        const fetchCommentCount = async () => {
+            const responseBody = await getTotalCommentCountRequest(issueNum, accessToken);
+
+            getTotalCommentCountResponse(responseBody);
+        }
+
+        fetchCommentCount();
+    }, [issueNum]);
+
+    useEffect(() => {
+        if (!issueNum || !accessToken) return;
+        const requestParam: GetIssueCommentListRequest = {issueNum, page: currentPage, perPage: PER_PAGE}
+
         const fetchIssueComment = async () => {
-            const responseBody = await getIssueCommentRequest(issueNum, accessToken);
+            const responseBody = await getIssueCommentListRequest(requestParam, accessToken);
             getIssueCommentResponse(responseBody);
         }
 
         fetchIssueComment();
 
-    }, [issueNum]);
+
+    }, [currentPage]);
+
+
     return (
         <div id={"issue-modal-wrapper"}>
+            {/*클로즈 박스*/}
+
+            {/*<div className={"issue-modal-close-box"}>*/}
+            {/*    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>*/}
+            {/*</div>*/}
+
             <div className={"issue-modal-left-container"}>
-                <div
-                    className={"issue-modal-title"}>{titleView}</div>
+
+
+                <div className={"issue-modal-title"}>{titleView}</div>
                 <div className={"issue-modal-content-container"}>
 
                     <div className={"issue-modal-content-box-style"}>
@@ -454,9 +507,9 @@ export default function IssueModal(props: IssueModalProps) {
             </div>
 
             <div className={"issue-modal-right-container"}>
-                <div className={"issue-modal-close-box"}>
-                    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>
-                </div>
+
+                {/*오른쪽 상단 디테일 입력 박스 */}
+
                 <div className={"issue-modal-right-edit-box"}>
                     <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
 
@@ -503,6 +556,9 @@ export default function IssueModal(props: IssueModalProps) {
                                  onClick={onDetailViewAreaClickEventHandler}></div>}
 
                 </div>
+
+
+                {/*오른쪽 하단 댓글 입력 박스*/}
                 <div className={"issue-modal-right-comment-box"}>
                     <div className={"issue-modal-right-comment-title"}>{"Comment"}</div>
 
@@ -537,7 +593,12 @@ export default function IssueModal(props: IssueModalProps) {
                         </div>
 
                         <div className={"issue-modal-right-pagination"}>
-                            <Pagination/>
+                            <Pagination
+                                currentPage={currentPage}
+                                currentSection={currentSection}
+                                viewPageList={viewPageList}
+                                setCurrentSection={setCurrentSection}
+                                setCurrentPage={setCurrentPage}/>
                         </div>
                     </div>
 

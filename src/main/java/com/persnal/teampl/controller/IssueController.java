@@ -118,9 +118,11 @@ public class IssueController {
     @GetMapping("/comment-list/{issueNum}")
     public ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(
             @AuthenticationPrincipal String email,
-            @PathVariable("issueNum") Integer issueNum) {
+            @PathVariable("issueNum") Integer issueNum,
+            @RequestParam("page") Integer page,
+            @RequestParam("perPage") Integer perPage) {
 
-        return issueService.getCommentList(email, issueNum);
+        return issueService.getCommentList(email, issueNum, page, perPage);
     }
 
     @PatchMapping("/modification/issue-comment")
@@ -128,7 +130,15 @@ public class IssueController {
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueCommentRequest req) {
 
-        return issueService.patchComment(email,req);
+        return issueService.patchComment(email, req);
+    }
+
+    @GetMapping("/total-comments-count/{issueNum}")
+    public ResponseEntity<? super ApiResponse<GetCommentCountResponse>> getCommentCount(
+            @AuthenticationPrincipal String email,
+            @PathVariable("issueNum") Integer issueNum) {
+
+        return issueService.getCommentCount(email, issueNum);
     }
 
 }

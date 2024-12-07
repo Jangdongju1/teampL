@@ -67,6 +67,7 @@ export default function IssueCard(props: IssueCardProps) {
         if (code !== ResponseCode.SUCCESS) {
             alert(message)
         }
+        // 여기서 상태변경.
     }
 
     //* function : Title 변경 api 호출함수

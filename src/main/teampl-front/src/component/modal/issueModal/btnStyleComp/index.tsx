@@ -160,7 +160,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                 (<BtnPopUp menu={categoryList()}
                            popupType={compType}
                            cssOption={{
-                               offset: {right: 160, bottom: 325}
+                               offset: {right: 220, bottom: 325}
                            }}
                            setPopUpClickState={setClickState}
                            value={value as number}
@@ -170,7 +170,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                 <BtnPopUp menu={statusList()}
                           popupType={compType}
                           cssOption={{
-                              offset: {right: 160, bottom: 240}
+                              offset: {right: 220, bottom: 240}
                           }}
                           setPopUpClickState={setClickState}
                           value={value as number}
@@ -182,7 +182,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                 <BtnPopUp menu={priorityList()}
                           popupType={compType}
                           cssOption={{
-                              offset: {right: 160, bottom: 240}
+                              offset: {right: 220, bottom: 240}
                           }}
                           setPopUpClickState={setClickState}
                           value={value as number}

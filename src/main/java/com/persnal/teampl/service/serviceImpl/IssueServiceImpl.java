@@ -1,8 +1,8 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.obj.IssueCommentObj;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
+import com.persnal.teampl.dto.obj.temp.IssueCommentFetchData;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
@@ -418,7 +418,7 @@ public class IssueServiceImpl implements IssueService {
 
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(String email, Integer issueNum) {
+    public ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(String email, Integer issueNum, Integer page, Integer perPage) {
         List<IssueCommentEntity> entities = null;
 
         try {
@@ -428,7 +428,7 @@ public class IssueServiceImpl implements IssueService {
             boolean isExistIssue = issueRepository.existsById(issueNum);
             if (!isExistIssue) return GetIssueCommentListResponse.notExistIssue();
 
-            entities = issueRepository.getIssueList(issueNum);
+            entities = issueRepository.getIssueCommentList(issueNum, page, perPage);
 
 
 
@@ -460,5 +460,25 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return PatchIssueCommentResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetCommentCountResponse>> getCommentCount(String email, Integer issueNum) {
+        Integer count = -1;
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            if (!isExistUser) return GetCommentCountResponse.notExistUser();
+
+            boolean isExistIssue = issueRepository.existsById(issueNum);
+            if (!isExistIssue) return GetCommentCountResponse.notExistIssue();
+
+            count = commentRepository.countByIssueEntityIssueNum(issueNum);
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetCommentCountResponse.success(count);
     }
 }

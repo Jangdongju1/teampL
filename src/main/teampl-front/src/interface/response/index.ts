@@ -16,6 +16,7 @@ import PatchIssueExpireDateResponse from "./issue/patchIssueExpireDateResponse";
 import PostIssueCommentResponse from "./issue/postIssueCommentResponse";
 import GetIssueCommentResponse from "./issue/getIssueCommentResponse";
 import PatchIssueCommentResponse from "./issue/patchIssueCommentResponse";
+import GetCommentCountResponse from "./issue/getCommentCountResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -34,5 +35,6 @@ export type {
     CreateIssueResponse,
     PostIssueCommentResponse,
     GetIssueCommentResponse,
-    PatchIssueCommentResponse
+    PatchIssueCommentResponse,
+    GetCommentCountResponse
 }

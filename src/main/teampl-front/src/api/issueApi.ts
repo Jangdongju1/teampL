@@ -1,9 +1,9 @@
 import axios from "axios";
 import {
-    CREATE_PERSONAL_ISSUE, GET_ISSUE_COMMENT,
+    CREATE_PERSONAL_ISSUE, GET_ISSUE_COMMENT_LIST,
     GET_PERSONAL_ISSUE_BY_NUMBER,
     GET_PERSONAL_ISSUE_BY_STATUS,
-    GET_PERSONAL_ISSUE_LIST,
+    GET_PERSONAL_ISSUE_LIST, GET_TOTAL_COMMENT_COUNT,
     PATCH_ISSUE_CATEGORY, PATCH_ISSUE_COMMENT,
     PATCH_ISSUE_DETAIL,
     PATCH_ISSUE_EXPIRE_DATE,
@@ -19,7 +19,11 @@ import {
     GetPersonalIssueListResponse,
     CreateIssueResponse,
     PatchIssueStatusResponse,
-    PatchIssueCategoryResponse, PatchIssueExpireDateResponse, PostIssueCommentResponse, PatchIssueCommentResponse
+    PatchIssueCategoryResponse,
+    PatchIssueExpireDateResponse,
+    PostIssueCommentResponse,
+    PatchIssueCommentResponse,
+    GetCommentCountResponse
 } from "../interface/response";
 import {
     PatchIssueTitleRequest,
@@ -33,6 +37,7 @@ import {
 } from "../interface/request";
 import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
 import {log} from "node:util";
+import GetIssueCommentListRequest from "../interface/request/issue/GetIssueCommentListRequest";
 
 
 const DOMAIN = "http://localhost:4000";
@@ -274,10 +279,10 @@ export const postIssueCommentRequest = async (requestBody: PostIssueCommentReque
 }
 
 // 특정 이슈에 대한 comment 리스트를 가져오는 요청.
-export const getIssueCommentRequest = async (issueNum: number, accessToken: string) => {
+export const getIssueCommentListRequest = async (requestParam:GetIssueCommentListRequest, accessToken: string) => {
     try {
         const result =
-            await axios.get(apiEndPoint(GET_ISSUE_COMMENT(issueNum)), Authorization(accessToken));
+            await axios.get(apiEndPoint(GET_ISSUE_COMMENT_LIST(requestParam.issueNum,requestParam.page,requestParam.perPage)), Authorization(accessToken));
 
         const responseBody: GetPersonalIssueListResponse = result.data;
         return responseBody;
@@ -305,18 +310,42 @@ export const patchIssueCommentRequest = async (requestBody: PatchIssueCommentReq
         const result =
             await axios.patch(apiEndPoint(PATCH_ISSUE_COMMENT()), requestBody, Authorization(accessToken));
 
-        const responseBody : PatchIssueCommentResponse = result.data;
+        const responseBody: PatchIssueCommentResponse = result.data;
         return responseBody;
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (!error.response){
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
                 console.log("Request", error.request);
                 console.error("Error is occurred!", error.message)
                 return null;
             }
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
+        } else {
+            console.log("Unexpected Error!!");
+            return null;
+        }
+    }
+}
+
+// 페이지네이션 구성을 위한 전체 코멘트의 카운트를 가져옴
+export const getTotalCommentCountRequest = async (issueNum: number, accessToken: string) => {
+    try {
+        const result =
+            await axios.get(apiEndPoint(GET_TOTAL_COMMENT_COUNT(issueNum)), Authorization(accessToken));
+
+        const responseBody: GetCommentCountResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Request", error.request);
+                console.error("Error is occurred!", error.message)
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
             console.log("Unexpected Error!!");
             return null;
         }
