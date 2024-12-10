@@ -9,7 +9,7 @@ import ResponseCode from "../../common/enum/responseCode";
 import {useParams} from "react-router-dom";
 import CreateIssueRequest from "../../interface/request/issue/createIssueRequest";
 import IssueCard from "../issueCard";
-
+import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd";
 // 개시물 데이터 받아야함.
 type KanbanBoardPanelProps = {
     boardName: string,
@@ -70,8 +70,6 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
     }
 
 
-
-
     //function: 이슈 추가요청에 대한 응답처리함수.
     const createIssueResponse = async (responseBody: CreateIssueResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -99,7 +97,6 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
 
         // 응답처리
         await createIssueResponse(responseBody);
-
     }
 
 
@@ -115,7 +112,6 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
     const getColor = (boardName: string): string => {
         return boardTitleColor[boardName];
     }
-
     return (
         <div id={"kanban-board-panel-wrapper"}>
             <div className={"kanban-board-panel-name-box"} style={{
@@ -133,17 +129,20 @@ export default function KanbanBoardPanel(props: KanbanBoardPanelProps) {
                 </div>
 
             </div>
+
             <div className={"kanban-board-panel-item-box"}>
-                {!itemArray ? <></> :
-                    sortIssue(itemArray).map((item, index) =>
-                        <IssueCard
-                            key={item.issueSequence}
-                            data={item}
-                            subIssueCnt={0}
-                            commentCnt={0}
-                            isTeamKanban={isTeamKanban}
-                            isTitleChange={item.issueSequence === sequence}/>)
-                }
+
+                 {!itemArray ? <></> :
+                     sortIssue(itemArray).map((item, index) => (
+                         <IssueCard
+                             key={item.issueSequence}
+                             data={item}
+                             subIssueCnt={0}
+                             commentCnt={0}
+                             isTeamKanban={isTeamKanban}
+                             isTitleChange={item.issueSequence === sequence}/>
+
+                     ))}
             </div>
 
         </div>

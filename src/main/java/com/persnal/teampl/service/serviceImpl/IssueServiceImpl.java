@@ -402,7 +402,7 @@ public class IssueServiceImpl implements IssueService {
                     .commentOrder(commentOrder)
                     .build();
 
-            com.persnal.teampl.entities.IssueCommentEntity commentEntity = com.persnal.teampl.entities.IssueCommentEntity.fromRequest(request);
+            IssueCommentEntity commentEntity = com.persnal.teampl.entities.IssueCommentEntity.fromRequest(request);
 
 
             commentRepository.save(commentEntity);

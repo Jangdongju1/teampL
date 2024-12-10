@@ -395,133 +395,178 @@ export default function IssueModal(props: IssueModalProps) {
         <div id={"issue-modal-wrapper"}>
             {/*클로즈 박스*/}
 
-            {/*<div className={"issue-modal-close-box"}>*/}
-            {/*    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>*/}
-            {/*</div>*/}
+            <div className={"issue-modal-close-box"}>
+                <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>
+            </div>
+            <div className={"issue-modal-container"}>
+                <div className={"issue-modal-left-container"}>
 
-            <div className={"issue-modal-left-container"}>
+                    <div className={"issue-modal-title"}>{titleView}</div>
+                    <div className={"issue-modal-content-container"}>
 
+                        <div className={"issue-modal-content-box-style"}>
+                            <div className={"issue-modal-label-style"}>
+                                <span className={"icon issue-modal-label-icon-style text-icon"}></span>
+                                {"제목"}
+                            </div>
 
-                <div className={"issue-modal-title"}>{titleView}</div>
-                <div className={"issue-modal-content-container"}>
-
-                    <div className={"issue-modal-content-box-style"}>
-                        <div className={"issue-modal-label-style"}>
-                            <span className={"icon issue-modal-label-icon-style text-icon"}></span>
-                            {"제목"}
+                            <div className={"issue-modal-label-content-style"} style={{}}>
+                                {!isTitleChange ?
+                                    <div className={"issue-modal-content-show-style"}
+                                         onClick={onTitleClickEventHandler}>{titleView}</div> :
+                                    <CommonInputComponent value={title}
+                                                          setValue={setTitle}
+                                                          onKeyDown={onTitleKeyDownEventHandler}
+                                                          setView={setIsTitleChange}/>
+                                }
+                            </div>
                         </div>
 
-                        <div className={"issue-modal-label-content-style"} style={{}}>
-                            {!isTitleChange ?
-                                <div className={"issue-modal-content-show-style"}
-                                     onClick={onTitleClickEventHandler}>{titleView}</div> :
-                                <CommonInputComponent value={title}
-                                                      setValue={setTitle}
-                                                      onKeyDown={onTitleKeyDownEventHandler}
-                                                      setView={setIsTitleChange}/>
-                            }
-                        </div>
+                        <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
+                                           hooks={{
+                                               value: isTeamModal ? inCharge : writer,
+                                               setValue: setInCharge,
+                                               clickState: inChargeClickSate,
+                                               setClickState: setInChargeClickSate,
+                                               setRefresh: setRefresh
+                                           }}
+                                           compType={"inCharge"}/>
+
+                        {!isTeamModal ?
+                            null :
+                            <div className={"issue-modal-team-info-container"}>
+                                <ModalCompNormal labelName={"팀이름"}
+                                                 labelIcon={"issue-modal-team-icon"}
+                                                 viewData={"efe"}
+                                />
+
+
+                                <ModalCompBtnStyle labelName={"참여자"}
+                                                   labelIcon={"issue-modal-participants-icon"}
+                                                   hooks={{
+                                                       value: participants,
+                                                       setValue: setParticipants,
+                                                       clickState: participantsClickState,
+                                                       setClickState: setParticipantsClickState,
+                                                       setRefresh: setRefresh
+                                                   }}
+                                                   compType={"participants"}/>
+                            </div>
+                        }
+
+                        <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
+                                           hooks={{
+                                               value: priority,
+                                               setValue: setPriority,
+                                               clickState: priorityClickState,
+                                               setClickState: setPriorityClickState,
+                                               setRefresh: setRefresh
+                                           }}
+                                           compType={"priority"}/>
+
+                        <ModalCompBtnStyle labelName={"상태"}
+                                           labelIcon={""}
+                                           hooks={{
+                                               value: status,
+                                               setValue: setStatus,
+                                               clickState: statusBtnClickState,
+                                               setClickState: setStateBtnClickState,
+                                               setRefresh: setRefresh
+                                           }}
+                                           compType={"status"}/>
+
+                        <ModalCompBtnStyle labelName={"카테고리"}
+                                           labelIcon={""}
+                                           hooks={{
+                                               value: category,
+                                               setValue: setCategory,
+                                               clickState: categoryBtnClickState,
+                                               setClickState: setCategoryBtnClickState,
+                                               setRefresh: setRefresh
+                                           }}
+                                           compType={"category"}/>
+
+                        <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
+                                           compType={"expireTime"}
+                                           onChange={onDateChangeEventHandler}
+                                           hooks={{
+                                               value: expireDate,
+                                               setValue: setExpireDate,
+                                               clickState: expireDateClickSate,
+                                               setClickState: setExpireDateClickState,
+                                               setRefresh: setRefresh
+                                           }}/>
+
+                        <ModalCompNormal labelName={"작성일자"}
+                                         labelIcon={"issue-modal-team-icon"}
+                                         viewData={getFormattedDate(writeDate)}/>
+
+
+                    </div>
+                </div>
+
+                <div className={"issue-modal-right-container"}>
+
+                    {/*오른쪽 상단 디테일 입력 박스 */}
+
+                    <div className={"issue-modal-right-edit-box"}>
+                        <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
+
+                        {issueDetailClickState ?
+                            <div className={"issue-modal-right-edit"}>
+                                <Editor
+                                    value={issueDetail}
+                                    setValue={setIssueDetail}
+                                    clickState={issueDetailClickState}
+                                    setClickState={setIssueDetailClickState}/>
+
+                                <div className={"issue-modal-right-edit-btn-box"}>
+                                    <CommonBtn
+                                        style={
+                                            {
+                                                size: {width: 52, height: 32},
+                                                btnName: "저장",
+                                                backgroundColor: "#0C66E4",
+                                                hoverColor: "#0052CC",
+                                                hoverStyle: "background",
+                                                fontSize: 16,
+                                                fontColor: "rgba(255,255,255,1)"
+                                            }
+                                        }
+                                        onClick={onDetailSaveBtnClickEventHandler}/>
+
+                                    <CommonBtn
+                                        style={
+                                            {
+                                                size: {width: 52, height: 32},
+                                                btnName: "취소",
+                                                fontSize: 16,
+                                            }
+                                        }
+                                        onClick={onDetailCancelBtnClickEventHandler}/>
+                                </div>
+
+                            </div> : issueDetailView.length === 0 ?
+                                <div className={"issue-editor-view-none"}
+                                     onClick={onDetailViewAreaClickEventHandler}>{"이슈에 대한 설명"}</div> :
+
+                                <div className={"issue-editor-view"}
+                                     dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
+                                     onClick={onDetailViewAreaClickEventHandler}></div>}
+
                     </div>
 
-                    <ModalCompBtnStyle labelName={"담당자"} labelIcon={"incharge-icon"}
-                                       hooks={{
-                                           value: isTeamModal ? inCharge : writer,
-                                           setValue: setInCharge,
-                                           clickState: inChargeClickSate,
-                                           setClickState: setInChargeClickSate,
-                                           setRefresh: setRefresh
-                                       }}
-                                       compType={"inCharge"}/>
 
-                    {!isTeamModal ?
-                        null :
-                        <div className={"issue-modal-team-info-container"}>
-                            <ModalCompNormal labelName={"팀이름"}
-                                             labelIcon={"issue-modal-team-icon"}
-                                             viewData={"efe"}
-                            />
+                    {/*오른쪽 하단 댓글 입력 박스*/}
+                    <div className={"issue-modal-right-comment-box"}>
+                        <div className={"issue-modal-right-comment-title"}>{"Comment"}</div>
 
+                        <div className={"issue-modal-right-comment"}>
+                            <div className={"issue-modal-right-comment-editor"}>
+                                <Editor value={comment} setValue={setComment}/>
+                            </div>
 
-                            <ModalCompBtnStyle labelName={"참여자"}
-                                               labelIcon={"issue-modal-participants-icon"}
-                                               hooks={{
-                                                   value: participants,
-                                                   setValue: setParticipants,
-                                                   clickState: participantsClickState,
-                                                   setClickState: setParticipantsClickState,
-                                                   setRefresh: setRefresh
-                                               }}
-                                               compType={"participants"}/>
-                        </div>
-                    }
-
-                    <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
-                                       hooks={{
-                                           value: priority,
-                                           setValue: setPriority,
-                                           clickState: priorityClickState,
-                                           setClickState: setPriorityClickState,
-                                           setRefresh: setRefresh
-                                       }}
-                                       compType={"priority"}/>
-
-                    <ModalCompBtnStyle labelName={"상태"}
-                                       labelIcon={""}
-                                       hooks={{
-                                           value: status,
-                                           setValue: setStatus,
-                                           clickState: statusBtnClickState,
-                                           setClickState: setStateBtnClickState,
-                                           setRefresh: setRefresh
-                                       }}
-                                       compType={"status"}/>
-
-                    <ModalCompBtnStyle labelName={"카테고리"}
-                                       labelIcon={""}
-                                       hooks={{
-                                           value: category,
-                                           setValue: setCategory,
-                                           clickState: categoryBtnClickState,
-                                           setClickState: setCategoryBtnClickState,
-                                           setRefresh: setRefresh
-                                       }}
-                                       compType={"category"}/>
-
-                    <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
-                                       compType={"expireTime"}
-                                       onChange={onDateChangeEventHandler}
-                                       hooks={{
-                                           value: expireDate,
-                                           setValue: setExpireDate,
-                                           clickState: expireDateClickSate,
-                                           setClickState: setExpireDateClickState,
-                                           setRefresh: setRefresh
-                                       }}/>
-
-                    <ModalCompNormal labelName={"작성일자"}
-                                     labelIcon={"issue-modal-team-icon"}
-                                     viewData={getFormattedDate(writeDate)}/>
-
-
-                </div>
-            </div>
-
-            <div className={"issue-modal-right-container"}>
-
-                {/*오른쪽 상단 디테일 입력 박스 */}
-
-                <div className={"issue-modal-right-edit-box"}>
-                    <div className={"issue-modal-right-edit-title"}>{"Detail"}</div>
-
-                    {issueDetailClickState ?
-                        <div className={"issue-modal-right-edit"}>
-                            <Editor
-                                value={issueDetail}
-                                setValue={setIssueDetail}
-                                clickState={issueDetailClickState}
-                                setClickState={setIssueDetailClickState}/>
-
-                            <div className={"issue-modal-right-edit-btn-box"}>
+                            <div className={"issue-modal-right-comment-btn-box"}>
                                 <CommonBtn
                                     style={
                                         {
@@ -534,77 +579,38 @@ export default function IssueModal(props: IssueModalProps) {
                                             fontColor: "rgba(255,255,255,1)"
                                         }
                                     }
-                                    onClick={onDetailSaveBtnClickEventHandler}/>
+                                    onClick={onCommentSaveBtnClickEventHandler}/>
 
-                                <CommonBtn
-                                    style={
-                                        {
-                                            size: {width: 52, height: 32},
-                                            btnName: "취소",
-                                            fontSize: 16,
-                                        }
-                                    }
-                                    onClick={onDetailCancelBtnClickEventHandler}/>
+                            </div>
+                        </div>
+                        <div className={"issue-modal-right-comment-item-box"}>
+
+                            <div className={"issue-modal-right-comment-item"}>
+
+                                {issueComments.map((item, index) =>
+                                    <CommentComp key={item.commentNum} data={item}/>)}
                             </div>
 
-                        </div> : issueDetailView.length === 0 ?
-                            <div className={"issue-editor-view-none"}
-                                 onClick={onDetailViewAreaClickEventHandler}>{"이슈에 대한 설명"}</div> :
-
-                            <div className={"issue-editor-view"}
-                                 dangerouslySetInnerHTML={{__html: protectedDetailViewValue}}
-                                 onClick={onDetailViewAreaClickEventHandler}></div>}
-
-                </div>
-
-
-                {/*오른쪽 하단 댓글 입력 박스*/}
-                <div className={"issue-modal-right-comment-box"}>
-                    <div className={"issue-modal-right-comment-title"}>{"Comment"}</div>
-
-                    <div className={"issue-modal-right-comment"}>
-                        <div className={"issue-modal-right-comment-editor"}>
-                            <Editor value={comment} setValue={setComment}/>
+                            <div className={"issue-modal-right-pagination"}>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    currentSection={currentSection}
+                                    viewPageList={viewPageList}
+                                    setCurrentSection={setCurrentSection}
+                                    setCurrentPage={setCurrentPage}/>
+                            </div>
                         </div>
 
-                        <div className={"issue-modal-right-comment-btn-box"}>
-                            <CommonBtn
-                                style={
-                                    {
-                                        size: {width: 52, height: 32},
-                                        btnName: "저장",
-                                        backgroundColor: "#0C66E4",
-                                        hoverColor: "#0052CC",
-                                        hoverStyle: "background",
-                                        fontSize: 16,
-                                        fontColor: "rgba(255,255,255,1)"
-                                    }
-                                }
-                                onClick={onCommentSaveBtnClickEventHandler}/>
-
-                        </div>
-                    </div>
-                    <div className={"issue-modal-right-comment-item-box"}>
-
-                        <div className={"issue-modal-right-comment-item"}>
-
-                            {issueComments.map((item, index) =>
-                                <CommentComp key={item.commentNum} data={item}/>)}
-                        </div>
-
-                        <div className={"issue-modal-right-pagination"}>
-                            <Pagination
-                                currentPage={currentPage}
-                                currentSection={currentSection}
-                                viewPageList={viewPageList}
-                                setCurrentSection={setCurrentSection}
-                                setCurrentPage={setCurrentPage}/>
-                        </div>
                     </div>
 
                 </div>
 
             </div>
+            {/*<div className={"issue-modal-close-box"}>*/}
+            {/*    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>*/}
+            {/*</div>*/}
+
+
         </div>
     )
 }

@@ -6,7 +6,7 @@ import {getPersonalPrjListRequest} from "../../api/projectApi";
 import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {personalPrjStore, userEmailStore} from "../../store";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../constant/path";
 
 export default function PersonalProject() {
@@ -36,7 +36,7 @@ export default function PersonalProject() {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
 
-        if (code != ResponseCode.SUCCESS) alert(message);
+        if (code !== ResponseCode.SUCCESS) alert(message);
 
         const {data} = responseBody as GetPersonalPrjListResponse;
         setProjects(data.list);

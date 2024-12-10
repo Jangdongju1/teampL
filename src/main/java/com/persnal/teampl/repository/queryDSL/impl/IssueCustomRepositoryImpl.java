@@ -1,6 +1,5 @@
 package com.persnal.teampl.repository.queryDSL.impl;
 
-import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.entities.IssueCommentEntity;
 import com.persnal.teampl.entities.QIssueCommentEntity;
 import com.persnal.teampl.entities.QIssueEntity;
@@ -42,8 +41,6 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
                 .limit(perPage)
                 .offset((long) (page - 1) *perPage)  // 계산법 다시한번 생각해 보기
                 .fetch();
-
-
 
         return data;
     }

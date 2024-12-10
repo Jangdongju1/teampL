@@ -14,6 +14,8 @@ import {getPersonalIssueListRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import IssueModal from "../../component/modal/issueModal";
 import {modalStore} from "../../store";
+import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
+import issueStatus from "../../common/enum/IssueStatus";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -38,18 +40,28 @@ export default function KanbanBoard(props: KanbanType) {
     const [totalIssues, setTotalIssues] = useState<Issue[]>()
 
 
-
     //* state : 컴포넌트 리프레쉬 상태
     const [refresh, setRefresh] = useState<number>(1);
 
     // accessToken
     const accessToken = cookies.accessToken_Main;
 
+    // 칸반보드 타입 4가지에 대한 객체 배열
+    const boardType = () => {
+        const types: { boardName: string, status: number } [] = [
+            {boardName: "Not Start", status: IssueStatus.NOT_START},
+            {boardName: "On Working", status: issueStatus.ON_WORKING},
+            {boardName: "Stuck", status: IssueStatus.STUCK},
+            {boardName: "Done", status: IssueStatus.DONE}
+        ]
+
+        return types;
+    }
+
     //* function : 상태별 필터링
     const filterIssue = (array: Issue[], stat: number): Issue[] => {
         return array.filter(item => item.stat === stat);
     }
-
 
 
     //* function : 개인프로젝트 이슈 목록 api 응답처리 함수.
@@ -81,6 +93,11 @@ export default function KanbanBoard(props: KanbanType) {
         setProjectInfo(data.projectInfo);
     }
 
+    // eventHandler : 드래그 앤 드롭 이벤트가 끝나면 실행할 함수
+    const onDragEnd = (result: DropResult) => {
+        console.log(result);
+    }
+
 
     useEffect(() => {
         const fetchProjectInfo = async () => {
@@ -94,6 +111,7 @@ export default function KanbanBoard(props: KanbanType) {
     }, []);
 
     useEffect(() => {
+        // api 호출없이도 totalIssues를 자식 컴포넌트로 보내서 리렌더링 되도록 바꿀 예정.
         if (!accessToken || projectNum === undefined) return;
 
         const fetchIssueList = async () => {
@@ -106,61 +124,37 @@ export default function KanbanBoard(props: KanbanType) {
 
 
     return (
-        <div id={"kanban-board-wrapper"}>
-            {isModalOpen && modalType === ModalType.ISSUE_INFO && (
-                <IssueModal
-                    isTeamModal={isTeamKanban}
-                    setRefresh={setRefresh}/>
-            )}
+        <DragDropContext onDragEnd={onDragEnd}>
+            <div id={"kanban-board-wrapper"}>
+                {isModalOpen && modalType === ModalType.ISSUE_INFO && (
+                    <IssueModal
+                        isTeamModal={isTeamKanban}
+                        setRefresh={setRefresh}/>
+                )}
 
-            <div className={"kanban-board-top-container"}>
-                <KanbanTopComponent isTeamPage={isTeamKanban}
-                                    projectName={projectInfo ? projectInfo.projectName : ""}
-                                    projectType={projectInfo ? projectInfo.projectType : ProjectType.UNKNOWN}
-                                    stat={projectInfo ? projectInfo.stat : ProjectStatus.UNKNOWN}
-                                    topMenuStat={topMenu}
-                                    setTopMenuStat={setTopMenu}/>
+                <div className={"kanban-board-top-container"}>
+                    <KanbanTopComponent isTeamPage={isTeamKanban}
+                                        projectName={projectInfo ? projectInfo.projectName : ""}
+                                        projectType={projectInfo ? projectInfo.projectType : ProjectType.UNKNOWN}
+                                        stat={projectInfo ? projectInfo.stat : ProjectStatus.UNKNOWN}
+                                        topMenuStat={topMenu}
+                                        setTopMenuStat={setTopMenu}/>
+                </div>
+                {topMenu === "kanban" ?
+                    <div className={"kanban-board-bottom-container"}>
+                        {boardType().map((item, index) =>
+                            <KanbanBoardPanel boardName={item.boardName}
+                                              itemArray={totalIssues ? filterIssue(totalIssues, item.status) : []}
+                                              stat={item.status}
+                                              isTeamKanban={isTeamKanban}
+                                              setRefresh={setRefresh}/>
+                        )}
+                    </div> :
+
+                    null
+                }
+
             </div>
-            {topMenu === "kanban" ?
-                <div className={"kanban-board-bottom-container"}>
-                    <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"Not Start"}
-                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.NOT_START) : []}
-                                          stat={IssueStatus.NOT_START}
-                                          isTeamKanban={isTeamKanban}
-
-                                          setRefresh={setRefresh}/>
-                    </div>
-
-                    <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"On Working"}
-                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.ON_WORKING) : []}
-                                          stat={IssueStatus.ON_WORKING}
-                                          isTeamKanban={isTeamKanban}
-
-                                          setRefresh={setRefresh}/>
-                    </div>
-
-                    <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"Stuck"}
-                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.STUCK) : []}
-                                          stat={IssueStatus.STUCK}
-                                          isTeamKanban={isTeamKanban}
-                                          setRefresh={setRefresh}/>
-                    </div>
-
-                    <div className={"kanban-board-box"}>
-                        <KanbanBoardPanel boardName={"Done"}
-                                          itemArray={totalIssues ? filterIssue(totalIssues, IssueStatus.DONE) : []}
-                                          stat={IssueStatus.DONE}
-                                          isTeamKanban={isTeamKanban}
-                                          setRefresh={setRefresh}/>
-                    </div>
-                </div> :
-
-                <div></div>
-            }
-
-        </div>
+        </DragDropContext>
     )
 }

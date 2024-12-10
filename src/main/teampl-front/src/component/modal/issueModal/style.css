@@ -1,9 +1,11 @@
-#issue-modal-wrapper{
+#issue-modal-wrapper {
     width: 1100px;
     height: 860px;
-    background-color: rgba(255,255,255,1);
+    background-color: rgba(255, 255, 255, 1);
     box-sizing: border-box;
     padding: 20px;
+
+    border-radius: 10px;
 
 
     position: fixed;
@@ -12,12 +14,41 @@
     transform: translate(-50%, -50%); /* 요소의 중앙을 기준으로 이동 */
     z-index: 1011;
 
+
     display: flex;
+    flex-direction: column;
     /*display: grid;*/
 
     /*grid-template-columns: 4fr 5fr;*/
 }
-.issue-modal-left-container{
+
+.issue-modal-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+}
+
+.issue-modal-close-box {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    z-index: 1012;
+}
+
+.close-btn {
+    width: 26px;
+    height: 26px;
+    margin-right: 80px;
+}
+
+.close-btn:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.issue-modal-left-container {
     height: 100%;
     width: 50%;
     /*max-width: 470px;*/
@@ -30,7 +61,7 @@
 
 }
 
-.issue-modal-title{
+.issue-modal-title {
     width: 100%;
     font-size: 24px;
     font-family: "Noto Sans KR Sans KR";
@@ -40,7 +71,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.issue-modal-content-container{
+
+.issue-modal-content-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -48,7 +80,8 @@
     align-items: center;
     gap: 25px;
 }
-.issue-modal-content-box-style{
+
+.issue-modal-content-box-style {
     width: 100%;
     height: 40px;
     display: flex;
@@ -56,10 +89,10 @@
     align-items: center;
 }
 
-.issue-modal-content-show-style{
+.issue-modal-content-show-style {
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0, 0, 0, 0.03);
     display: flex;
     align-items: center;
     font-size: 16px;
@@ -72,24 +105,27 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.issue-modal-content-show-style:hover{
+
+.issue-modal-content-show-style:hover {
     cursor: pointer;
-    background-color: rgba(0,0,0,0.08);
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
-.issue-modal-team-info-container{
+.issue-modal-team-info-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 25px;
 }
-.issue-modal-team-participants-box{
+
+.issue-modal-team-participants-box {
     width: 100%;
     height: 40px;
 
 }
-.issue-modal-label-style{
+
+.issue-modal-label-style {
     display: flex;
     gap: 10px;
     font-family: "Noto Sans KR Sans KR";
@@ -98,19 +134,18 @@
     align-items: center;
 }
 
-.issue-modal-label-icon-style{
+.issue-modal-label-icon-style {
     display: inline-block;
     width: 26px;
     height: 26px;
 }
-.issue-modal-label-content-style{
+
+.issue-modal-label-content-style {
     width: 300px;
     height: 100%;
 }
 
-
-
-.issue-modal-right-container{
+.issue-modal-right-container {
     width: 50%;
     height: 100%;
     display: block;
@@ -125,60 +160,48 @@
 
     gap: 25px;
 }
-.issue-modal-close-box{
-    position: absolute;
-    display: flex;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0 28px;
 
-    justify-content: right;
-}
-
-.close-btn{
-    width: 26px;
-    height: 26px;
-}
-.close-btn:hover{
-    cursor: pointer;
-    background-color: rgba(0,0,0,0.1);
-}
-.issue-modal-right-edit-box{
+.issue-modal-right-edit-box {
     width: 100%;
     min-height: 130px;
     margin-top: 60px;
     display: flex;
     flex-direction: column;
-    gap: 10px ;
+    gap: 10px;
 }
-.issue-modal-right-edit{
+
+.issue-modal-right-edit {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.issue-modal-right-edit-title{
+
+.issue-modal-right-edit-title {
     font-size: 16px;
     font-family: "Noto Sans KR Sans KR";
     font-weight: 600;
 }
 
-.issue-modal-right-edit-btn-box{
+.issue-modal-right-edit-btn-box {
     display: flex;
-    align-items:center;
+    align-items: center;
     gap: 5px;
 }
-.issue-editor-view{
+
+.issue-editor-view {
     width: 100%;
     min-height: 130px;
 }
-.issue-editor-view-none{
+
+.issue-editor-view-none {
     font-size: 26px;
     font-family: "Noto Sans KR Sans KR";
     font-weight: 600;
-    color: rgba(0,0,0,0.3);
+    color: rgba(0, 0, 0, 0.3);
 }
-.issue-modal-right-comment-box{
+
+.issue-modal-right-comment-box {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -186,47 +209,55 @@
 
     margin-top: 20px;
 }
-.issue-modal-right-comment-title{
+
+.issue-modal-right-comment-title {
     width: 100%;
     font-family: "Noto Sans KR Sans KR";
     font-size: 16px;
     font-weight: 600;
 
 }
-.issue-modal-right-comment{
+
+.issue-modal-right-comment {
     width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 10px;
 }
-.issue-modal-right-comment-editor{
+
+.issue-modal-right-comment-editor {
     width: 100%;
     min-height: 85px;
 }
-.issue-modal-right-comment-btn-box{
+
+.issue-modal-right-comment-btn-box {
     margin-top: 10px;
     width: 100%;
     display: flex;
     align-items: center;
 }
-.issue-modal-right-comment-item-box{
+
+.issue-modal-right-comment-item-box {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.issue-modal-right-comment-item{
+
+.issue-modal-right-comment-item {
     margin-top: 25px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.issue-modal-right-pagination{
+
+.issue-modal-right-pagination {
     width: 100%;
     display: flex;
     justify-content: center;
 }
-.test112{
+
+.test112 {
     width: 100%;
     display: flex;
     flex-direction: column;

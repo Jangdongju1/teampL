@@ -9,7 +9,6 @@ enum ResponseCode {
     EXPIRE_AUTH_CODE = "EAC",
     ALREADY_SENT = "AS",
     NOT_EXIST_USER="NEU"
-
 }
 
 export default ResponseCode;

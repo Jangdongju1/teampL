@@ -46,3 +46,4 @@ export type KanbanState = {
     status: IssueStatus,
     setState: (issues: Issue[]) => void;
 }
+
