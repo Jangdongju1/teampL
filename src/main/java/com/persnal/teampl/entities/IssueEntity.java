@@ -3,6 +3,7 @@ package com.persnal.teampl.entities;
 import com.persnal.teampl.common.Enum.issue.IssueCategory;
 import com.persnal.teampl.common.Enum.issue.IssuePriority;
 import com.persnal.teampl.dto.obj.IssueObj;
+import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,34 +46,36 @@ public class IssueEntity {
     @Setter
     private Integer category;
     @Setter
-    private Boolean isDeleted;
-//    @Setter
-//    private Boolean isAssigned;
-    @Setter
     private String issueSequence;
     @Setter
-    private String ref;
+    private String previousNode;
     @Setter
-    private Boolean isFirstIssue;
+    private String nextNode;
+
+
+    @Setter
+    private Boolean isDeleted;
+
 
     @OneToMany(mappedBy = "issueEntity", fetch = FetchType.LAZY)
     List<IssueCommentEntity> issueCommentEntities;
 
-    public static IssueEntity fromRequest(Integer stat, UserEntity userEntity, ProjectEntity projectEntity, String sequence, boolean isFirstIssue) {
+    public static IssueEntity fromRequest(CreateIssueTempDto req) {
         return IssueEntity.builder()
                 .title("제목을 지정해 주세요.")  // 기본 값
                 .content("")
                 .inCharge("") //
-                .stat(stat)
+                .stat(req.getIssueStat())
                 .priority(IssuePriority.NORMAL.getValue())
                 .category(IssueCategory.ETC.getValue())
-                .userEntity(userEntity)
-                .projectEntity(projectEntity)
+                .userEntity(req.getUserEntity())
+                .projectEntity(req.getProjectEntity())
                 .writeDate(Utils.getNowTime(LocalDateTime.now()))
                 .expireDate(null)
                 .isDeleted(false)
-                .issueSequence(sequence)
-                .isFirstIssue(isFirstIssue)
+                .issueSequence(req.getIssueSequence())
+                .previousNode(req.getPreviousNode())
+                .nextNode(null) //기본값
                 .build();
     }
 
@@ -93,15 +96,15 @@ public class IssueEntity {
                     .stat(entity.getStat())
                     .category(entity.getCategory())
                     .issueSequence(entity.getIssueSequence())
-                    .ref(entity.getRef())
-                    .isFirstIssue(entity.getIsFirstIssue())
+                    .previousNode(entity.getPreviousNode())
+                    .nextNode(entity.getNextNode())
                     .build();
             list.add(listElement);
         }
         return list;
     }
 
-    public static IssueObj getIssue(IssueEntity entity){
+    public static IssueObj getIssue(IssueEntity entity) {
         return IssueObj.builder()
                 .issueNum(entity.getIssueNum())
                 .projectNum(entity.getProjectEntity().getProjectNum())
@@ -115,8 +118,8 @@ public class IssueEntity {
                 .stat(entity.getStat())
                 .category(entity.getCategory())
                 .issueSequence(entity.getIssueSequence())
-                .ref(entity.getRef())
-                .isFirstIssue(entity.getIsFirstIssue())
+              //  .ref(entity.getRef())
+                //.isFirstIssue(entity.getIsFirstIssue())
                 .build();
     }
 

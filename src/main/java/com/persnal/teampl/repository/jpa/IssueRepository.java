@@ -11,9 +11,9 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Integer>, Is
     List<IssueEntity> findAllByProjectEntityProjectNum(int projectNum);
     List<IssueEntity> findAllByProjectEntityProjectNumAndStat(int projectNum, int stat);
     IssueEntity findByIssueNum(int issueNum);
-    IssueEntity findByProjectEntityProjectNumAndStatAndRef(int projectNum, int stat, String ref);
-    IssueEntity findByProjectEntityProjectNumAndIssueSequence(int projectNum, String issueSequence);
-    IssueEntity findByProjectEntityProjectNumAndStatAndRefIsNull(int projectNum, int stat);
+    IssueEntity findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(int projectNum, int stat);
+    IssueEntity findByProjectEntityProjectNumAndStatAndNextNodeIsNull(int projectNum, int stat);
+    IssueEntity findByProjectEntityProjectNumAndStatAndIssueSequence(int projectNum, int stat, String nextNode);
     @Override
     List<IssueCommentEntity> queryDSLSelectIssueData(Integer issueNum);
 }

@@ -1,7 +1,7 @@
 import "./style.css";
 import InitialsImg from "../InitialsImg";
 import {IssueStatus, ModalType} from "../../common";
-import React, {useState, KeyboardEvent} from "react";
+import React, {useState, KeyboardEvent, useEffect} from "react";
 import {Issue} from "../../interface/types";
 import {useCookies} from "react-cookie";
 import {PatchIssueTitleResponse, ResponseDto} from "../../interface/response";
@@ -16,15 +16,15 @@ type IssueCardProps = {
     subIssueCnt: number,
     commentCnt: number,
     isTeamKanban: boolean,
-    isTitleChange: boolean,
+    setRefresh : React.Dispatch<React.SetStateAction<number>>,
 }
 
 export default function IssueCard(props: IssueCardProps) {
 
     // props
     const {data} = props
-    const {isTeamKanban, isTitleChange} = props;
-    const {commentCnt, subIssueCnt} = props;
+    const {isTeamKanban} = props;
+    const {commentCnt, subIssueCnt,setRefresh} = props;
 
 
     // global state: 이슈 넘버 세팅.
@@ -34,9 +34,11 @@ export default function IssueCard(props: IssueCardProps) {
     // state:쿠키 상태
     const [cookies, setCookies] = useCookies();
     // state: 이슈카드 제목 변경이벤트상태
-    const [titleChange, setTitleChange] = useState<boolean>(isTitleChange);
+    const [titleChange, setTitleChange] = useState<boolean>(false);
     // state : 칸반보드 이슈카드 제목 상태
     const [title, setTitle] = useState<string>(data.title);
+
+
 
 
     // eventHandler: 이슈카드 클릭 이벤트 헨들러
@@ -65,9 +67,10 @@ export default function IssueCard(props: IssueCardProps) {
 
         const {code, message} = responseBody as ResponseDto;
         if (code !== ResponseCode.SUCCESS) {
-            alert(message)
+            alert(message);
+            return;
         }
-        // 여기서 상태변경.
+        setRefresh(prevState => prevState*-1);
     }
 
     //* function : Title 변경 api 호출함수

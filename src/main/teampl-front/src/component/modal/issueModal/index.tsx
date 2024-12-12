@@ -359,7 +359,6 @@ export default function IssueModal(props: IssueModalProps) {
         }
 
         fetchIssueData();
-
     }, [issueNum]);
 
 

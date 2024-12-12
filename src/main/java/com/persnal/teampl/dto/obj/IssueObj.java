@@ -20,9 +20,7 @@ public class IssueObj {
     private String expireDate;
     private Integer stat;
     private Integer category;
-  //  private Boolean isAssigned;
-    private String ref;
     private String issueSequence;
-    private Boolean isFirstIssue;
-
+    private String previousNode;
+    private String nextNode;
 }

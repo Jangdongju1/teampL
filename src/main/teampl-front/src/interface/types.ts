@@ -24,9 +24,9 @@ export type Issue = {
     expireDate: string,
     stat: number,
     category: number,
-    ref: string,
     issueSequence: string,
-    isFirstIssue: boolean
+    previousNode:string,
+    nextNode:string,
 }
 
 // 이슈에 대한 코멘트 정의

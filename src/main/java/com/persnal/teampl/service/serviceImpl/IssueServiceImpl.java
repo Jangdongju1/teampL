@@ -2,6 +2,7 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
+import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
 import com.persnal.teampl.dto.obj.temp.IssueCommentFetchData;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -19,6 +20,8 @@ import com.persnal.teampl.service.IssueSequenceService;
 import com.persnal.teampl.service.IssueService;
 import com.persnal.teampl.util.Utils;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.exec.spi.JdbcCallRefCursorExtractor;
+import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForArraysOfBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -39,14 +42,15 @@ public class IssueServiceImpl implements IssueService {
 
 
     @Override
+    @Transactional
     public ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(CreateIssueRequest req, String email) {
         IssueEntity issueEntity = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
-            ProjectEntity projectEntity = projectRepository.findByProjectNum(req.getProjectNum());
-
             if (!isExistUser) return CreateIssueResponse.notExistUser();
-            if (projectEntity == null) return CreateIssueResponse.notExistProject();
+
+            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
+            if (!isExistProject) return CreateIssueResponse.notExistProject();
 
             // 시퀀스 지정을 위한 최근이슈를 찾는 부분.
             IssueEntity currentIssueEntity =
@@ -61,21 +65,32 @@ public class IssueServiceImpl implements IssueService {
             }
 
 
-            boolean isFirstIssue = true;
-            // 최근 이슈의 ref 설정 => 새로 만들어지는 이슈를 참조 하도록 이슈의 상태를 고려해서 꼬리에 꼬리를 물어 참조할 수 있도록 한다.
-            currentIssueEntity = issueRepository.findTopByProjectEntityProjectNumAndStatOrderByIssueNumDesc(req.getProjectNum(), req.getStat());
+            String previousNode = null;
+            // state별 가장 마지막 이슈 찾기.
+            currentIssueEntity =
+                    issueRepository.findByProjectEntityProjectNumAndStatAndNextNodeIsNull(req.getProjectNum(), req.getStat());
 
-            //  상태별 이슈가 하나이상 있는 경우  => 기존에 존재하던 이슈의 ref를 새로생긴 이슈의 sequence로 세팅함.
             if (currentIssueEntity != null) {
-                currentIssueEntity.setRef(sequence);
-                // null이 아닌경우 새로 생기는 이슈는 맨첫 이슈가 아님.
-                isFirstIssue = false;
+                // 이전 이슈가 존재하는 경우
+                currentIssueEntity.setNextNode(sequence);  // 이전 이슈의 다음노드 == 추가되는 이슈의 시퀀스
+                previousNode = currentIssueEntity.getIssueSequence();
             }
 
-            // 1) projectNum, stat(Issue) ,  email
-            //ProjectEntity projectEntity = ProjectEntity.fromRequest(req);
-            UserEntity userEntity = UserEntity.fromRequest(email);
-            issueEntity = IssueEntity.fromRequest(req.getStat(), userEntity, projectEntity, sequence, isFirstIssue);
+
+            UserEntity userEntity = UserEntity.builder().email(email).build();
+            ProjectEntity projectEntity = ProjectEntity.builder().projectNum(req.getProjectNum()).build();
+
+            CreateIssueTempDto dto =
+                    CreateIssueTempDto.builder()
+                            .issueStat(req.getStat())
+                            .projectEntity(projectEntity)
+                            .userEntity(userEntity)
+                            .issueSequence(sequence)
+                            .previousNode(previousNode)
+                            .build();
+
+
+            issueEntity = IssueEntity.fromRequest(dto);
 
             issueRepository.save(issueEntity);
 
@@ -183,73 +198,74 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchIssueStatus(String email, PatchIssueStatusRequest req) {
         try {
-            boolean isExistUser = userRepository.existsByEmail(email);
-            boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
-
+            boolean isExistUser = userRepository.existsById(email);
             if (!isExistUser) return PatchIssueStatusResponse.notExistUser();
-            else if (!isExistProject) return PatchIssueStatusResponse.notExistProject();
+
+            boolean isExistIssue = issueRepository.existsById(req.getIssueNum());
+            if (!isExistIssue) return PatchIssueStatusResponse.notExistIssue();
+
+            IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());  // 이동 대상의 이슈
 
 
-            IssueEntity currentIssueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+            //srcBoard처리
 
-            if (currentIssueEntity == null) return PatchIssueStatusResponse.notExistIssue();
+            String previousNode = issueEntity.getPreviousNode();
+            String nextNode = issueEntity.getNextNode();
+
+            IssueEntity preEntity = null;
+            IssueEntity nextEntity = null;
+
+            // pre만 존재하는경우 둘다 존재하는경우  next만 존재하는 경우
 
 
-            // 기존 이슈와 그 이전이슈, 그리고 기존이슈의 다음 이슈의 sequence참조관계를 명확히 해야함.
-            String nextIssue = currentIssueEntity.getRef(); // 다음 이슈의 sequence
-
-            // 해당 프로젝트의 해당 상태에서 해당이슈를 Ref로 하고 있는 이슈 == 이전 이슈
-            IssueEntity prevIssueEntity = null;
-            boolean isFirstIssue = false;
-
-            // 이전 이슈와 현재 이슈 참조 관계 처리
-            if (nextIssue == null || nextIssue.isEmpty()) {
-                // nextIssue가 없으면 이전 이슈의 참조를 비움
-                prevIssueEntity =
-                        issueRepository.findByProjectEntityProjectNumAndStatAndRef(req.getProjectNum(), currentIssueEntity.getStat(), currentIssueEntity.getIssueSequence());
-                if (prevIssueEntity != null) {
-                    prevIssueEntity.setRef(null);
+            if (previousNode != null) {
+                preEntity =
+                        issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), issueEntity.getStat(), previousNode);
+                // 1) pre, next 둘다 존재했던 경우
+                if (nextNode != null) {
+                    nextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), issueEntity.getStat(), nextNode);
+                    nextEntity.setPreviousNode(preEntity.getIssueSequence());
+                    preEntity.setNextNode(nextEntity.getIssueSequence());
+                }else {
+                    // 2) pre만 존재하는 경우,
+                    preEntity.setNextNode(null);
                 }
-                //currentIssueEntity.setIsFirstIssue(false);
+
+
             } else {
-                // 이전 이슈가 있을 경우, 다음 이슈의 참조를 이어주기
-                prevIssueEntity =
-                        issueRepository.findByProjectEntityProjectNumAndStatAndRef(req.getProjectNum(), currentIssueEntity.getStat(), currentIssueEntity.getIssueSequence());
-                if (prevIssueEntity != null) {
-                    prevIssueEntity.setRef(nextIssue);
-                } else {
-                    // 이전 이슈가 없으면 현재 이슈의 ref를 비움
-                    IssueEntity nextIssueEntity = issueRepository.findByProjectEntityProjectNumAndIssueSequence(req.getProjectNum(), nextIssue);
-                    if (nextIssueEntity != null) {
-                        // 다음 이슈를 첫번째 이슈로 올림과 동시에 이동되는 이슈를 첫번째이슈에서 제거
-                        nextIssueEntity.setIsFirstIssue(currentIssueEntity.getIsFirstIssue());
-                        currentIssueEntity.setRef(null);
-                    }
-//                    currentIssueEntity.setIsFirstIssue(false);
+                // next 만 존재하는 경우
+                if (nextNode != null){
+                    nextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), issueEntity.getStat(), nextNode);
+                    nextEntity.setPreviousNode(null);
                 }
+                // 둘다 존재하지 아니하는 경우 아무것도 안하지
             }
 
 
-            // ref가 null인  가장 마지막이슈의 하위 ref로 설정함.
-            prevIssueEntity = issueRepository.findByProjectEntityProjectNumAndStatAndRefIsNull(req.getProjectNum(), req.getStat());
-            if (prevIssueEntity != null) {
-                prevIssueEntity.setRef(currentIssueEntity.getIssueSequence());
+            // dstboard 처리
+            // previous Node가 null이면 제일 첫번쩨 노드이다.
+
+            IssueEntity currentIssueEntity = null;
+
+            currentIssueEntity =  // dst보드의 가장 첫번재 이슈
+                    issueRepository.findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(req.getProjectNum(), req.getStat());
+
+            if (currentIssueEntity != null) {
+                // 가장 최근 이슈가 있는 경우
+                currentIssueEntity.setPreviousNode(issueEntity.getIssueSequence());
+                issueEntity.setNextNode(currentIssueEntity.getIssueSequence());
+                issueEntity.setPreviousNode(null);
             } else {
-                // 이동되는 자리에 아무런 이슈도 없는경우
-                isFirstIssue = true;
+                issueEntity.setPreviousNode(null);
+                issueEntity.setNextNode(null);
             }
 
-            // 상태 업데이트
-            currentIssueEntity.setStat(req.getStat());
-            // 첫번째이슈 여부 업데이트
-            currentIssueEntity.setIsFirstIssue(isFirstIssue);
+            // 처리된 srcBoard저장.
+            if (nextNode != null) issueRepository.save(nextEntity);
+            if (previousNode != null) issueRepository.save(preEntity);
 
-            // DB에 저장
-            issueRepository.save(currentIssueEntity);
-
-            if (prevIssueEntity != null) {
-                issueRepository.save(prevIssueEntity); // 수정된 prevIssueEntity도 저장
-            }
+            issueEntity.setStat(req.getStat());
+            issueRepository.save(issueEntity);
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
@@ -323,7 +339,7 @@ public class IssueServiceImpl implements IssueService {
 
             issueRepository.save(issueEntity);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -360,12 +376,10 @@ public class IssueServiceImpl implements IssueService {
             System.out.println(issueCommentEntities.size());
 
 
-
-
             System.out.println("종료");
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -408,8 +422,7 @@ public class IssueServiceImpl implements IssueService {
             commentRepository.save(commentEntity);
 
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -431,8 +444,7 @@ public class IssueServiceImpl implements IssueService {
             entities = issueRepository.getIssueCommentList(issueNum, page, perPage);
 
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -455,7 +467,7 @@ public class IssueServiceImpl implements IssueService {
 
             commentRepository.save(entity);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
@@ -475,7 +487,7 @@ public class IssueServiceImpl implements IssueService {
             count = commentRepository.countByIssueEntityIssueNum(issueNum);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }

@@ -32,19 +32,19 @@ public class QIssueEntity extends EntityPathBase<IssueEntity> {
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
-    public final BooleanPath isFirstIssue = createBoolean("isFirstIssue");
-
     public final ListPath<IssueCommentEntity, QIssueCommentEntity> issueCommentEntities = this.<IssueCommentEntity, QIssueCommentEntity>createList("issueCommentEntities", IssueCommentEntity.class, QIssueCommentEntity.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> issueNum = createNumber("issueNum", Integer.class);
 
     public final StringPath issueSequence = createString("issueSequence");
 
+    public final StringPath nextNode = createString("nextNode");
+
+    public final StringPath previousNode = createString("previousNode");
+
     public final NumberPath<Integer> priority = createNumber("priority", Integer.class);
 
     public final QProjectEntity projectEntity;
-
-    public final StringPath ref = createString("ref");
 
     public final NumberPath<Integer> stat = createNumber("stat", Integer.class);
 
