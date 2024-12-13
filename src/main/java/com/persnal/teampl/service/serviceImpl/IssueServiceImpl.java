@@ -208,7 +208,6 @@ public class IssueServiceImpl implements IssueService {
 
 
             //srcBoard처리
-
             String previousNode = issueEntity.getPreviousNode();
             String nextNode = issueEntity.getNextNode();
 
@@ -226,7 +225,7 @@ public class IssueServiceImpl implements IssueService {
                     nextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), issueEntity.getStat(), nextNode);
                     nextEntity.setPreviousNode(preEntity.getIssueSequence());
                     preEntity.setNextNode(nextEntity.getIssueSequence());
-                }else {
+                } else {
                     // 2) pre만 존재하는 경우,
                     preEntity.setNextNode(null);
                 }
@@ -234,7 +233,7 @@ public class IssueServiceImpl implements IssueService {
 
             } else {
                 // next 만 존재하는 경우
-                if (nextNode != null){
+                if (nextNode != null) {
                     nextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), issueEntity.getStat(), nextNode);
                     nextEntity.setPreviousNode(null);
                 }
@@ -272,6 +271,104 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return PatchIssueStatusResponse.success();
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(String email, PatchIssueStatusDragRequest req) {
+        try {
+            boolean isExistUser = userRepository.existsById(email);
+            if (!isExistUser) return PatchIssueStatusDragResponse.notExistUser();
+
+            IssueEntity currentIssueEntity = issueRepository.findByIssueNum(req.getIssueNum());
+            if (currentIssueEntity == null) return PatchIssueStatusDragResponse.notExistIssue();
+
+            // srcBoard 처리
+            String preNode = currentIssueEntity.getPreviousNode();
+            String nextNode = currentIssueEntity.getNextNode();
+
+            IssueEntity srcPreEntity = null;
+            IssueEntity srcNextEntity = null;
+
+            if (preNode != null) {
+                srcPreEntity =
+                        issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), currentIssueEntity.getStat(), preNode);
+
+                if (nextNode != null) {
+                    // src에 preNode와 nextNode가 모두 존재하는 경우
+                    srcNextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), currentIssueEntity.getStat(), nextNode);
+                    srcPreEntity.setNextNode(srcNextEntity.getIssueSequence());
+                    srcNextEntity.setPreviousNode(srcPreEntity.getIssueSequence());
+                } else {
+                    //preNode만 존재 하는 경우
+                    srcPreEntity.setNextNode(null);
+                }
+            } else {
+                if (nextNode != null) {
+                    // next Node만 존재하는 경우
+                    srcNextEntity =
+                            issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), currentIssueEntity.getStat(), nextNode);
+                    srcNextEntity.setPreviousNode(null);
+                }
+            }
+
+
+            // dstBoard에 대한 처리.
+            preNode = req.getDstPreNode();
+            nextNode = req.getDstNextNode();
+
+            IssueEntity dstPreEntity = null;
+            IssueEntity dstNextEntity = null;
+
+            if (preNode != null) {
+                dstPreEntity =
+                        issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), req.getDstStat(), preNode);
+
+                if (nextNode != null) {
+                    // 옮겨지는 위치에 preNode 와 nextNode 둘다 존재하는 경우 노드 연결
+                    dstNextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), req.getDstStat(), nextNode);
+
+                    // 가운데 끼워 넣고 연결
+                    dstPreEntity.setNextNode(currentIssueEntity.getIssueSequence());
+                    currentIssueEntity.setPreviousNode(dstPreEntity.getIssueSequence());
+                    currentIssueEntity.setNextNode(dstNextEntity.getIssueSequence());
+                    dstNextEntity.setPreviousNode(currentIssueEntity.getIssueSequence());
+                }else {
+                    dstPreEntity.setNextNode(currentIssueEntity.getIssueSequence());
+                    currentIssueEntity.setNextNode(null);
+                    currentIssueEntity.setPreviousNode(dstPreEntity.getIssueSequence());
+                }
+
+            }else {
+                if (nextNode != null) {
+                    dstNextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), req.getDstStat(), nextNode);
+                    currentIssueEntity.setPreviousNode(null);
+                    currentIssueEntity.setNextNode(dstNextEntity.getIssueSequence());
+                    dstNextEntity.setPreviousNode(currentIssueEntity.getIssueSequence());
+                }else {
+                    // 둘다 존재하지 않는 경우
+                    currentIssueEntity.setPreviousNode(null);
+                    currentIssueEntity.setNextNode(null);
+                }
+            }
+
+
+            // 상태값 세팅
+            currentIssueEntity.setStat(req.getDstStat());
+            // 각각의 변경된 이슈 저장.
+            if (srcPreEntity != null) issueRepository.save(srcPreEntity);
+            if (srcNextEntity != null) issueRepository.save(srcNextEntity);
+            if (dstPreEntity != null) issueRepository.save(dstPreEntity);
+            if (dstNextEntity != null) issueRepository.save(dstNextEntity);
+
+            issueRepository.save(currentIssueEntity);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueStatusDragResponse.success();
     }
 
     @Override

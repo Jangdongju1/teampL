@@ -8,18 +8,19 @@ import GetPersonalPrjInfoResponse from "../../interface/response/project/persona
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, Project} from "../../interface/types";
-import {IssueStatus, ModalType, ProjectStatus, ProjectType} from "../../common";
-import {createIssueRequest, getPersonalIssueListRequest} from "../../api/issueApi";
+import {IssueStatus, KanbanBoardName, ModalType, ProjectStatus, ProjectType} from "../../common";
+import {createIssueRequest, getPersonalIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import IssueModal from "../../component/modal/issueModal";
 import {modalStore} from "../../store";
-import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd";
+import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
 import issueStatus from "../../common/enum/IssueStatus";
 import IssueCard from "../../component/issueCard";
 import CreateIssueRequest from "../../interface/request/issue/createIssueRequest";
 import CreateIssueResponse from "../../interface/response/issue/createIssueResponse";
-import {MouseEvent} from "react";
-import {findAllByAltText} from "@testing-library/react";
+import kanbanBoardName from "../../common/enum/kanbanBoardName";
+import {PatchIssueStatusDragRequest} from "../../interface/request";
+import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -47,44 +48,41 @@ export default function KanbanBoard(props: KanbanType) {
     //* state : 칸반보드 패널의 추가버튼 렌더링 상태
     const [addBtnRenderState, setAddBtnRenderState] =
         useState<Record<string, boolean>>({
-            "Not Start": false,
-            "On Working": false,
-            "Stuck": false,
-            "Done": false,
+            [KanbanBoardName.NOT_START]: false,
+            [KanbanBoardName.ON_WORKING]: false,
+            [KanbanBoardName.STUCK]: false,
+            [KanbanBoardName.DONE]: false,
         });
+    //* state : 각 칸반보드의 데이터 배열 상태
+    const [eachKanbanIssues, setEachKanbanIssues] =
+        useState<Record<string, Issue[]>>({
+            [KanbanBoardName.NOT_START]: [],
+            [KanbanBoardName.ON_WORKING]: [],
+            [KanbanBoardName.STUCK]: [],
+            [kanbanBoardName.DONE]: []
+        })
 
 
     // accessToken
     const accessToken = cookies.accessToken_Main;
 
-    // 칸반보드 타입 4가지에 대한 객체 배열
+    // 칸반보드 타입 4가지에 대한 객체 배열 1)보드의이름, 2)상태값 ,3) 타이틀 컬러
     const boardType = () => {
-        const types: { boardName: string, status: number } [] = [
-            {boardName: "Not Start", status: IssueStatus.NOT_START},
-            {boardName: "On Working", status: issueStatus.ON_WORKING},
-            {boardName: "Stuck", status: IssueStatus.STUCK},
-            {boardName: "Done", status: IssueStatus.DONE}
+        const types: { boardName: string, status: number, titleColor: string } [] = [
+            {boardName: KanbanBoardName.NOT_START, status: IssueStatus.NOT_START, titleColor: "rgb(121, 126, 147)"},
+            {boardName: KanbanBoardName.ON_WORKING, status: issueStatus.ON_WORKING, titleColor: "rgb(253, 188, 100)"},
+            {boardName: KanbanBoardName.STUCK, status: IssueStatus.STUCK, titleColor: "rgb(232, 105, 125)"},
+            {boardName: KanbanBoardName.DONE, status: IssueStatus.DONE, titleColor: "rgb(51, 211, 145)"}
         ]
 
         return types;
     }
 
-    // 칸반보드 상태는 4가지가 있다. 1)Not Start 2)On Working, 3) Stuck 4) Done
-    const boardTitleColor = (boardName: string) => {
-        const colors: Record<string, string> = {
-            "Not Start": "rgb(121, 126, 147)",
-            "On Working": "rgb(253, 188, 100)",
-            "Stuck": "rgb(232, 105, 125)",
-            "Done": "rgb(51, 211, 145)"
-        }
-        return colors[boardName]
-    }
-
 
     const sortIssue = (issues: Issue[], stat: number): Issue[] => {
-        if (!totalIssues) return [];
+        if (!issues) return [];
 
-        const filteredIssue: Issue[] = totalIssues.filter(item => item.stat === stat);
+        const filteredIssue: Issue[] = issues.filter(item => item.stat === stat);
 
         // 이슈 맵 생성
         const issueMap: Map<string, Issue> =
@@ -110,6 +108,17 @@ export default function KanbanBoard(props: KanbanType) {
 
         return viewArr.reverse();
     }
+    //* function : 각 칸반보드의 상태값에 따른 이름 반환함수
+    const getKanbanName = (stat: number): string => {
+        const names: Record<string, string> = {
+            "0": KanbanBoardName.NOT_START,
+            "1": KanbanBoardName.ON_WORKING,
+            "2": KanbanBoardName.STUCK,
+            "3": KanbanBoardName.DONE
+        }
+        return names[String(stat)];
+    }
+
 
     //* function : 개인프로젝트 이슈 목록 api 응답처리 함수.
     const getPersonalIssueResponse = (responseBody: GetPersonalIssueListResponse | ResponseDto | null) => {
@@ -122,7 +131,15 @@ export default function KanbanBoard(props: KanbanType) {
 
         const {data} = responseBody as GetPersonalIssueListResponse;
 
-        setTotalIssues(data.list);
+        // reduce함수는 결과를 축척하고 한꺼번에 반환해 준다. 따라서 forEach로 발생하는 불필요한 반복적 상태 업데이트를 줄일 수 있다.
+        const updatedKanbanIssues = boardType().reduce((acc, item) => {
+            acc[item.boardName] = sortIssue(data.list, item.status);
+            return acc;
+        }, {} as Record<string, Issue[]>); // 초기값은 빈 객체
+
+
+        // 상태 업데이트
+        setEachKanbanIssues(updatedKanbanIssues);
 
     }
 
@@ -153,6 +170,29 @@ export default function KanbanBoard(props: KanbanType) {
         setRefresh(prevState => prevState * -1);
     }
 
+    //function : 이슈카드 드래그로 인한 요청 처리함수
+    const patchDragIssueResponse = (responseBody : PatchIssueStatusDragResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
+        const {code,message} = responseBody;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+    }
+    //function : 이슈카드 옮긴후 상태 업데이트 함수
+    const updateKanbanState = (sourceArr:Issue[], dstArr: Issue[],srcBoardId: string, dstBoardId : string)=>{
+
+
+        setEachKanbanIssues( prevState => ({
+            ...prevState,
+            [getKanbanName(parseInt(srcBoardId,10))] : sourceArr,
+            [getKanbanName(parseInt(dstBoardId,10))] : dstArr
+        }))
+
+    }
+
 
     //* eventHandler : 칸반보드 패널 마우스 이벤트
     const onKanbanPanelMouseEnterEventHandler = (boardName: string) => {
@@ -180,8 +220,60 @@ export default function KanbanBoard(props: KanbanType) {
 
 
     // eventHandler : 드래그 앤 드롭 이벤트가 끝나면 실행할 함수
-    const onDragEnd = (result: DropResult) => {
-        console.log(result);
+    const onDragEnd = async (result: DropResult) => {
+        if (!accessToken) return;
+        const {source, destination, draggableId} = result;
+
+        if (!source || !destination || !projectInfo?.projectNum) return;
+
+
+        // 서버로 보낼 dst의 preNode와  nextNode를 구하는 함수
+        const getNodes = (sourceInfo: DraggableLocation, dstInfo: DraggableLocation, draggableId :string)=>{
+            const result: {dstNextNode: string | null, dstPreNode: string | null} = { dstNextNode : null, dstPreNode: null};
+
+            let dstIssues = eachKanbanIssues[getKanbanName(parseInt(dstInfo.droppableId, 10))];
+
+            if (source.droppableId === dstInfo.droppableId){
+               dstIssues =  dstIssues.filter(value => value.issueSequence != draggableId);
+            }
+            result.dstPreNode =  dstInfo.index == 0? null : dstIssues[dstInfo.index-1].issueSequence
+            result.dstNextNode = dstInfo.index == dstIssues.length? null : dstIssues[dstInfo.index].issueSequence
+
+            return result;
+        }
+
+        const draggedIssue = eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))][source.index];
+
+        // //이동되는 이슈가 맨처음으로 이동되거나 맨 마지막으로 이동되는 경우를 따져야 한다.
+        const requestBody: PatchIssueStatusDragRequest = {
+            projectNum: projectInfo?.projectNum,
+            issueNum: draggedIssue.issueNum,
+            dstStat: parseInt(destination.droppableId, 10),
+            dstNextNode: getNodes(source, destination,draggableId).dstPreNode,
+            dstPreNode: getNodes(source, destination,draggableId).dstNextNode,
+        }
+
+        // 원본배열
+        const tDstIssues = [...eachKanbanIssues[getKanbanName(parseInt(destination.droppableId, 10))]];
+        const tSourceIssues = [...eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))]];
+
+        // 배열의 깊은 복사
+        const srcArr: Issue[] = tSourceIssues.map(value => ({...value}))
+        const dstArr: Issue[] = tDstIssues.map(value => ({...value}));
+
+        if (source.droppableId !== destination.droppableId){
+            draggedIssue.stat = parseInt(destination.droppableId, 10);
+            srcArr.splice(source.index, 1); // 소스에서 삭제
+            dstArr.splice(destination.index, 0, draggedIssue); // 목적지에 추가
+        }
+
+
+        // api 호출전 상태 업데이트
+        updateKanbanState(srcArr, dstArr,source.droppableId, destination.droppableId);
+
+        const responseBody = await patchDragIssueStatusRequest(requestBody, accessToken);
+
+        patchDragIssueResponse(responseBody);
     }
 
 
@@ -207,7 +299,6 @@ export default function KanbanBoard(props: KanbanType) {
         fetchIssueList();
     }, [refresh]);
 
-
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div id={"kanban-board-wrapper"}>
@@ -230,20 +321,20 @@ export default function KanbanBoard(props: KanbanType) {
 
                         {boardType().map((item, index) => (
 
-                            <div id={"kanban-board-panel-wrapper"}
+                            <div id={"kanban-board-panel-wrapper"} key={item.boardName}
                                  onMouseEnter={() => onKanbanPanelMouseEnterEventHandler(item.boardName)}
                                  onMouseLeave={() => onKanbanPanelMouseLeaveEventHandler(item.boardName)}>
                                 <div className={"kanban-board-panel-name-box"}
-                                     style={{backgroundColor: boardTitleColor(item.boardName)}}>
+                                     style={{backgroundColor: item.titleColor}}>
 
 
                                     <div className={"kanban-board-panel-name"}>
-                                        {`${item.boardName} / 0`}
+                                        {`${item.boardName} / ${eachKanbanIssues[item.boardName].length}`}
                                     </div>
 
                                     {addBtnRenderState[item.boardName] ?
                                         <div className={"icon kanban-board-add-icon kanban-item-add-icon"} style={{
-                                            backgroundColor: boardTitleColor(item.boardName)
+                                            backgroundColor: item.titleColor
                                         }} onClick={() => onAddItemBtnClickEventHandler(item.status)}>
                                         </div>
                                         : null
@@ -253,48 +344,31 @@ export default function KanbanBoard(props: KanbanType) {
 
                                 <Droppable droppableId={String(item.status)}>
                                     {provided => (
-                                        <div ref={provided.innerRef} {...provided.droppableProps} className={"kanban-board-panel-item-box"}>
+                                        <div ref={provided.innerRef} {...provided.droppableProps}
+                                             className={"kanban-board-panel-item-box"}>
 
-                                            {!totalIssues ? null :
-                                                sortIssue(totalIssues, item.status).map((item, index) => (
-                                                    <Draggable draggableId={item.issueSequence} index={index}>
-                                                        {provided1 => (
-                                                            <div ref={provided1.innerRef} {...provided1.draggableProps} {...provided1.dragHandleProps}>
-                                                                <IssueCard
-                                                                    key={item.issueSequence}
-                                                                    data={item}
-                                                                    subIssueCnt={0}
-                                                                    commentCnt={0}
-                                                                    isTeamKanban={isTeamKanban}
-                                                                    setRefresh={setRefresh}/>
-                                                            </div>
+                                            {eachKanbanIssues[item.boardName].map((item, index) => (
 
-                                                        )}
-                                                    </Draggable>
-                                                    // <IssueCard
-                                                    //     key={item.issueSequence}
-                                                    //     data={item}
-                                                    //     subIssueCnt={0}
-                                                    //     commentCnt={0}
-                                                    //     isTeamKanban={isTeamKanban}
-                                                    //     setRefresh={setRefresh}/>
-                                                ))}
+                                                <Draggable key={item.issueSequence} draggableId={item.issueSequence}
+                                                           index={index}>
+                                                    {provided1 => (
+                                                        <div
+                                                            ref={provided1.innerRef} {...provided1.draggableProps} {...provided1.dragHandleProps}>
+                                                            <IssueCard
+                                                                key={item.issueSequence}
+                                                                data={item}
+                                                                subIssueCnt={0}
+                                                                commentCnt={0}
+                                                                isTeamKanban={isTeamKanban}
+                                                                setRefresh={setRefresh}/>
+                                                        </div>
+
+                                                    )}
+                                                </Draggable>
+                                            ))}
                                         </div>
                                     )}
                                 </Droppable>
-                                {/*<div className={"kanban-board-panel-item-box"}>*/}
-
-                                {/*    {!totalIssues ? null :*/}
-                                {/*        sortIssue(totalIssues, item.status).map((item, index) => (*/}
-                                {/*            <IssueCard*/}
-                                {/*                key={item.issueSequence}*/}
-                                {/*                data={item}*/}
-                                {/*                subIssueCnt={0}*/}
-                                {/*                commentCnt={0}*/}
-                                {/*                isTeamKanban={isTeamKanban}*/}
-                                {/*                setRefresh={setRefresh}/>*/}
-                                {/*        ))}*/}
-                                {/*</div>*/}
                             </div>
                         ))}
                     </div> :

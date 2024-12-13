@@ -34,14 +34,14 @@ public class IssueSequenceImpl implements IssueSequenceService {
 
     @Override
     public String addSequenceNumber(String sequence) {
+        int number = 0;
         try {
-            int number = getSequenceNUmber(sequence);
+            number = getSequenceNUmber(sequence);
 
-            return sequencePrefix + decimalFormat.format(number+1);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
         }
-        return "";
+        return sequencePrefix + decimalFormat.format(number + 1);
     }
 
     private int getSequenceNUmber(String sequence) {

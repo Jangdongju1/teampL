@@ -36,5 +36,8 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<GetCommentCountResponse>> getCommentCount(String email, Integer issueNum);
 
+    ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(String email, PatchIssueStatusDragRequest req);
+
+
 
 }

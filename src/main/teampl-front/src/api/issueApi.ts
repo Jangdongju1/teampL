@@ -3,7 +3,7 @@ import {
     CREATE_PERSONAL_ISSUE, GET_ISSUE_COMMENT_LIST,
     GET_PERSONAL_ISSUE_BY_NUMBER,
     GET_PERSONAL_ISSUE_BY_STATUS,
-    GET_PERSONAL_ISSUE_LIST, GET_TOTAL_COMMENT_COUNT,
+    GET_PERSONAL_ISSUE_LIST, GET_TOTAL_COMMENT_COUNT, PATCH_DRAG_ISSUE_STATUS,
     PATCH_ISSUE_CATEGORY, PATCH_ISSUE_COMMENT,
     PATCH_ISSUE_DETAIL,
     PATCH_ISSUE_EXPIRE_DATE,
@@ -33,11 +33,12 @@ import {
     PatchIssueCategoryRequest,
     PatchIssueExpireDateRequest,
     PatchIssueDetailRequest,
-    PostIssueCommentRequest, PatchIssueCommentRequest
+    PostIssueCommentRequest, PatchIssueCommentRequest, PatchIssueStatusDragRequest
 } from "../interface/request";
 import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
 import {log} from "node:util";
 import GetIssueCommentListRequest from "../interface/request/issue/GetIssueCommentListRequest";
+import PatchIssueStatusDragResponse from "../interface/response/issue/patchIssueStatusDragResponse";
 
 
 const DOMAIN = "http://localhost:4000";
@@ -322,7 +323,7 @@ export const patchIssueCommentRequest = async (requestBody: PatchIssueCommentReq
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         } else {
-            console.log("Unexpected Error!!");
+            console.log("Unexpected Error!!", error);
             return null;
         }
     }
@@ -346,7 +347,32 @@ export const getTotalCommentCountRequest = async (issueNum: number, accessToken:
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         } else {
-            console.log("Unexpected Error!!");
+            console.error("Unexpected Error!!", error);
+            return null;
+        }
+    }
+}
+
+// 이슈 카드 드래그로 인한 status 변경요청.
+export const patchDragIssueStatusRequest = async (requestBody : PatchIssueStatusDragRequest, accessToken:string)=>{
+    try {
+        const result =
+           await axios.patch(apiEndPoint(PATCH_DRAG_ISSUE_STATUS()), requestBody, Authorization(accessToken));
+
+        const responseBody : PatchIssueStatusDragResponse = result.data;
+        return responseBody
+
+    }catch (error){
+        if (axios.isAxiosError(error)){
+            if (!error.response){
+                console.log("Request", error.request);
+                console.error("Error is occurred!", error.message)
+                return null;
+            }
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        }else {
+            console.error("Unexpected Error!!", error);
             return null;
         }
     }

@@ -140,5 +140,11 @@ public class IssueController {
 
         return issueService.getCommentCount(email, issueNum);
     }
+    @PatchMapping("/drag/modification/issue-status")
+    public ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(
+            @AuthenticationPrincipal String email,
+            @RequestBody PatchIssueStatusDragRequest req){
 
+        return issueService.patchIssueStatusDrag(email,req);
+    }
 }

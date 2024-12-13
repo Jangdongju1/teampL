@@ -32,6 +32,7 @@ export const GET_ISSUE_COMMENT_LIST =
 export const PATCH_ISSUE_COMMENT = ()=>"/modification/issue-comment";
 export const GET_TOTAL_COMMENT_COUNT =
     (issueNum: number)=> `/total-comments-count/${issueNum}`;
+export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 
 
 
