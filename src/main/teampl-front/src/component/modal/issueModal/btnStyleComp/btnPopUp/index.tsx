@@ -1,5 +1,5 @@
 import "./style.css"
-import {IssueCategory, IssuePriority, IssueStatus} from "../../../../../common";
+import {IssueCategory, IssuePriority, IssueStatus, KanbanBoardName} from "../../../../../common";
 import {IssueCategories, IssuePriorities, IssueStats} from "../../../../../constant/issueConstants";
 import React, {useEffect, useRef} from "react";
 import {useCookies} from "react-cookie";
@@ -16,6 +16,7 @@ import {
 import {patchCategoryRequest, patchPriorityRequest, patchStatusRequest} from "../../../../../api/issueApi";
 import {PatchIssueStatusResponse, PatchIssueCategoryResponse} from "../../../../../interface/response";
 import ResponseCode from "../../../../../common/enum/responseCode";
+import {Issue} from "../../../../../interface/types";
 
 
 type BtnPopUpProps = {
@@ -28,17 +29,27 @@ type BtnPopUpProps = {
             left?: number
         }
     },
-    popupType: "category" | "priority" | "status",
-    setPopUpClickState: React.Dispatch<React.SetStateAction<boolean>>,
-    value: number
-    setValue: React.Dispatch<React.SetStateAction<number>>,
-    setRefresh: React.Dispatch<React.SetStateAction<number>>
+    hooks: {
+        setPopUpClickState: React.Dispatch<React.SetStateAction<boolean>>,
+        value: number
+        setValue: React.Dispatch<React.SetStateAction<number>>,
+        eachKanbanIssues?: Record<string, Issue[]>,
+        setEachKanbanIssues?: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+    }
+
+    popupType: "category" | "priority" | "status"
 }
 export default function BtnPopUp(props: BtnPopUpProps) {
     // 값과 관련된 prop
-    const {menu, cssOption, popupType} = props;
+    const {menu, cssOption, popupType, hooks} = props;
     // 상태 변경과 관련되 props
-    const {setPopUpClickState, setValue, value, setRefresh} = props
+    const {
+        setPopUpClickState,
+        setValue,
+        value,
+        eachKanbanIssues,
+        setEachKanbanIssues
+    } = hooks
 
     // path variable : 프로젝트 넘버 (api 호출시 요청 변수)
     const {projectNum} = useParams();
@@ -120,7 +131,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             alert(message);
             return;
         }
-        setRefresh(prevState => prevState * -1);
+        // setRefresh(prevState => prevState * -1);
 
     }
 
@@ -132,7 +143,18 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             alert(message);
             return;
         }
-        setRefresh(prevState => prevState * -1);
+        //  setRefresh(prevState => prevState * -1);
+    }
+    // function : 각 칸반보드의 이름을 반환해주는 함수
+    const kanbanName = (status: number) => {
+        const names: Record<string, string> = {
+            [IssueStatus.NOT_START]: KanbanBoardName.NOT_START,
+            [IssueStatus.ON_WORKING]: KanbanBoardName.ON_WORKING,
+            [IssueStatus.STUCK]: KanbanBoardName.STUCK,
+            [IssueStatus.DONE]: KanbanBoardName.DONE
+        }
+
+        return names[String(status)];
     }
 
     // eventHandler: 외부클릭 감지 함수
@@ -173,11 +195,41 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             patchPriorityResponse(responseBody);
 
         } else if (popupType === "status") {
+
+            if (value === newValue) return;
             // 이슈 상태 변경시 api 호출
             const requestBody: PatchIssueStatusRequest =
                 {projectNum: parseInt(projectNum, 10), issueNum, stat: newValue};
-            const responseBody = await patchStatusRequest(requestBody, accessToken);
 
+            if (eachKanbanIssues) {
+                const srcArr = eachKanbanIssues[kanbanName(value)].map(issue => ({...issue}));
+                const dstArr = eachKanbanIssues[kanbanName(newValue)].map(issue => ({...issue}));
+
+                const moveIssue = srcArr.find(issue => issue.issueNum === issueNum);
+
+                if (moveIssue) {
+                    const updateSrcArr = srcArr.filter(issue => issue.issueNum !== issueNum);
+                    if (dstArr.length !== 0) {
+                        const firstDstIssue = dstArr[0];
+                        moveIssue.nextNode = firstDstIssue.issueSequence;
+                        firstDstIssue.previousNode = moveIssue.issueSequence;
+                    }
+                    const updateDstArr = [moveIssue, ...dstArr];
+
+
+                    const updateEachIssues = {
+                        ...eachKanbanIssues,
+                        [kanbanName(value)]: updateSrcArr,
+                        [kanbanName(newValue)]: updateDstArr
+                    }
+
+                    console.log(updateEachIssues);
+                   if (setEachKanbanIssues)  setEachKanbanIssues(updateEachIssues);
+                }
+
+            }
+
+            const responseBody = await patchStatusRequest(requestBody, accessToken);
             patchStatusResponse(responseBody);
 
         } else if (popupType === "category") {

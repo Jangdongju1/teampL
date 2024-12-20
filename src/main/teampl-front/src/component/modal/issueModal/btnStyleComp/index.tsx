@@ -6,6 +6,7 @@ import CommonDatePicker from "../../../datePicker";
 import {getFormattedDateToString} from "../../../../util";
 import BtnPopUp from "./btnPopUp";
 import InitialsImg from "../../../InitialsImg";
+import {Issue} from "../../../../interface/types";
 
 type ModalCompBtnStyleProps<T> = {
     labelName: string,
@@ -16,12 +17,11 @@ type ModalCompBtnStyleProps<T> = {
         setClickState: React.Dispatch<React.SetStateAction<boolean>>
         value: T,
         setValue: React.Dispatch<React.SetStateAction<T>>,
-        setRefresh: React.Dispatch<React.SetStateAction<number>>
+        eachKanbanIssues? : Record<string, Issue[]>,
+        setEachKanbanIssues? : React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
     },
     onChange?: (date: Date | null) => void,
     compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default"
-    // styleType?: "status" | "category" | "participants" | "default", // 1) priority,2)category,3)participants,4)default
-
 }
 
 
@@ -36,7 +36,8 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
         setValue,
         setClickState,
         clickState,
-        setRefresh
+        setEachKanbanIssues,
+        eachKanbanIssues
     } = hooks;
 
 
@@ -162,20 +163,26 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                            cssOption={{
                                offset: {right: 220, bottom: 325}
                            }}
-                           setPopUpClickState={setClickState}
-                           value={value as number}
-                           setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
-                           setRefresh={setRefresh}/>)}
+                           hooks={{
+                               value : value as number,
+                               setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                               setPopUpClickState : setClickState,
+                           }}
+                />)}
             {compType === "status" && clickState && (
                 <BtnPopUp menu={statusList()}
                           popupType={compType}
                           cssOption={{
                               offset: {right: 220, bottom: 240}
                           }}
-                          setPopUpClickState={setClickState}
-                          value={value as number}
-                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
-                          setRefresh={setRefresh}/>
+                          hooks={{
+                              value : value as number,
+                              setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                              setPopUpClickState : setClickState,
+                              eachKanbanIssues : eachKanbanIssues,
+                              setEachKanbanIssues : setEachKanbanIssues
+                          }}
+                />
             )}
 
             {compType === "priority" && clickState && (
@@ -184,10 +191,14 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                           cssOption={{
                               offset: {right: 220, bottom: 240}
                           }}
-                          setPopUpClickState={setClickState}
-                          value={value as number}
-                          setValue={setValue as React.Dispatch<React.SetStateAction<number>>}
-                          setRefresh={setRefresh}/>
+                          hooks={{
+                              value : value as number,
+                              setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                              setPopUpClickState : setClickState,
+                              eachKanbanIssues : eachKanbanIssues,
+                              setEachKanbanIssues : setEachKanbanIssues
+                          }}
+                />
             )}
         </div>
     )

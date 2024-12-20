@@ -3,7 +3,7 @@ import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
-import {IssueCategory, IssuePriority, IssueStatus} from "../../../common";
+import {IssueCategory, IssuePriority, IssueStatus, KanbanBoardName} from "../../../common";
 import Editor from "../../editor";
 import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
@@ -35,19 +35,24 @@ import {
 } from "../../../interface/request";
 import {getFormattedDate, getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
-import {IssueComment} from "../../../interface/types";
+import {Issue, IssueComment} from "../../../interface/types";
 import usePagination from "../../../hook/pagination";
 import GetIssueCommentListRequest from "../../../interface/request/issue/GetIssueCommentListRequest";
+import issueStatus from "../../../common/enum/IssueStatus";
 
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
-    isTeamModal: boolean
-    setRefresh: React.Dispatch<React.SetStateAction<number>>
+    isTeamModal: boolean,
+    setRefresh: React.Dispatch<React.SetStateAction<number>>,
+    eachKanbanIssues: Record<string, Issue[]>,
+    setEachKanbanIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
 }
+
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
-    const {isTeamModal, setRefresh} = props
+
+    const {isTeamModal, setRefresh, eachKanbanIssues, setEachKanbanIssues} = props
 
     //state: 프로젝트 번호 상태
     const [projectNum, setProjectNum] = useState<number | undefined>(undefined);
@@ -113,6 +118,7 @@ export default function IssueModal(props: IssueModalProps) {
     // global state: 모달 상태
     const {setIsModalOpen} = modalStore();
 
+    // 페이지당 댓글 출력 갯수.
     const PER_PAGE: number = 5;
     // pagination custom hook
     const {
@@ -155,8 +161,18 @@ export default function IssueModal(props: IssueModalProps) {
             return;
         }
 
-        setRefresh(prevState => prevState * -1);
+    }
 
+    // function : 각 칸반보드의 이름을 반환해주는 함수
+    const kanbanName = (status: number) => {
+        const names: Record<string, string> = {
+            [IssueStatus.NOT_START]: KanbanBoardName.NOT_START,
+            [IssueStatus.ON_WORKING]: KanbanBoardName.ON_WORKING,
+            [IssueStatus.STUCK]: KanbanBoardName.STUCK,
+            [IssueStatus.DONE]: KanbanBoardName.DONE
+        }
+
+        return names[String(status)];
     }
 
     //eventHandler: 모달 닫기버튼 클릭 이벤트 헨들러
@@ -176,6 +192,16 @@ export default function IssueModal(props: IssueModalProps) {
         if (key === "Enter") {
             if (!accessToken || !projectNum || !issueNum) return;
             const requestBody: PatchIssueTitleRequest = {title, issueNum, projectNum};
+
+            // 타이틀 변경  == 카드의 상태를 변경해 준다
+            const updateKanbanIssues = {
+                ...eachKanbanIssues,
+                [kanbanName(status)]: eachKanbanIssues[kanbanName(status)].map(issue =>
+                    issue.issueNum === issueNum ? {...issue, title} : issue)
+            }
+
+            setEachKanbanIssues(updateKanbanIssues);
+
 
             const responseBody = await patchIssueTitleRequest(requestBody, accessToken);
 
@@ -426,8 +452,7 @@ export default function IssueModal(props: IssueModalProps) {
                                                value: isTeamModal ? inCharge : writer,
                                                setValue: setInCharge,
                                                clickState: inChargeClickSate,
-                                               setClickState: setInChargeClickSate,
-                                               setRefresh: setRefresh
+                                               setClickState: setInChargeClickSate
                                            }}
                                            compType={"inCharge"}/>
 
@@ -446,8 +471,8 @@ export default function IssueModal(props: IssueModalProps) {
                                                        value: participants,
                                                        setValue: setParticipants,
                                                        clickState: participantsClickState,
-                                                       setClickState: setParticipantsClickState,
-                                                       setRefresh: setRefresh
+                                                       setClickState: setParticipantsClickState
+
                                                    }}
                                                    compType={"participants"}/>
                             </div>
@@ -459,7 +484,9 @@ export default function IssueModal(props: IssueModalProps) {
                                                setValue: setPriority,
                                                clickState: priorityClickState,
                                                setClickState: setPriorityClickState,
-                                               setRefresh: setRefresh
+                                               eachKanbanIssues: eachKanbanIssues,
+                                               setEachKanbanIssues : setEachKanbanIssues
+
                                            }}
                                            compType={"priority"}/>
 
@@ -470,7 +497,9 @@ export default function IssueModal(props: IssueModalProps) {
                                                setValue: setStatus,
                                                clickState: statusBtnClickState,
                                                setClickState: setStateBtnClickState,
-                                               setRefresh: setRefresh
+                                               eachKanbanIssues: eachKanbanIssues,
+                                               setEachKanbanIssues : setEachKanbanIssues
+
                                            }}
                                            compType={"status"}/>
 
@@ -481,7 +510,7 @@ export default function IssueModal(props: IssueModalProps) {
                                                setValue: setCategory,
                                                clickState: categoryBtnClickState,
                                                setClickState: setCategoryBtnClickState,
-                                               setRefresh: setRefresh
+
                                            }}
                                            compType={"category"}/>
 
@@ -493,7 +522,7 @@ export default function IssueModal(props: IssueModalProps) {
                                                setValue: setExpireDate,
                                                clickState: expireDateClickSate,
                                                setClickState: setExpireDateClickState,
-                                               setRefresh: setRefresh
+
                                            }}/>
 
                         <ModalCompNormal labelName={"작성일자"}

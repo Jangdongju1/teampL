@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 import {modalStore,headerMenuStore} from "../../../store";
 import Index from "../../../component/modal/creationModal";
 import {ModalType} from "../../../common";
-import IssueModal from "../../../component/modal/issueModal";
+import IssueModal from "../../../component/modal/issueModal/issueModal";
 
 
 export default function MainContainer() {

@@ -11,7 +11,7 @@ import {Issue, Project} from "../../interface/types";
 import {IssueStatus, KanbanBoardName, ModalType, ProjectStatus, ProjectType} from "../../common";
 import {createIssueRequest, getPersonalIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
-import IssueModal from "../../component/modal/issueModal";
+import IssueModal from "../../component/modal/issueModal/issueModal";
 import {modalStore} from "../../store";
 import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
 import issueStatus from "../../common/enum/IssueStatus";
@@ -88,6 +88,7 @@ export default function KanbanBoard(props: KanbanType) {
         const issueMap: Map<string, Issue> =
             new Map<string, Issue>(filteredIssue.map(item => [item.issueSequence, item]));
 
+        // 맨첫번째 노드
         let currentElement = filteredIssue.find(item => item.previousNode === null);
 
 
@@ -98,16 +99,19 @@ export default function KanbanBoard(props: KanbanType) {
         viewArr.push(currentElement);
 
         while (currentElement) {
-            currentElement = issueMap.get(currentElement.nextNode);
+            currentElement = currentElement.nextNode ? issueMap.get(currentElement.nextNode) : undefined;
+
             if (currentElement) {
                 viewArr.push(currentElement);
             }
-            if (currentElement === null) break;
+
+            if (!currentElement) break;
         }
-
-
-        return viewArr.reverse();
+        console.log(viewArr)
+        return viewArr;
     }
+
+
     //* function : 각 칸반보드의 상태값에 따른 이름 반환함수
     const getKanbanName = (stat: number): string => {
         const names: Record<string, string> = {
@@ -171,26 +175,32 @@ export default function KanbanBoard(props: KanbanType) {
     }
 
     //function : 이슈카드 드래그로 인한 요청 처리함수
-    const patchDragIssueResponse = (responseBody : PatchIssueStatusDragResponse | ResponseDto | null)=>{
+    const patchDragIssueResponse = (responseBody: PatchIssueStatusDragResponse | ResponseDto | null) => {
         if (!responseBody) return;
 
-        const {code,message} = responseBody;
+        const {code, message} = responseBody;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
     }
-    //function : 이슈카드 옮긴후 상태 업데이트 함수
-    const updateKanbanState = (sourceArr:Issue[], dstArr: Issue[],srcBoardId: string, dstBoardId : string)=>{
+    //function : 이슈카드 옮긴 후 상태 업데이트 함수
+    const updateKanbanState = (sourceArr: Issue[], dstArr: Issue[] | null, srcBoardId: string, dstBoardId: string | null) => {
 
 
-        setEachKanbanIssues( prevState => ({
-            ...prevState,
-            [getKanbanName(parseInt(srcBoardId,10))] : sourceArr,
-            [getKanbanName(parseInt(dstBoardId,10))] : dstArr
-        }))
-
+        if (dstArr && dstBoardId) {
+            setEachKanbanIssues(prevState => ({
+                ...prevState,
+                [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr,
+                [getKanbanName(parseInt(dstBoardId, 10))]: dstArr
+            }))
+        } else {
+            setEachKanbanIssues(prevState => ({
+                ...prevState,
+                [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr
+            }))
+        }
     }
 
 
@@ -228,16 +238,19 @@ export default function KanbanBoard(props: KanbanType) {
 
 
         // 서버로 보낼 dst의 preNode와  nextNode를 구하는 함수
-        const getNodes = (sourceInfo: DraggableLocation, dstInfo: DraggableLocation, draggableId :string)=>{
-            const result: {dstNextNode: string | null, dstPreNode: string | null} = { dstNextNode : null, dstPreNode: null};
+        const getNodes = (sourceInfo: DraggableLocation, dstInfo: DraggableLocation, draggableId: string) => {
+            const result: { dstNextNode: string | null, dstPreNode: string | null } = {
+                dstNextNode: null,
+                dstPreNode: null
+            };
 
             let dstIssues = eachKanbanIssues[getKanbanName(parseInt(dstInfo.droppableId, 10))];
 
-            if (source.droppableId === dstInfo.droppableId){
-               dstIssues =  dstIssues.filter(value => value.issueSequence != draggableId);
+            if (source.droppableId === dstInfo.droppableId) {
+                dstIssues = dstIssues.filter(value => value.issueSequence != draggableId);
             }
-            result.dstPreNode =  dstInfo.index == 0? null : dstIssues[dstInfo.index-1].issueSequence
-            result.dstNextNode = dstInfo.index == dstIssues.length? null : dstIssues[dstInfo.index].issueSequence
+            result.dstPreNode = dstInfo.index == 0 ? null : dstIssues[dstInfo.index - 1].issueSequence
+            result.dstNextNode = dstInfo.index == dstIssues.length ? null : dstIssues[dstInfo.index].issueSequence
 
             return result;
         }
@@ -249,27 +262,37 @@ export default function KanbanBoard(props: KanbanType) {
             projectNum: projectInfo?.projectNum,
             issueNum: draggedIssue.issueNum,
             dstStat: parseInt(destination.droppableId, 10),
-            dstNextNode: getNodes(source, destination,draggableId).dstPreNode,
-            dstPreNode: getNodes(source, destination,draggableId).dstNextNode,
+            dstNextNode: getNodes(source, destination, draggableId).dstNextNode,
+            dstPreNode: getNodes(source, destination, draggableId).dstPreNode,
         }
 
-        // 원본배열
-        const tDstIssues = [...eachKanbanIssues[getKanbanName(parseInt(destination.droppableId, 10))]];
+
+        // 즉시 반영을 위한 상태변경
         const tSourceIssues = [...eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))]];
-
-        // 배열의 깊은 복사
+        // 배열의복사
         const srcArr: Issue[] = tSourceIssues.map(value => ({...value}))
-        const dstArr: Issue[] = tDstIssues.map(value => ({...value}));
 
-        if (source.droppableId !== destination.droppableId){
+
+        if (source.droppableId !== destination.droppableId) {
+            const tDstIssues = [...eachKanbanIssues[getKanbanName(parseInt(destination.droppableId, 10))]];
+            const dstArr: Issue[] = tDstIssues.map(value => ({...value}));
+
             draggedIssue.stat = parseInt(destination.droppableId, 10);
             srcArr.splice(source.index, 1); // 소스에서 삭제
             dstArr.splice(destination.index, 0, draggedIssue); // 목적지에 추가
+
+            // api 호출전 상태 업데이트
+            updateKanbanState(srcArr, dstArr, source.droppableId, destination.droppableId);
+        } else {
+            if (source.index === destination.index) return;   // 같은위치에 놨을때 그냥 넘어가고
+
+            const movedItem = srcArr.splice(source.index, 1)[0];// 처음위치에서 삭제를 하고 해당 요소를 반환
+            srcArr.splice(destination.index, 0, movedItem);  // 해당 위치에 삽입.
+
+            updateKanbanState(srcArr, null, source.droppableId, null);
+
         }
 
-
-        // api 호출전 상태 업데이트
-        updateKanbanState(srcArr, dstArr,source.droppableId, destination.droppableId);
 
         const responseBody = await patchDragIssueStatusRequest(requestBody, accessToken);
 
@@ -305,7 +328,9 @@ export default function KanbanBoard(props: KanbanType) {
                 {isModalOpen && modalType === ModalType.ISSUE_INFO && (
                     <IssueModal
                         isTeamModal={isTeamKanban}
-                        setRefresh={setRefresh}/>
+                        setRefresh={setRefresh}
+                        eachKanbanIssues={eachKanbanIssues}
+                        setEachKanbanIssues={setEachKanbanIssues}/>
                 )}
 
                 <div className={"kanban-board-top-container"}>

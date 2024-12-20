@@ -7,7 +7,6 @@ import {
     AUTHENTICATION_CODE_CONFIRM_PATH,
     HOME_PATH,
     PASSWORD_REGISTRATION_PATH,
-    PERSONAL_PAGE_PATH,
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
     SIGN_IN_PATH
@@ -15,7 +14,6 @@ import {
 import Authentication from "./view/authentication";
 import PasswordRegistration from "./view/authentication/passwordRegistration";
 import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm";
-import Home from "./view/home";
 import MainContainer from "./layout/container/mainContainer";
 import PersonalProject from "./view/personalProject/personalProject";
 import KanbanBoard from "./view/kanbanBoard/kanbanBoard";
@@ -24,7 +22,6 @@ import {LoginUserResponse, ResponseDto} from "./interface/response";
 import ResponseCode from "./common/enum/responseCode";
 import {modalStore, userEmailStore} from "./store";
 import {isLoginUserRequest} from "./api/authApi";
-import {inflate} from "node:zlib";
 
 function App() {
     //navigator

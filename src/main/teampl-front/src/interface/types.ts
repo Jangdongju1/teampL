@@ -1,5 +1,5 @@
 // 프로젝트 객체
-import {IssueStatus} from "../common";
+import {IssueStatus, KanbanBoardName} from "../common";
 
 export type Project = {
     projectNum: number,
@@ -25,8 +25,8 @@ export type Issue = {
     stat: number,
     category: number,
     issueSequence: string,
-    previousNode:string,
-    nextNode:string,
+    previousNode: string | null,
+    nextNode: string | null,
 }
 
 // 이슈에 대한 코멘트 정의
@@ -42,8 +42,4 @@ export type IssueComment = {
     commentOrder: number
 }
 
-export type KanbanState = {
-    status: IssueStatus,
-    setState: (issues: Issue[]) => void;
-}
 
