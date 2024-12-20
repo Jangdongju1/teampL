@@ -107,7 +107,6 @@ export default function KanbanBoard(props: KanbanType) {
 
             if (!currentElement) break;
         }
-        console.log(viewArr)
         return viewArr;
     }
 

@@ -202,7 +202,6 @@ export default function IssueModal(props: IssueModalProps) {
 
             setEachKanbanIssues(updateKanbanIssues);
 
-
             const responseBody = await patchIssueTitleRequest(requestBody, accessToken);
 
             patchTitleResponse(responseBody);

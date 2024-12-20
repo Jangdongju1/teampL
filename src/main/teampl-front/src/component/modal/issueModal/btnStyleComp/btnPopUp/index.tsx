@@ -4,8 +4,9 @@ import {IssueCategories, IssuePriorities, IssueStats} from "../../../../../const
 import React, {useEffect, useRef} from "react";
 import {useCookies} from "react-cookie";
 import PatchIssuePriorityResponse from "../../../../../interface/response/issue/patchIssuePriorityResponse";
-import {ResponseDto} from "../../../../../interface/response";
+import {PatchIssueCategoryResponse, PatchIssueStatusResponse, ResponseDto} from "../../../../../interface/response";
 import responseCode from "../../../../../common/enum/responseCode";
+import ResponseCode from "../../../../../common/enum/responseCode";
 import {useParams} from "react-router-dom";
 import {issueStore} from "../../../../../store";
 import {
@@ -14,8 +15,6 @@ import {
     PatchPriorityRequest
 } from "../../../../../interface/request";
 import {patchCategoryRequest, patchPriorityRequest, patchStatusRequest} from "../../../../../api/issueApi";
-import {PatchIssueStatusResponse, PatchIssueCategoryResponse} from "../../../../../interface/response";
-import ResponseCode from "../../../../../common/enum/responseCode";
 import {Issue} from "../../../../../interface/types";
 
 
@@ -131,7 +130,6 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             alert(message);
             return;
         }
-        // setRefresh(prevState => prevState * -1);
 
     }
 
@@ -155,6 +153,64 @@ export default function BtnPopUp(props: BtnPopUpProps) {
         }
 
         return names[String(status)];
+    }
+    // function : 칸반보드 상태 업데이트
+    const updateKanbanState = (newValue: number) => {
+        if (popupType === "status") {
+            if (eachKanbanIssues) {
+                const srcArr = eachKanbanIssues[kanbanName(value)].map(issue => ({...issue}));
+                const dstArr = eachKanbanIssues[kanbanName(newValue)].map(issue => ({...issue}));
+
+                const moveIssue = srcArr.find(issue => issue.issueNum === issueNum);
+
+                if (moveIssue) {
+                    const updateSrcArr = srcArr.filter(issue => issue.issueNum !== issueNum);
+                    if (dstArr.length !== 0) {
+                        const firstDstIssue = dstArr[0];
+                        moveIssue.nextNode = firstDstIssue.issueSequence;
+                        firstDstIssue.previousNode = moveIssue.issueSequence;
+                    }
+                    const updateDstArr = [moveIssue, ...dstArr];
+
+
+                    const updateEachIssues = {
+                        ...eachKanbanIssues,
+                        [kanbanName(value)]: updateSrcArr,
+                        [kanbanName(newValue)]: updateDstArr
+                    }
+                    if (setEachKanbanIssues) setEachKanbanIssues(updateEachIssues);
+                }
+            }
+        } else if (popupType === "priority") {
+            if (eachKanbanIssues) {
+
+                const stat = Object.keys(eachKanbanIssues).reduce((result, kanbanKey) => {
+                    const issue = eachKanbanIssues[kanbanKey].find(issue => issue.issueNum === issueNum);
+
+                    if (issue) {
+                        result = issue.stat;
+                    }
+                    return result;
+                }, -1);
+
+                if (stat === -1) return;
+
+
+                const updateIssues = {
+                    ...eachKanbanIssues,
+                    [kanbanName(stat)]: eachKanbanIssues[kanbanName(stat)]
+                        .map(issue => issue.issueNum === issueNum ? {...issue, priority: newValue} : issue)
+                }
+
+                if (setEachKanbanIssues) {
+                    setEachKanbanIssues(updateIssues);
+                }
+
+
+            }
+
+        }
+
     }
 
     // eventHandler: 외부클릭 감지 함수
@@ -190,45 +246,20 @@ export default function BtnPopUp(props: BtnPopUpProps) {
                 priority: newValue
             }
 
+            updateKanbanState(newValue);
             const responseBody = await patchPriorityRequest(requestBody, accessToken);
-
             patchPriorityResponse(responseBody);
 
         } else if (popupType === "status") {
 
             if (value === newValue) return;
             // 이슈 상태 변경시 api 호출
-            const requestBody: PatchIssueStatusRequest =
-                {projectNum: parseInt(projectNum, 10), issueNum, stat: newValue};
-
-            if (eachKanbanIssues) {
-                const srcArr = eachKanbanIssues[kanbanName(value)].map(issue => ({...issue}));
-                const dstArr = eachKanbanIssues[kanbanName(newValue)].map(issue => ({...issue}));
-
-                const moveIssue = srcArr.find(issue => issue.issueNum === issueNum);
-
-                if (moveIssue) {
-                    const updateSrcArr = srcArr.filter(issue => issue.issueNum !== issueNum);
-                    if (dstArr.length !== 0) {
-                        const firstDstIssue = dstArr[0];
-                        moveIssue.nextNode = firstDstIssue.issueSequence;
-                        firstDstIssue.previousNode = moveIssue.issueSequence;
-                    }
-                    const updateDstArr = [moveIssue, ...dstArr];
-
-
-                    const updateEachIssues = {
-                        ...eachKanbanIssues,
-                        [kanbanName(value)]: updateSrcArr,
-                        [kanbanName(newValue)]: updateDstArr
-                    }
-
-                    console.log(updateEachIssues);
-                   if (setEachKanbanIssues)  setEachKanbanIssues(updateEachIssues);
-                }
-
-            }
-
+            const requestBody: PatchIssueStatusRequest = {
+                projectNum: parseInt(projectNum, 10),
+                issueNum,
+                stat: newValue
+            };
+            updateKanbanState(newValue);
             const responseBody = await patchStatusRequest(requestBody, accessToken);
             patchStatusResponse(responseBody);
 
