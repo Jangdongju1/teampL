@@ -1,8 +1,8 @@
 import "./style.css";
 import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
 import SearchBar from "../searchBar/searchBar";
-import {ProjectType, ProjectStatus} from "../../common";
-import * as domain from "node:domain";
+import {ModalType, ProjectStatus, ProjectType} from "../../common";
+import {modalStore} from "../../store";
 
 type KanbanTopCompProps = {
     isTeamPage: boolean,
@@ -18,6 +18,9 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     const {projectName, isTeamPage, projectType, stat} = props;
     //* 칸반보드 상단 메뉴 상태 prop
     const {topMenuStat, setTopMenuStat} = props;
+    //* global state : 모달 상태
+    const {setIsModalOpen,setModalType} = modalStore();
+
 
 
     //* object: 프로젝트에 대한 타입 객체 정의
@@ -61,20 +64,22 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     // eventHandler : 상단 home 메뉴 버튼 클릭 헨들러
     const onTopMenuBtnClickEventHandler= (e:React.MouseEvent<HTMLLIElement>)=>{
         const menuStat = e.currentTarget.dataset.value;
-        console.log(menuStat)
         if (menuStat === undefined) return;
         if (menuStat ==="kanban" || menuStat == "main"){
             setTopMenuStat(menuStat);
         }
+    }
 
-
+    const onPrjDropdownBtnClickEventHandler = ()=>{
+        setModalType(ModalType.PROJECT_LIST);
+        setIsModalOpen(true);
     }
 
     return (
         <div id={"kanban-board-comp-wrapper"}>
             <div className={"kanban-board-comp-option-container"}>
                 <div className={"kanban-board-comp-option"}>
-                    <div className={"kanban-board-comp-drop-down"}>
+                    <div className={"kanban-board-comp-drop-down"} onClick={onPrjDropdownBtnClickEventHandler}>
                         <div className={"kanban-board-comp-project-name"}>{projectName}</div>
                         <div className={"icon kanban-board-comp-drop-down-icon folder-open-icon"}></div>
                     </div>
@@ -119,7 +124,8 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
 
             <div className={"divider2"}></div>
             <div className={"kanban-board-etc-container"}>
-                <SearchBar value={searchWordState} onChange={onSearchBarChangeEventHandler}/>
+                <SearchBar value={searchWordState}
+                           onChange={onSearchBarChangeEventHandler}/>
             </div>
         </div>
     )

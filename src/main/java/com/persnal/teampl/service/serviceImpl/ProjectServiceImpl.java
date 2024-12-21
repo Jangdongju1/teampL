@@ -2,12 +2,14 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
+import com.persnal.teampl.dto.obj.ProjectInfoObj;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
+import com.persnal.teampl.dto.response.project.GetPrjListResponse;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.repository.jpa.ProjectRepository;
@@ -86,5 +88,22 @@ public class ProjectServiceImpl implements ProjectService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
         }
         return GetPersonalPrjInfoResponse.success(projectInfo);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(String email) {
+        List<ProjectInfoObj> list = null;
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+            if (!isExistUser) return GetPrjListResponse.notExistUser();
+
+            list = projectRepository.getProjectList(email);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetPrjListResponse.success(list);
     }
 }

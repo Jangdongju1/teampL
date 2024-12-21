@@ -54,21 +54,6 @@ public class ProjectEntity {
     }
 
 
-//    public ProjectEntity(String email, UserEntity userEntity, CreatePrjRequest req) {
-//        this.projectName = req.getProjectName();
-//        this.description = req.getDescription();
-//        this.userEntity = userEntity;
-//        this.projectType = ProjectType.PERSONAL_PROJECT.getValue();
-//        this.stat = ProjectStat.ON_WORKING.getValue();
-//
-//        // 현재시간 세팅
-//        this.createDate = Utils.getNowTime(LocalDateTime.now());
-//    }
-//
-//    public ProjectEntity(Integer projectNum){
-//        this.projectNum = projectNum;
-//    }
-
     public static List<ProjectObj> getProejctList(List<ProjectEntity> entities) {
         List<ProjectObj> list = new ArrayList<>();
         for (ProjectEntity entity : entities) {

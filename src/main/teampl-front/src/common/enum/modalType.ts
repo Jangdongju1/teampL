@@ -1,6 +1,7 @@
 enum ModalType {
     CREATE_PROJECT = "cp",
-    ISSUE_INFO = "isf"
+    ISSUE_INFO = "isf",
+    PROJECT_LIST = "prj"
 }
 
 export default ModalType;

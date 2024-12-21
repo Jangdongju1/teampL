@@ -2,11 +2,11 @@ import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
 import {modalStore, personalPrjStore} from "../../../store";
-import {CreateProjectListRequest} from "../../../interface/request";
+import {CreateProjecRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest, getPersonalPrjListRequest} from "../../../api/projectApi";
 import {GetPersonalPrjListResponse, ResponseDto} from "../../../interface/response";
-import CreateProjectResponse from "../../../interface/response/project/personal/createProjectResponse";
+import CreateProjectResponse from "../../../interface/response/project/createProjectResponse";
 import ResponseCode from "../../../common/enum/responseCode";
 
 type HeaderBtnModalProps = {
@@ -96,7 +96,7 @@ export default function Index(props: HeaderBtnModalProps) {
     const onProjectCreateBtnClickEventHandler = async () => {
         const accessToken = cookies.accessToken_Main;
         if (!accessToken) return;
-        const requestBody: CreateProjectListRequest = {projectName: nameState, description: descriptionState};
+        const requestBody: CreateProjecRequest = {projectName: nameState, description: descriptionState};
 
         const responseBody = await createProjectRequest(requestBody, accessToken);
 

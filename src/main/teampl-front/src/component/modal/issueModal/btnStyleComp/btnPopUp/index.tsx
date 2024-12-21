@@ -202,10 +202,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
                         .map(issue => issue.issueNum === issueNum ? {...issue, priority: newValue} : issue)
                 }
 
-                if (setEachKanbanIssues) {
-                    setEachKanbanIssues(updateIssues);
-                }
-
+                if (setEachKanbanIssues)  setEachKanbanIssues(updateIssues);
 
             }
 

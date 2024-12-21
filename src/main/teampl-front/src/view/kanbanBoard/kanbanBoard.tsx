@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import {getPersonalPrjInfoRequest} from "../../api/projectApi";
-import GetPersonalPrjInfoResponse from "../../interface/response/project/personal/getPersonalPrjInfoResponse";
+import GetPersonalPrjInfoResponse from "../../interface/response/project/getPersonalPrjInfoResponse";
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, Project} from "../../interface/types";
@@ -21,6 +21,7 @@ import CreateIssueResponse from "../../interface/response/issue/createIssueRespo
 import kanbanBoardName from "../../common/enum/kanbanBoardName";
 import {PatchIssueStatusDragRequest} from "../../interface/request";
 import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
+import ProjectModal from "../../component/modal/projectModal/projectModal";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -330,6 +331,9 @@ export default function KanbanBoard(props: KanbanType) {
                         setRefresh={setRefresh}
                         eachKanbanIssues={eachKanbanIssues}
                         setEachKanbanIssues={setEachKanbanIssues}/>
+                )}
+                {isModalOpen && modalType === ModalType.PROJECT_LIST && (
+                    <ProjectModal/>
                 )}
 
                 <div className={"kanban-board-top-container"}>

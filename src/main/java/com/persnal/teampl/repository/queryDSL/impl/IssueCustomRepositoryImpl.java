@@ -14,7 +14,6 @@ import java.util.List;
 public class IssueCustomRepositoryImpl implements IssueCustomRepository {
     private final JPAQueryFactory query;
 
-    // 테스트
     @Override
     public List<com.persnal.teampl.entities.IssueCommentEntity> queryDSLSelectIssueData(Integer issueNum) {
         QIssueCommentEntity qIssueCommentEntity = QIssueCommentEntity.issueCommentEntity;
@@ -39,7 +38,7 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
                 .where(commentEntity.issueEntity.issueNum.eq(issueNum))
                 .orderBy(commentEntity.commentOrder.desc())
                 .limit(perPage)
-                .offset((long) (page - 1) *perPage)  // 계산법 다시한번 생각해 보기
+                .offset((long) (page - 1) * perPage)  // 계산법 다시한번 생각해 보기
                 .fetch();
 
         return data;

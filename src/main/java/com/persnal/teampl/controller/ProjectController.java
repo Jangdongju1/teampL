@@ -6,6 +6,7 @@ import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
+import com.persnal.teampl.dto.response.project.GetPrjListResponse;
 import com.persnal.teampl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +40,10 @@ public class ProjectController {
             @PathVariable("projectNum") int projectNum){
 
         return projectService.getPersonalPrjInfo(email, projectNum);
+    }
+
+    @GetMapping("/project-list")
+    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(@AuthenticationPrincipal String email){
+        return projectService.getProjectList(email);
     }
 }

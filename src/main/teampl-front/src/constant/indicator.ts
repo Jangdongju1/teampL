@@ -8,30 +8,30 @@ export const SIGN_IN_URL = () => "/api/v1/auth/sign-in";
 export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
 
 //project
-export const CREATE_PERSONAL_PROJECT_URL = () => "/api/v1/project/create-project";
-export const GET_PERSONAL_PROJECT_LIST_URL = () => "/api/v1/project/personal-project" //수정요망
-export const GET_PERSONAL_PROJECT_INFO_URL = (projectNum: string) => `/api/v1/project/personal-project-info/${projectNum}`;
-
+export const CREATE_PERSONAL_PROJECT = () => "/create-project";
+export const GET_PERSONAL_PROJECT_LIST = () => "/personal-project"; //수정요망
+export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
+export const GET_PROJECT_LIST = () => "/project-list";
 
 
 // issue
 export const CREATE_PERSONAL_ISSUE = () => "/create-issue";
 export const GET_PERSONAL_ISSUE_LIST = (projectNum: string) => `/issue-list/${projectNum}`;
 export const GET_PERSONAL_ISSUE_BY_STATUS =
-    (projectNum:string,status:number)=>`/issue-list/${projectNum}/${status}`;
-export const GET_PERSONAL_ISSUE_BY_NUMBER =(issueNum:number) => `/${issueNum}`;
-export const PATCH_ISSUE_TITLE = ()=>"/modification/issue-title";
-export const PATCH_ISSUE_PRIORITY =()=>"/modification/issue-priority";
-export const PATCH_ISSUE_STATUS = ()=> "/modification/issue-status";
-export const PATCH_ISSUE_CATEGORY = () =>"/modification/issue-category";
-export const PATCH_ISSUE_EXPIRE_DATE = ()=>"/modification/issue-expire-date";
-export const PATCH_ISSUE_DETAIL = () =>"/modification/issue-detail";
-export const POST_ISSUE_COMMENT =()=> "/create/issue-comment";
+    (projectNum: string, status: number) => `/issue-list/${projectNum}/${status}`;
+export const GET_PERSONAL_ISSUE_BY_NUMBER = (issueNum: number) => `/${issueNum}`;
+export const PATCH_ISSUE_TITLE = () => "/modification/issue-title";
+export const PATCH_ISSUE_PRIORITY = () => "/modification/issue-priority";
+export const PATCH_ISSUE_STATUS = () => "/modification/issue-status";
+export const PATCH_ISSUE_CATEGORY = () => "/modification/issue-category";
+export const PATCH_ISSUE_EXPIRE_DATE = () => "/modification/issue-expire-date";
+export const PATCH_ISSUE_DETAIL = () => "/modification/issue-detail";
+export const POST_ISSUE_COMMENT = () => "/create/issue-comment";
 export const GET_ISSUE_COMMENT_LIST =
-    (issueNum:number, page: number, perPage: number) =>`/comment-list/${issueNum}?page=${page}&perPage=${perPage}`;
-export const PATCH_ISSUE_COMMENT = ()=>"/modification/issue-comment";
+    (issueNum: number, page: number, perPage: number) => `/comment-list/${issueNum}?page=${page}&perPage=${perPage}`;
+export const PATCH_ISSUE_COMMENT = () => "/modification/issue-comment";
 export const GET_TOTAL_COMMENT_COUNT =
-    (issueNum: number)=> `/total-comments-count/${issueNum}`;
+    (issueNum: number) => `/total-comments-count/${issueNum}`;
 export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 
 
