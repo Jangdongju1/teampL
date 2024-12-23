@@ -4,6 +4,7 @@ import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
 import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
 import com.persnal.teampl.dto.obj.temp.IssueCommentFetchData;
+import com.persnal.teampl.dto.obj.temp.PatchIssueTitleRepObj;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
@@ -65,15 +66,17 @@ public class IssueServiceImpl implements IssueService {
             }
 
 
-            String previousNode = null;
+            String nextNode = null;
             // state별 가장 마지막 이슈 찾기.
             currentIssueEntity =
-                    issueRepository.findByProjectEntityProjectNumAndStatAndNextNodeIsNull(req.getProjectNum(), req.getStat());
+                    issueRepository.findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(req.getProjectNum(), req.getStat());
 
             if (currentIssueEntity != null) {
                 // 이전 이슈가 존재하는 경우
-                currentIssueEntity.setNextNode(sequence);  // 이전 이슈의 다음노드 == 추가되는 이슈의 시퀀스
-                previousNode = currentIssueEntity.getIssueSequence();
+                nextNode = currentIssueEntity.getIssueSequence();
+                currentIssueEntity.setPreviousNode(sequence); // 이전이 슈의 이전노드를 추가되는 노드로
+                //  currentIssueEntity.setNextNode(sequence);  // 이전 이슈의 다음노드 == 추가되는 이슈의 시퀀스
+                //previousNode = currentIssueEntity.getIssueSequence();
             }
 
 
@@ -86,7 +89,7 @@ public class IssueServiceImpl implements IssueService {
                             .projectEntity(projectEntity)
                             .userEntity(userEntity)
                             .issueSequence(sequence)
-                            .previousNode(previousNode)
+                            .nextNode(nextNode)
                             .build();
 
 
@@ -145,6 +148,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchIssueTitle(String Email, PatchIssueTitleRequest req) {
+        PatchIssueTitleRepObj repData = null;
         try {
             boolean isExistUser = userRepository.existsById(Email);
             boolean isExistProject = projectRepository.existsByProjectNum(req.getProjectNum());
@@ -156,16 +160,23 @@ public class IssueServiceImpl implements IssueService {
             IssueEntity issueEntity = issueRepository.findByIssueNum(req.getIssueNum());
             if (issueEntity == null) return PatchIssueTitleResponse.notExistIssue();
 
+            repData = PatchIssueTitleRepObj.builder()
+                    .projectNum(req.getProjectNum())
+                    .issueNum(req.getIssueNum())
+                    .stat(issueEntity.getStat())
+                    .changedTitle(req.getTitle())
+                    .build();
+
 
             issueEntity.setTitle(req.getTitle());
-
             issueRepository.save(issueEntity);
+
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return PatchIssueTitleResponse.success();
+        return PatchIssueTitleResponse.success(repData);
     }
 
     @Override
@@ -333,19 +344,19 @@ public class IssueServiceImpl implements IssueService {
                     currentIssueEntity.setPreviousNode(dstPreEntity.getIssueSequence());
                     currentIssueEntity.setNextNode(dstNextEntity.getIssueSequence());
                     dstNextEntity.setPreviousNode(currentIssueEntity.getIssueSequence());
-                }else {
+                } else {
                     dstPreEntity.setNextNode(currentIssueEntity.getIssueSequence());
                     currentIssueEntity.setNextNode(null);
                     currentIssueEntity.setPreviousNode(dstPreEntity.getIssueSequence());
                 }
 
-            }else {
+            } else {
                 if (nextNode != null) {
                     dstNextEntity = issueRepository.findByProjectEntityProjectNumAndStatAndIssueSequence(req.getProjectNum(), req.getDstStat(), nextNode);
                     currentIssueEntity.setPreviousNode(null);
                     currentIssueEntity.setNextNode(dstNextEntity.getIssueSequence());
                     dstNextEntity.setPreviousNode(currentIssueEntity.getIssueSequence());
-                }else {
+                } else {
                     // 둘다 존재하지 않는 경우
                     currentIssueEntity.setPreviousNode(null);
                     currentIssueEntity.setNextNode(null);

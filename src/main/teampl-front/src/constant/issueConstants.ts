@@ -1,4 +1,4 @@
-import {IssueCategory, IssuePriority, IssueStatus} from "../common";
+import {IssueCategory, IssuePriority, IssueStatus, KanbanBoardName} from "../common";
 
 // 이슈의 카테고리를 정의해 놓음
 export const IssueCategories: { [key: string]: string } = {
@@ -23,6 +23,18 @@ export const IssueStats : {[key:string] : {text:string, color:string}} = {
     [IssueStatus.STUCK]: {text: "Stuck", color: "rgb(232, 105, 125)"},
     [IssueStatus.DONE]: {text: "Done", color: "rgb(51, 211, 145)"}
 }
+
+// 이슈의 상태별 칸반의 이름을 반환해주는 객체
+export const getKanbanName = (stat: number): string => {
+    const names: Record<string, string> = {
+        "0": KanbanBoardName.NOT_START,
+        "1": KanbanBoardName.ON_WORKING,
+        "2": KanbanBoardName.STUCK,
+        "3": KanbanBoardName.DONE
+    }
+    return names[String(stat)];
+}
+
 
 
 

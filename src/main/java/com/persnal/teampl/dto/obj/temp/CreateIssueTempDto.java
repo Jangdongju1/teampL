@@ -14,6 +14,6 @@ public class CreateIssueTempDto {
     private ProjectEntity projectEntity;
     private Integer issueStat;
     private String issueSequence;
-    private String previousNode;
+    private String nextNode;
 
 }

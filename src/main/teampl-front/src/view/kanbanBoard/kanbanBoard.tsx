@@ -1,6 +1,6 @@
 import "./style.css";
 import KanbanTopComponent from "../../component/kanbanBoardTopComponent/kanbanTopComponent";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import {getPersonalPrjInfoRequest} from "../../api/projectApi";
@@ -15,26 +15,26 @@ import IssueModal from "../../component/modal/issueModal/issueModal";
 import {modalStore} from "../../store";
 import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
 import issueStatus from "../../common/enum/IssueStatus";
-import IssueCard from "../../component/issueCard";
+import IssueCard from "../../component/issueCard/issueCard";
 import CreateIssueRequest from "../../interface/request/issue/createIssueRequest";
 import CreateIssueResponse from "../../interface/response/issue/createIssueResponse";
 import kanbanBoardName from "../../common/enum/kanbanBoardName";
 import {PatchIssueStatusDragRequest} from "../../interface/request";
 import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
 import ProjectModal from "../../component/modal/projectModal/projectModal";
+import {getKanbanName} from "../../constant/issueConstants";
 
 type KanbanType = {
     isTeamKanban: boolean
 }
 
 export default function KanbanBoard(props: KanbanType) {
+    //  상태 갱신을 위한 location
+    const location = useLocation();
     // pros:칸반타입 >> 1)개인프로젝트 칸반보드 2) 팀프로젝트 칸반보드
     const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
     const [topMenu, setTopMenu] = useState<"kanban" | "main">("kanban");
-    //* Path Variable : 프로젝트의 번호
-
-
     // global state: 모달상태
     const {isModalOpen, modalType} = modalStore();
     const {projectNum} = useParams();
@@ -42,10 +42,8 @@ export default function KanbanBoard(props: KanbanType) {
     const [cookies, setCookies] = useCookies();
     //* state: 프로젝트 상태
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
-    //* 전체 이슈 데이터
-    const [totalIssues, setTotalIssues] = useState<Issue[]>()
-    //* state : 컴포넌트 리프레쉬 상태
-    const [refresh, setRefresh] = useState<number>(1);
+
+
     //* state : 칸반보드 패널의 추가버튼 렌더링 상태
     const [addBtnRenderState, setAddBtnRenderState] =
         useState<Record<string, boolean>>({
@@ -112,16 +110,6 @@ export default function KanbanBoard(props: KanbanType) {
     }
 
 
-    //* function : 각 칸반보드의 상태값에 따른 이름 반환함수
-    const getKanbanName = (stat: number): string => {
-        const names: Record<string, string> = {
-            "0": KanbanBoardName.NOT_START,
-            "1": KanbanBoardName.ON_WORKING,
-            "2": KanbanBoardName.STUCK,
-            "3": KanbanBoardName.DONE
-        }
-        return names[String(stat)];
-    }
 
 
     //* function : 개인프로젝트 이슈 목록 api 응답처리 함수.
@@ -162,16 +150,27 @@ export default function KanbanBoard(props: KanbanType) {
     }
 
 
+
     //function: 이슈 추가요청에 대한 응답처리함수.
     const createIssueResponse = async (responseBody: CreateIssueResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
         if (code !== ResponseCode.SUCCESS) alert(message);
 
-        const {data} = responseBody as CreateIssueResponse;
+        const {data} = responseBody as CreateIssueResponse;  // 이슈데이터를 받아옴
+        const addedKanbanName = getKanbanName(data.addedIssue.stat);
 
+        // 상태 업데이트
+        const updatedIssues = {
+            ...eachKanbanIssues,
+            [addedKanbanName]: [
+                data.addedIssue, ...eachKanbanIssues[addedKanbanName]
+            ]
+        }
 
-        setRefresh(prevState => prevState * -1);
+        setEachKanbanIssues(updatedIssues);
+
+        // 이슈 추가시 배열에 추가가 필요함.
     }
 
     //function : 이슈카드 드래그로 인한 요청 처리함수
@@ -309,7 +308,7 @@ export default function KanbanBoard(props: KanbanType) {
 
         }
         fetchProjectInfo();
-    }, []);
+    }, [location]);
 
     useEffect(() => {
         // api 호출없이도 totalIssues를 자식 컴포넌트로 보내서 리렌더링 되도록 바꿀 예정.
@@ -320,7 +319,7 @@ export default function KanbanBoard(props: KanbanType) {
             getPersonalIssueResponse(responseBody);
         }
         fetchIssueList();
-    }, [refresh]);
+    }, [location]);
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -328,7 +327,6 @@ export default function KanbanBoard(props: KanbanType) {
                 {isModalOpen && modalType === ModalType.ISSUE_INFO && (
                     <IssueModal
                         isTeamModal={isTeamKanban}
-                        setRefresh={setRefresh}
                         eachKanbanIssues={eachKanbanIssues}
                         setEachKanbanIssues={setEachKanbanIssues}/>
                 )}
@@ -388,7 +386,9 @@ export default function KanbanBoard(props: KanbanType) {
                                                                 subIssueCnt={0}
                                                                 commentCnt={0}
                                                                 isTeamKanban={isTeamKanban}
-                                                                setRefresh={setRefresh}/>
+                                                                eachKanbanState={eachKanbanIssues}
+                                                                setEachKanbanState={setEachKanbanIssues}
+                                                            />
                                                         </div>
 
                                                     )}

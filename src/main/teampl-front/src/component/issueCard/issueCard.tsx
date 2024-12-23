@@ -10,13 +10,15 @@ import FlexibleInput from "../inputCmponent/flexibleInput";
 import {PatchIssueTitleRequest} from "../../interface/request";
 import {patchIssueTitleRequest} from "../../api/issueApi";
 import {issueStore, modalStore} from "../../store";
+import {getKanbanName} from "../../constant/issueConstants";
 
 type IssueCardProps = {
     data: Issue
     subIssueCnt: number,
     commentCnt: number,
     isTeamKanban: boolean,
-    setRefresh : React.Dispatch<React.SetStateAction<number>>,
+    eachKanbanState : Record<string, Issue[]>,
+    setEachKanbanState: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
 }
 
 export default function IssueCard(props: IssueCardProps) {
@@ -24,7 +26,9 @@ export default function IssueCard(props: IssueCardProps) {
     // props
     const {data} = props
     const {isTeamKanban} = props;
-    const {commentCnt, subIssueCnt,setRefresh} = props;
+    const {commentCnt, subIssueCnt} = props;
+    // 상태 변경의 반영을 위한 칸반보드 데이터
+    const {eachKanbanState, setEachKanbanState} = props;
 
 
     // global state: 이슈 넘버 세팅.
@@ -56,8 +60,9 @@ export default function IssueCard(props: IssueCardProps) {
     const onTitleKeyDownEventHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter") {
             setTitleChange(!titleChange);
+            TitleChangeRequest();
         }
-        TitleChangeRequest();
+
     }
 
 
@@ -70,7 +75,20 @@ export default function IssueCard(props: IssueCardProps) {
             alert(message);
             return;
         }
-        setRefresh(prevState => prevState*-1);
+
+        const {data} = responseBody as PatchIssueTitleResponse;
+
+        if (!data) return;
+        const kanbanStat = data.issueStat;
+
+        // 상태 변경
+        const updatedState = {...eachKanbanState,
+        [getKanbanName(kanbanStat)] : eachKanbanState[getKanbanName(kanbanStat)].map( issue =>
+            issue.issueNum === data.issueNum? ({...issue, title : data.changedTitle}) : issue
+        )}
+
+        setEachKanbanState(updatedState);
+
     }
 
     //* function : Title 변경 api 호출함수

@@ -100,13 +100,13 @@ export default function PersonalProject() {
 
     return (
         <div id={"personal-project-wrapper"}>
-            <div className={"personal-project-top-container"}>
-                <div className={"personal-project-top-title"}>{"DashBoard"}</div>
-                <div className={"divider"}></div>
-                <PersonalPrjDashBoardTable
-                    prjCompleteCnt={projects.length - getPrjOnWorkingCnt()}
-                    prjOnWorkingCnt={getPrjOnWorkingCnt()}/>
-            </div>
+            {/*<div className={"personal-project-top-container"}>*/}
+            {/*    <div className={"personal-project-top-title"}>{"DashBoard"}</div>*/}
+            {/*    <div className={"divider"}></div>*/}
+            {/*    <PersonalPrjDashBoardTable*/}
+            {/*        prjCompleteCnt={projects.length - getPrjOnWorkingCnt()}*/}
+            {/*        prjOnWorkingCnt={getPrjOnWorkingCnt()}/>*/}
+            {/*</div>*/}
             <div className={"personal-project-bottom-container"}>
                 <div className={"personal-project-bottom-title-box"}>
                     <div className={"personal-project-bottom-title"}>{"Project"}</div>

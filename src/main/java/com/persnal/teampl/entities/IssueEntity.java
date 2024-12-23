@@ -74,8 +74,8 @@ public class IssueEntity {
                 .expireDate(null)
                 .isDeleted(false)
                 .issueSequence(req.getIssueSequence())
-                .previousNode(req.getPreviousNode())
-                .nextNode(null) //기본값
+                .nextNode(req.getNextNode())
+                .previousNode(null)
                 .build();
     }
 
@@ -118,8 +118,7 @@ public class IssueEntity {
                 .stat(entity.getStat())
                 .category(entity.getCategory())
                 .issueSequence(entity.getIssueSequence())
-              //  .ref(entity.getRef())
-                //.isFirstIssue(entity.getIsFirstIssue())
+                .nextNode(entity.getNextNode())
                 .build();
     }
 

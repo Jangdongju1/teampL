@@ -5,7 +5,6 @@ import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.issue.*;
 import com.persnal.teampl.service.IssueService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.result.UpdateCountOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -1,16 +1,19 @@
 import "./style.css";
-import {useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
-import {modalStore} from "../../../store";
+import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
+import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH} from "../../../constant/path";
+import modalType from "../../../common/enum/modalType";
+import ModalType from "../../../common/enum/modalType";
+import ProjectModal from "../../../component/modal/projectModal/projectModal";
 
 export default function MainHeader() {
 
     // navigate 함수 : 페이지 이동
     const navigator = useNavigate();
     // global State : 모달창에 대한 전역상태
-    const {setIsModalOpen, setModalType} = modalStore();
+    const {modalType, setIsModalOpen, setModalType} = modalStore();
     // global State : 헤더 메뉴 오픈 상태
     const {
         currentBtnClickState,
@@ -21,12 +24,8 @@ export default function MainHeader() {
         setPersonalPrjBtnClickState
     } = headerMenuStore();
 
-    // // state : 팀버튼 클릭 상태
-    // const [teamBtnClickState, setTeamBtnClickState] = useState<boolean>(false);
-    // // state : 최근 버튼 클릭 상태.
-    // const [currentBtnClickState, setCurrentBtnClickState] = useState<boolean>(false);
-    // // state : 개인프로젝트 버튼 클릭 상태.
-    // const [personalPrjBtnClickState, setPersonalPrjBtnClickState] = useState<boolean>(false);
+    // global state : 로그인한 유저의 이메일 상태
+    const {loginUserEmail} = userEmailStore();
 
     // eventHandler : 버튼 클릭 공통 헨들러
     const onMenuBtnClickEventHandler = (btnType: string) => {
@@ -34,6 +33,7 @@ export default function MainHeader() {
         setCurrentBtnClickState(btnType === "current" ? !currentBtnClickState : false);
         setPersonalPrjBtnClickState(btnType === "personal" ? !personalPrjBtnClickState : false);
     }
+
     const onTeamBtnClickEventHandler = () => {
         onMenuBtnClickEventHandler("team");
 
@@ -47,9 +47,16 @@ export default function MainHeader() {
     }
 
     // eventHandler : 개인프로젝트 > 프로젝트 목록 버튼 클릭 이벤트 헨들러
-    const onPersonalPrjListBtnClickEventHandler = () => {
-        // 개인 프로젝트 페이지로 네비게이트
-        //navigator(``)
+    const onHomeBtnClickEventHandler = () => {
+        const encodedEmail = btoa(loginUserEmail);
+        navigator(HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(encodedEmail));
+    }
+
+    // eventHandler : 프로젝트 목록 클릭 이벤트 헨들러
+    const onPrjBtnClickEventHandler = () => {
+        setPersonalPrjBtnClickState(false);
+        setModalType(ModalType.PROJECT_LIST);
+        setIsModalOpen(true);
     }
 
     const TeamDetailComp = () => {
@@ -90,7 +97,7 @@ export default function MainHeader() {
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
-                    <li><span className={"icon more-list-icon"} onClick={onPersonalPrjListBtnClickEventHandler}></span>프로젝트
+                    <li onClick={onPrjBtnClickEventHandler}><span className={"icon more-list-icon"}></span>프로젝트
                         목록
                     </li>
                     <li onClick={onCreateProjectBtnClickEventHandler}><span className={"icon add-icon"}></span>프로젝트 생성
@@ -103,6 +110,9 @@ export default function MainHeader() {
 
     return (
         <div id={"main-header-wrapper"}>
+            {modalType === ModalType.PROJECT_LIST && (
+                <ProjectModal/>
+            )}
             <div className={"main-header-container"}>
                 <div className={"main-header-content-box"}>
                     <div className={"main-header-content1"}>
@@ -112,7 +122,7 @@ export default function MainHeader() {
                         </div>
                         <div className={"main-header-menu-box"}>
                             <ul className={"main-header-menu"}>
-                                <li>홈</li>
+                                <li onClick={onHomeBtnClickEventHandler}>홈</li>
                                 <li onClick={onCurrentBtnClickEventHandler}> 최근<span
                                     className={"icon arrow-down-icon"}></span></li>
                                 <li onClick={onTeamBtnClickEventHandler}> 팀<span

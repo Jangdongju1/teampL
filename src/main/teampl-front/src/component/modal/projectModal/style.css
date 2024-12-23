@@ -61,7 +61,7 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    padding: 5px 22px 5px 5px;
+    padding: 5px 25px 5px 5px;
     margin: 0;
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -77,16 +77,16 @@
 }
 
 .prj-modal-ul-li-title{
-    flex: 3;
+    flex: 5;
 }
 .prj-modal-ul-li-owner{
-    flex: 3;
+    flex: 1;
 }
 .prj-modal-ul-li-type{
     flex: 1;
 }
 .prj-modal-ul-li-team{
-    flex: 2;
+    flex: 3;
 }
 .prj-modal-ul-li-stat{
     flex: 1;
@@ -158,7 +158,13 @@
     width: 26px;
     height: 26px;
 }
-
+.prj-modal-ul-li-status{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 10px;
+    color: rgba(255,255,255,1);
+    padding: 6px;
+    border-radius: 5px;
+}
 
 
 

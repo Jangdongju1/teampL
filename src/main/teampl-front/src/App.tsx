@@ -45,7 +45,6 @@ function App() {
         const userEmail = atob(identifier);
         setLoginUserEmail(userEmail);
 
-        //navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
     }
 
     // 로그한 유저인지 확인
@@ -73,7 +72,6 @@ function App() {
 
                 <Route element={<MainContainer/>}>
                     <Route path={HOME_PATH()}>
-                        {/*<Route path={PERSONAL_PAGE_PATH(":email")} element={<Home/>}/>*/}
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
                         <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard isTeamKanban={false}/>}/>
                     </Route>

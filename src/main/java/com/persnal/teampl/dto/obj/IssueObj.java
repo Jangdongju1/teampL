@@ -1,6 +1,5 @@
 package com.persnal.teampl.dto.obj;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

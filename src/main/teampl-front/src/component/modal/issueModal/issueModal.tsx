@@ -44,7 +44,6 @@ import issueStatus from "../../../common/enum/IssueStatus";
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
     isTeamModal: boolean,
-    setRefresh: React.Dispatch<React.SetStateAction<number>>,
     eachKanbanIssues: Record<string, Issue[]>,
     setEachKanbanIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
 }
@@ -52,7 +51,7 @@ type IssueModalProps = {
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
 
-    const {isTeamModal, setRefresh, eachKanbanIssues, setEachKanbanIssues} = props
+    const {isTeamModal, eachKanbanIssues, setEachKanbanIssues} = props
 
     //state: 프로젝트 번호 상태
     const [projectNum, setProjectNum] = useState<number | undefined>(undefined);
