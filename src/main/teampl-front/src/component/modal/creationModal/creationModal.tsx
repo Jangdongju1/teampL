@@ -4,7 +4,7 @@ import {ChangeEvent, useState} from "react";
 import {modalStore, personalPrjStore} from "../../../store";
 import {CreateProjecRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
-import {createProjectRequest, getPersonalPrjListRequest} from "../../../api/projectApi";
+import {createProjectRequest} from "../../../api/projectApi";
 import {GetPersonalPrjListResponse, ResponseDto} from "../../../interface/response";
 import CreateProjectResponse from "../../../interface/response/project/createProjectResponse";
 import ResponseCode from "../../../common/enum/responseCode";
@@ -18,7 +18,7 @@ type HeaderBtnModalProps = {
     isTeamCreationModal: boolean  // 팀생성 모달인지 여부
 }
 // 1) 팀 생성, 2)프로젝트 생성 3)팀프로젝트 생성 3곳에서 쓰일 모달창.
-export default function Index(props: HeaderBtnModalProps) {
+export default function CreationModal(props: HeaderBtnModalProps) {
     const {
         title,
         comment,
@@ -82,12 +82,8 @@ export default function Index(props: HeaderBtnModalProps) {
         } else {
             alert("프로젝트가 생성되었습니다.");
             setIsModalOpen(false);
-            //프로젝트 목록 가져오기 api호출
-            const token = cookies.accessToken_Main;
-            if (!token) return;
 
-            const responseBody = await getPersonalPrjListRequest(token);
-            getPersonalPrjResponse(responseBody);
+            // 갱신을 위한 상태 업데이트 필요
         }
 
 

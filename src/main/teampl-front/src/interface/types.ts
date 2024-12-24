@@ -9,16 +9,22 @@ export type Project = {
     createDate: string,
     creator: string,
     stat: number,
-    projectType: number
+    projectType: number,
+    // -----------------
+    processed: number,  // 처리된 이슈의 갯수
+    unProcessed : number // 미처리의 이슈의 갯수
+    teamName: string, // 팀의 이름
+    id : number  // reactTable을 사용하기 위한 id
+
 }
 //프로젝트 탐색용 모달에 존재하는 프로젝트 리스트의 객체 타입
 export type ProjectListEle = {
-    projectNum : number,
+    projectNum: number,
     projectName: string,
-    owner : string,
-    projectType : number
-    stat : number,
-    teamName : string | null;   // 개인프로젝트 일 경우에 null 일 수 있음.
+    owner: string,
+    projectType: number
+    stat: number,
+    teamName: string | null;   // 개인프로젝트 일 경우에 null 일 수 있음.
 }
 
 // 이슈객체

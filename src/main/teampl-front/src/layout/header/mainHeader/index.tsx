@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom";
 import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
 import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH} from "../../../constant/path";
-import modalType from "../../../common/enum/modalType";
 import ModalType from "../../../common/enum/modalType";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
 

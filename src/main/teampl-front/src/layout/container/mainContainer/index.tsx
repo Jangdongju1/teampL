@@ -6,9 +6,10 @@ import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
 import {modalStore,headerMenuStore} from "../../../store";
-import Index from "../../../component/modal/creationModal";
+import CreationModal from "../../../component/modal/creationModal/creationModal";
 import {ModalType} from "../../../common";
 import IssueModal from "../../../component/modal/issueModal/issueModal";
+import ProjectModal from "../../../component/modal/projectModal/projectModal";
 
 
 export default function MainContainer() {
@@ -110,18 +111,23 @@ export default function MainContainer() {
 
     return (
         <>
-            <MainHeader/>
 
-            <div id={"main-wrapper"}>
-                <div className={"main-container"} onClick={onMainContainerClickEventHandler}>
-                    {isModalOpen && modalType === ModalType.CREATE_PROJECT && (
-                        <Index title={"Create a Project"}
+            <MainHeader/>
+            {isModalOpen && modalType === ModalType.CREATE_PROJECT && (
+                <CreationModal title={"Create a Project"}
                                comment={"개인용 프로젝트를 생성합니다."}
                                nameLabel={"Project Name"}
                                nameToolTip={"이 프로젝트를 누가 보나요?"}
                                createBtnName={"프로젝트 생성"}
                                isTeamCreationModal={false}/>
-                    )}
+            )}
+
+            {isModalOpen && modalType === ModalType.PROJECT_LIST && (
+                <ProjectModal/>
+            )}
+
+            <div id={"main-wrapper"}>
+                <div className={"main-container"} onClick={onMainContainerClickEventHandler}>
                     <div className={"main-left-container"}>
                         <Outlet/>
                     </div>

@@ -330,9 +330,6 @@ export default function KanbanBoard(props: KanbanType) {
                         eachKanbanIssues={eachKanbanIssues}
                         setEachKanbanIssues={setEachKanbanIssues}/>
                 )}
-                {isModalOpen && modalType === ModalType.PROJECT_LIST && (
-                    <ProjectModal/>
-                )}
 
                 <div className={"kanban-board-top-container"}>
                     <KanbanTopComponent isTeamPage={isTeamKanban}

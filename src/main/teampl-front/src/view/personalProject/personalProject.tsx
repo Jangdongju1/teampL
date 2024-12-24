@@ -1,13 +1,24 @@
 import "./style.css";
-import ProjectCard from "../../component/projectCard/projectCard";
-import {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
-import {getPersonalPrjListRequest} from "../../api/projectApi";
-import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response";
-import ResponseCode from "../../common/enum/responseCode";
 import {personalPrjStore, userEmailStore} from "../../store";
 import {useNavigate} from "react-router-dom";
-import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../constant/path";
+import personalProjectListMock from "../../mock/personalProjectList.mock";
+import {Project} from "../../interface/types";
+import {
+    Body,
+    Cell,
+    Header,
+    HeaderCell,
+    HeaderCellProps,
+    HeaderRow,
+    Row,
+    Table
+} from "@table-library/react-table-library";
+import styled from "styled-components";
+import {useTheme} from "@table-library/react-table-library/theme";
+import {getTheme} from "@table-library/react-table-library/baseline";
+
 
 export default function PersonalProject() {
     //* navigate : 네비게이트 함수
@@ -19,116 +30,175 @@ export default function PersonalProject() {
     // state : 쿠키 상태
     const [cookies, setCookies] = useCookies();
 
-    //* 프로젝트 엘리먼트 클릭 이벤트 처리함수
-    const onPrjElementClickEventHandler = (identifier: string | null, projectNum: string) => {
-        const accessToken = cookies.accessToken_Main;
-        if (!accessToken) return;
+    //* state: 상단 드롭다운 관련 값들
+    const menus = ["Personal", "Team"];
+    const [menu, setMenu] = useState<{
+        clickStat: boolean, menuStat: "Personal" | "Team"
+    }>({clickStat: false, menuStat: "Personal"});
 
-        identifier = btoa(loginUserEmail);
+    // table info : 프로젝트 관련 테이블의 정보
 
+    // react-table을 사용하기 위해선 data와 테이블 헤더에 들어갈 column이 필요함.
+    const baseTableColumns = () => {
+        const columns = [
+            {label: "projectName", renderCell: (item: Project) => item.projectName},
+            {label: "creator", renderCell: (item: Project) => item.creator},
+            {label: "teamName", renderCell: (item: Project) => item.teamName},
+            {label: "stat", renderCell: (item: Project) => item.stat},
+            {label: "createDate", renderCell: (item: Project) => item.createDate},
+            {label: "processed", renderCell: (item: Project) => item.processed},
+            {label: "unProcessed", renderCell: (item: Project) => item.unProcessed},
+        ];
 
-        navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_BOARD_PATH(identifier, projectNum)}`);
-
+        return menu.menuStat === "Team" ? columns :
+            columns.filter(column => column.label !== "teamName");
     }
 
-    //* function: 프로젝트 리스트를 가져오는 요청에 대한 응답처리 함수.
-    const getPersonalPrjResponse = (responseBody: GetPersonalPrjListResponse | ResponseDto | null) => {
-        if (!responseBody) return;
-        const {code, message} = responseBody as ResponseDto;
+    const list = personalProjectListMock;
 
-        if (code !== ResponseCode.SUCCESS) alert(message);
+    // const data = {nodes : list};
 
-        const {data} = responseBody as GetPersonalPrjListResponse;
-        setProjects(data.list);
+    // 테이블 관련 props끝
+
+
+    // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
+    const onDropDownBtnClickEventHandler = () => {
+        const updateState = {
+            ...menu,
+            clickStat: !menu.clickStat
+        }
+
+        setMenu(updateState);
     }
 
-    //* function:진행중인 프로젝트 갯수를 계산하는 함수.
-    const getPrjOnWorkingCnt = () => {
-        return projects.filter(value => value.stat === 0).length;
+    // component : 하단 표 컴포넌트
+
+    type ProjectTableProps = {
+        columns: { label: string, renderCell: (item: Project) => string | number }[],
+        data: Project[];
     }
+    const ProjectTable = ({columns, data}: ProjectTableProps) => {
+        const node = {nodes: data};
+        const theme = useTheme(getTheme());
+
+        const resize = {minWidth : 25}
 
 
-    // 각각 버튼의 종류는 아래와 같이 정의한다.
-    //개인프로젝트 : 1) projectList 2) createProject => key값 == pl, cp
-    //팀프로젝트 : 1) 팀원초대, 2)팀프로젝트 목록 key값 => ti, tl
-
-    type PersonalDashBoardProp = {
-        // 1) 개인프로젝트수 2) 완료된프로젝트수 3) 처리된 이슈의 숫자 4) 미처리 이슈의 숫자
-        prjOnWorkingCnt: number,
-        prjCompleteCnt: number
-    }
-    // 상단 대시보드 컴포넌트
-    const PersonalPrjDashBoardTable = (props: PersonalDashBoardProp) => {
-        const {prjOnWorkingCnt, prjCompleteCnt} = props;
         return (
-            <div id={"personal-dashboard-table-wrapper"}>
-                <table className={"personal-dashboard-table"}>
-                    <thead className={"personal-dashboard-table-head"}>
-                    <tr>
-                        <td>진행중</td>
-                        <td>완료</td>
-                        <td>이슈(미처리)</td>
-                        <td>이슈(처리완료)</td>
-                    </tr>
-                    </thead>
+            <Table data={node} theme={theme}>
+                {(list: Project[]) => (
+                    <>
+                        <Header>
+                            <HeaderRow className={"prj-table-header-row"}>
+                                {columns.map((item, index) =>
+                                    <HeaderCell resize={resize} className={"prj-table-header"} key={index}>{item.label}</HeaderCell>
+                                )}
+                            </HeaderRow>
+                        </Header>
 
-                    <tbody className={"personal-dashboard-table-body"}>
-                    <tr>
-                        <td>{prjOnWorkingCnt}</td>
-                        <td>{prjCompleteCnt}</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <Body>
+                            {list.map((project, index) =>
+                                <Row key={project.projectNum} item={project}>
+
+                                    <Cell className={"prj-table-body-cell"}>{project.projectName}</Cell>
+                                    <Cell className={"prj-table-body-cell"}>{project.creator}</Cell>
+                                    {menu.menuStat === "Team" ? <Cell className={"prj-table-body-cell"}>{project.teamName}</Cell> : null}
+                                    <Cell className={"prj-table-body-cell"}>{project.stat}</Cell>
+                                    <Cell className={"prj-table-body-cell"}>{project.createDate}</Cell>
+                                    <Cell className={"prj-table-body-cell"}>{project.processed}</Cell>
+                                    <Cell className={"prj-table-body-cell"}>{project.unProcessed}</Cell>
+                                </Row>
+                            )}
+
+                        </Body>
+                    </>
+                )}
+            </Table>
+        )
+    }
+
+
+    // component : 드롭다운 메뉴 컴포넌트
+    type HomeDropDownProps = {
+        menuList: string[],
+        hooks: {
+            menu: { clickStat: boolean, menuStat: "Personal" | "Team" },
+            setMenu: React.Dispatch<React.SetStateAction<{ clickStat: boolean, menuStat: "Personal" | "Team" }>>
+        }
+    }
+
+    const HomePrjDropDown = (props: HomeDropDownProps) => {
+        const {menuList, hooks} = props;
+        const {menu, setMenu} = hooks;
+
+        // eventHandler : 메뉴 클릭시 이벤트 헨들러
+        const onMenuClickEventHandler = (value: "Personal" | "Team") => {
+            const updateStat = {...menu, clickStat: !menu.clickStat, menuStat: value};
+            setMenu(updateStat);
+        }
+
+        return (
+            <div id={"home-prj-drop-down-wrapper"}>
+                {menuList.map((item, index) =>
+                    <div className={"home-prj-drop-down-menu-item-box"}
+                         onClick={() => onMenuClickEventHandler(item as "Personal" | "Team")}>
+                        <div className={"home-prj-drop-down-menu-item"}>{item}</div>
+                    </div>
+                )}
+
+
             </div>
         )
     }
 
+
     useEffect(() => {
-        const fetchData = async () => {
-            const token = cookies.accessToken_Main;
-            if (!token) return;
-
-            const responseBody = await getPersonalPrjListRequest(token);
-            getPersonalPrjResponse(responseBody);
-        };
-
-        fetchData();
-
+        // const fetchData = async () => {
+        //     const token = cookies.accessToken_Main;
+        //     if (!token) return;
+        //
+        //     const responseBody = await getPersonalPrjListRequest(token);
+        //     getPersonalPrjResponse(responseBody);
+        // };
+        //
+        // fetchData();
     }, []);
 
     return (
         <div id={"personal-project-wrapper"}>
-            {/*<div className={"personal-project-top-container"}>*/}
-            {/*    <div className={"personal-project-top-title"}>{"DashBoard"}</div>*/}
-            {/*    <div className={"divider"}></div>*/}
-            {/*    <PersonalPrjDashBoardTable*/}
-            {/*        prjCompleteCnt={projects.length - getPrjOnWorkingCnt()}*/}
-            {/*        prjOnWorkingCnt={getPrjOnWorkingCnt()}/>*/}
-            {/*</div>*/}
-            <div className={"personal-project-bottom-container"}>
-                <div className={"personal-project-bottom-title-box"}>
-                    <div className={"personal-project-bottom-title"}>{"Project"}</div>
-                </div>
-                <div className={"divider"}></div>
 
-                <div className={"personal-project-bottom-content-box"}>
-                    <div className={"personal-project-bottom-content"}>
-                        {/*<div className={"personal-project-none"}>{"진행중인 프로젝트가 없습니다."}</div>*/}
-                        {!projects ?
-                            <div className={"personal-project-none"}>{"진행중인 프로젝트가 없습니다."}</div> :
-                            projects.map((item, index) =>
-                                <ProjectCard
-                                    key={item.projectNum}
-                                    projectNum={item.projectNum.toString()}
-                                    projectName={item.projectName}
-                                    createDate={item.createDate}
-                                    onClick={() => onPrjElementClickEventHandler(loginUserEmail, item.projectNum.toString())}/>)
-                        }
-                    </div>
+            <div className={"home-prj-top-container"}>
+                <div className={"home-prj-drop-btn-box"}>
+                    <div className={"home-prj-drop-down-title"}>{"Personal"}</div>
+                    <div className={"icon home-prj-drop-down-btn arrow-down-icon"}
+                         onClick={onDropDownBtnClickEventHandler}/>
                 </div>
+                {menu.clickStat && (
+                    <HomePrjDropDown menuList={menus}
+                                     hooks={{
+                                         menu: menu,
+                                         setMenu: setMenu
+                                     }}/>
+                )}
+
             </div>
+
+            <div className={"home-prj-bottom-container"}>
+                <div className={"home-prj-bottom-title-box"}>
+                    <div className={"home-prj-bottom-title"}>{
+                        menu.menuStat === "Personal" ? "개인 프로젝트 목록" : "팀 프로젝트 목록"
+                    }</div>
+                    <div className={"divider"}></div>
+                </div>
+
+                <div className={"home-prj-bottom-table-box"}>
+                    {/*<CompactTable columns={baseTableColumns()} data ={data} />*/}
+                    <ProjectTable columns={baseTableColumns()} data={list}/>
+                </div>
+
+            </div>
+
+
         </div>
     )
 }
