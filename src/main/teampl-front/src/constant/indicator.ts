@@ -9,9 +9,9 @@ export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
 
 //project
 export const CREATE_PERSONAL_PROJECT = () => "/create-project";
-export const GET_PERSONAL_PROJECT_LIST = () => "/personal-project"; //수정요망
+export const GET_PROJECT_LIST = () => "/t-project-list"; //수정요망
 export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
-export const GET_PROJECT_LIST = () => "/project-list";
+export const GET_PROJECT_LIST_TEMP = () => "/project-list";
 
 
 // issue

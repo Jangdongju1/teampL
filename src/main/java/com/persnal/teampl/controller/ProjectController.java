@@ -27,7 +27,7 @@ public class ProjectController {
         return projectService.createPersonalPrj(email, req);
     }
 
-    @GetMapping("/personal-project")
+    @GetMapping("/t-project-list")
     public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(
             @AuthenticationPrincipal String email){
 

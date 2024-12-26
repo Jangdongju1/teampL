@@ -2,19 +2,19 @@
 
 // 프로젝트 객체
 export type Project = {
-    projectNum: number,
-    regNum: number | null,
+    projectNum: number,//
+    regNum: number | null,//
     projectName: string,
-    description: string,
+    description: string,//
     createDate: string,
     creator: string,
     stat: number,
-    projectType: number,
+    projectType: number,//
     // -----------------
-    processed: number,  // 처리된 이슈의 갯수
-    unProcessed : number // 미처리의 이슈의 갯수
-    teamName: string, // 팀의 이름
-    id : number  // reactTable을 사용하기 위한 id
+    teamName: string | null, // 팀의 이름
+    totalIssueCnt: number,  // 처리된 이슈의 갯수
+    processed: number, // 미처리의 이슈의 갯수
+    id: number
 
 }
 //프로젝트 탐색용 모달에 존재하는 프로젝트 리스트의 객체 타입
@@ -58,4 +58,19 @@ export type IssueComment = {
     commentOrder: number
 }
 
+export type ProjectTableData = {
+    projectNum: number,//
+    regNum: number | null,//
+    projectName: string,
+    description: string,//
+    createDate: string,
+    creator: string,
+    stat: number,
+    projectType: number,//
+    // -----------------
+    teamName: string | null, // 팀의 이름
+    processed: number, // 미처리의 이슈의 갯수
+    unProcessed: number,
+    id: number
+}
 

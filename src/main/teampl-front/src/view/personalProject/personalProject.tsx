@@ -1,34 +1,28 @@
 import "./style.css";
 import React, {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
-import {personalPrjStore, userEmailStore} from "../../store";
+import {projectStore, userEmailStore} from "../../store";
 import {useNavigate} from "react-router-dom";
-import personalProjectListMock from "../../mock/personalProjectList.mock";
-import {Project} from "../../interface/types";
-import {
-    Body,
-    Cell,
-    Header,
-    HeaderCell,
-    HeaderCellProps,
-    HeaderRow,
-    Row,
-    Table
-} from "@table-library/react-table-library";
-import styled from "styled-components";
-import {useTheme} from "@table-library/react-table-library/theme";
-import {getTheme} from "@table-library/react-table-library/baseline";
+import {getTProjectListRequest} from "../../api/projectApi";
+import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response";
+import ResponseCode from "../../common/enum/responseCode";
+import {Project, ProjectTableData} from "../../interface/types";
+import {ProjectType} from "../../common";
+import projectType from "../../common/enum/projectType";
+import ProjectTable from "../../component/table/projectTable/projectTable";
 
 
 export default function PersonalProject() {
     //* navigate : 네비게이트 함수
     const navigator = useNavigate();
-    // global state : 개인프로젝트의 상태
-    const {projects, setProjects} = personalPrjStore();
+
+    const {projects, setProjects} = projectStore();
     // global state : 유저의 이메일 상태
     const {loginUserEmail} = userEmailStore();
     // state : 쿠키 상태
     const [cookies, setCookies] = useCookies();
+    const accessToken = cookies.accessToken_Main;
+
 
     //* state: 상단 드롭다운 관련 값들
     const menus = ["Personal", "Team"];
@@ -36,30 +30,11 @@ export default function PersonalProject() {
         clickStat: boolean, menuStat: "Personal" | "Team"
     }>({clickStat: false, menuStat: "Personal"});
 
-    // table info : 프로젝트 관련 테이블의 정보
 
-    // react-table을 사용하기 위해선 data와 테이블 헤더에 들어갈 column이 필요함.
-    const baseTableColumns = () => {
-        const columns = [
-            {label: "projectName", renderCell: (item: Project) => item.projectName},
-            {label: "creator", renderCell: (item: Project) => item.creator},
-            {label: "teamName", renderCell: (item: Project) => item.teamName},
-            {label: "stat", renderCell: (item: Project) => item.stat},
-            {label: "createDate", renderCell: (item: Project) => item.createDate},
-            {label: "processed", renderCell: (item: Project) => item.processed},
-            {label: "unProcessed", renderCell: (item: Project) => item.unProcessed},
-        ];
+    // tableHeaders
+    const projectTableHeader = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
-        return menu.menuStat === "Team" ? columns :
-            columns.filter(column => column.label !== "teamName");
-    }
-
-    const list = personalProjectListMock;
-
-    // const data = {nodes : list};
-
-    // 테이블 관련 props끝
-
+    // const projectMockData = personalProjectListMock;  // 실제 프로젝트 리스트에 대한 응답값 모의데이터
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
     const onDropDownBtnClickEventHandler = () => {
@@ -70,51 +45,9 @@ export default function PersonalProject() {
 
         setMenu(updateState);
     }
-
-    // component : 하단 표 컴포넌트
-
-    type ProjectTableProps = {
-        columns: { label: string, renderCell: (item: Project) => string | number }[],
-        data: Project[];
-    }
-    const ProjectTable = ({columns, data}: ProjectTableProps) => {
-        const node = {nodes: data};
-        const theme = useTheme(getTheme());
-
-        const resize = {minWidth : 25}
-
-
-        return (
-            <Table data={node} theme={theme}>
-                {(list: Project[]) => (
-                    <>
-                        <Header>
-                            <HeaderRow className={"prj-table-header-row"}>
-                                {columns.map((item, index) =>
-                                    <HeaderCell resize={resize} className={"prj-table-header"} key={index}>{item.label}</HeaderCell>
-                                )}
-                            </HeaderRow>
-                        </Header>
-
-                        <Body>
-                            {list.map((project, index) =>
-                                <Row key={project.projectNum} item={project}>
-
-                                    <Cell className={"prj-table-body-cell"}>{project.projectName}</Cell>
-                                    <Cell className={"prj-table-body-cell"}>{project.creator}</Cell>
-                                    {menu.menuStat === "Team" ? <Cell className={"prj-table-body-cell"}>{project.teamName}</Cell> : null}
-                                    <Cell className={"prj-table-body-cell"}>{project.stat}</Cell>
-                                    <Cell className={"prj-table-body-cell"}>{project.createDate}</Cell>
-                                    <Cell className={"prj-table-body-cell"}>{project.processed}</Cell>
-                                    <Cell className={"prj-table-body-cell"}>{project.unProcessed}</Cell>
-                                </Row>
-                            )}
-
-                        </Body>
-                    </>
-                )}
-            </Table>
-        )
+    // eventHandler : 테이블 메뉴 선택시 이벤트 헨들러 >> 페이지 이동 처리.
+    const onTableClickEventHandler = (projectNum: number, regNum?: number) => {
+        console.log(projectNum, regNum);
     }
 
 
@@ -145,23 +78,78 @@ export default function PersonalProject() {
                         <div className={"home-prj-drop-down-menu-item"}>{item}</div>
                     </div>
                 )}
-
-
             </div>
         )
     }
 
+    // function : project상태 업데이트
+    const updateProjectState = (list: Project[]) => {
 
+
+        const tableDataArr = list.map(project => {
+            const tableData: ProjectTableData = {
+                projectNum: project.projectNum,
+                regNum: project.regNum,
+                projectName: project.projectName,
+                description: project.description,
+                createDate: project.createDate,
+                creator: project.creator,
+                teamName: project.teamName,
+                stat: project.stat,
+                projectType: project.projectType,
+                processed: project.processed,
+                unProcessed: (project.totalIssueCnt - project.processed),
+                id: project.projectNum
+            }
+
+            return tableData;
+        });
+
+
+        const totalData = tableDataArr;
+        const personal =
+            tableDataArr.filter(item => item.projectType === ProjectType.PERSONAL_PROJECT);
+        const team =
+            tableDataArr.filter(item => item.projectType === ProjectType.TEAM_PROJECT);
+
+        const updateState = {
+            projects: totalData,
+            personal: personal,
+            team: team
+        }
+
+        setProjects(updateState);
+    }
+
+    console.log(projects)
+
+    // function : fetchData 에 대한 응답 처리 함수.
+    const getProjectListResponse = (responseBody: GetPersonalPrjListResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetPersonalPrjListResponse;
+
+        updateProjectState(data.list);
+
+    }
+    // 마운트시 실행할 함수
     useEffect(() => {
-        // const fetchData = async () => {
-        //     const token = cookies.accessToken_Main;
-        //     if (!token) return;
-        //
-        //     const responseBody = await getPersonalPrjListRequest(token);
-        //     getPersonalPrjResponse(responseBody);
-        // };
-        //
-        // fetchData();
+        const fetchProjectData = async () => {
+            if (!accessToken) {
+                alert("accessToken is expired!!")
+                return;
+            }
+            const responseBody = await getTProjectListRequest(accessToken);
+
+            getProjectListResponse(responseBody);
+        }
+        fetchProjectData();
     }, []);
 
     return (
@@ -192,8 +180,11 @@ export default function PersonalProject() {
                 </div>
 
                 <div className={"home-prj-bottom-table-box"}>
-                    {/*<CompactTable columns={baseTableColumns()} data ={data} />*/}
-                    <ProjectTable columns={baseTableColumns()} data={list}/>
+                    <ProjectTable header={projectTableHeader}
+                                  data={menu.menuStat === "Team"? projects.team : projects.personal} tableType={menu.menuStat}
+                                  functions={{
+                                     onClick: onTableClickEventHandler
+                                 }}/>
                 </div>
 
             </div>

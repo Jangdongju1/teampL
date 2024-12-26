@@ -9,26 +9,27 @@ import com.persnal.teampl.entities.ProjectEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 @Getter
 public class GetPersonalPrjListResponse {
-    private  final List<ProjectObj> list;
+    private final List<ProjectObj> list;
 
-    public GetPersonalPrjListResponse(List<ProjectEntity> entities){
-        this.list = ProjectEntity.getProejctList(entities);
+    public GetPersonalPrjListResponse(List<ProjectObj> result) {
+        this.list = result;
     }
 
-    public static ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> success(List<ProjectEntity> entities) {
+    public static ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> success(List<ProjectObj> result) {
         ApiResponse<GetPersonalPrjListResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPersonalPrjListResponse(entities));
+                new GetPersonalPrjListResponse(result));
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> notExistUser(){
+    public static ResponseEntity<ResponseDto> notExistUser() {
         return ResponseDto.notExistedUser();
     }
 

@@ -1,11 +1,11 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
-import {modalStore, personalPrjStore} from "../../../store";
+import {modalStore} from "../../../store";
 import {CreateProjecRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest} from "../../../api/projectApi";
-import {GetPersonalPrjListResponse, ResponseDto} from "../../../interface/response";
+import {ResponseDto} from "../../../interface/response";
 import CreateProjectResponse from "../../../interface/response/project/createProjectResponse";
 import ResponseCode from "../../../common/enum/responseCode";
 
@@ -30,7 +30,7 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     // global State: 모달의 전역상태
     const {setIsModalOpen, setModalType} = modalStore();
     // global State: 개인프로젝트 상태
-    const {setProjects} = personalPrjStore();
+    // const {setProjects} = projectStore();
     // state : 쿠키상태
     const [cookies, setCookies] = useCookies();
 
@@ -60,16 +60,16 @@ export default function CreationModal(props: HeaderBtnModalProps) {
 
 
     // function : 프로젝트 목록 가져오기 api 호출 응답 결과 처리함수.
-    const getPersonalPrjResponse = (responseBody: ResponseDto | GetPersonalPrjListResponse | null)=>{
-        if (!responseBody) return;
-        const {code,message} = responseBody as ResponseDto;
-        if (code != ResponseCode.SUCCESS) {
-            alert(message);
-            return
-        }
-        const {data} = responseBody as GetPersonalPrjListResponse;
-        setProjects(data.list);
-    }
+    // const getPersonalPrjResponse = (responseBody: ResponseDto | GetPersonalPrjListResponse | null)=>{
+    //     if (!responseBody) return;
+    //     const {code,message} = responseBody as ResponseDto;
+    //     if (code != ResponseCode.SUCCESS) {
+    //         alert(message);
+    //         return
+    //     }
+    //     const {data} = responseBody as GetPersonalPrjListResponse;
+    //     setProjects(data.list);
+    // }
 
     // function: 프로젝트 생성 응답처리함수
     const createProjectResponse = async (responseBody: ResponseDto | CreateProjectResponse | null) => {

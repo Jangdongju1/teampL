@@ -1,0 +1,10 @@
+.common-table-header > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.common-table-body-cell > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

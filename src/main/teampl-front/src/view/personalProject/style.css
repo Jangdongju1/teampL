@@ -104,14 +104,3 @@
     font-family: "Noto Sans KR Sans KR";
     font-size: 23px;
 }
-
-.prj-table-header > div{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.prj-table-body-cell > div{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}

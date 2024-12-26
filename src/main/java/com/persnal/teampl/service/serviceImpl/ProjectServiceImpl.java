@@ -3,6 +3,7 @@ package com.persnal.teampl.service.serviceImpl;
 import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.ProjectInfoObj;
+import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
@@ -53,22 +54,20 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(String email) {
-        List<ProjectEntity> projectEntities = null;
+        List<ProjectObj> result = null;
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity == null) return GetPersonalPrjListResponse.notExistUser();
 
+            result = projectRepository.getTProjectList(email);
 
-            projectEntities = projectRepository.findByUserEntityEmailAndProjectType(
-                    userEntity.getEmail(),
-                    ProjectType.PERSONAL_PROJECT.getValue());
 
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPersonalPrjListResponse.success(projectEntities);
+        return GetPersonalPrjListResponse.success(result);
     }
 
     @Override

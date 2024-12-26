@@ -1,8 +1,13 @@
 import {CreateProjecRequest} from "../interface/request";
 import axios from "axios";
-import {CREATE_PERSONAL_PROJECT, GET_PERSONAL_PROJECT_INFO, GET_PROJECT_LIST} from "../constant/indicator";
+import {
+    CREATE_PERSONAL_PROJECT,
+    GET_PERSONAL_PROJECT_INFO,
+    GET_PROJECT_LIST,
+    GET_PROJECT_LIST_TEMP
+} from "../constant/indicator";
 import CreateProjectResponse from "../interface/response/project/createProjectResponse";
-import {GetProjectListResponse, ResponseDto} from "../interface/response";
+import {GetPersonalPrjListResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
 
 const DOMAIN = "http://localhost:4000";
@@ -25,12 +30,37 @@ export const createProjectRequest = async (requestBody: CreateProjecRequest, acc
     } catch (error) {
         if (axios.isAxiosError(error)) {
             //isAxiosError  axios자체에서 발생하는 에러 처리 1) 응답코드 != 200, 2) 기타 axios관련 에러
-            if (error.response === undefined) return null;
+            if (error.response === undefined) {
+                console.log(error.message);
+                return null
+            }
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         } else {
-            console.log("unexpected error", error);
+            console.error(error);
             return null;
+        }
+    }
+}
+
+export const getTProjectListRequest = async (accessToken: string) => {
+    try {
+        const result = await axios.get(apiEndPoint(GET_PROJECT_LIST()), Authorization(accessToken));
+        const responseBody: GetPersonalPrjListResponse = result.data;
+
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log(error.message);
+                return null;
+            }
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.error(error)
+            return null;
+
         }
     }
 }
@@ -58,18 +88,18 @@ export const getPersonalPrjInfoRequest = async (projectNum: string, accessToken:
 // 프로젝트의 리스트를 가져오는 api
 export const getProjectListRequest = async (accessToken: string) => {
     try {
-        const result = await axios.get(apiEndPoint(GET_PROJECT_LIST()), Authorization(accessToken));
-        const responseBody : GetProjectListResponse  = result.data;
+        const result = await axios.get(apiEndPoint(GET_PROJECT_LIST_TEMP()), Authorization(accessToken));
+        const responseBody: GetProjectListResponse = result.data;
         return responseBody;
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (!error.response){
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
                 console.error("unexpected error", error.message);
                 return null;
             }
-            const responseBody : ResponseDto  = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody
-        }else {
+        } else {
             console.error("not axios error", error)
             return null;
         }
