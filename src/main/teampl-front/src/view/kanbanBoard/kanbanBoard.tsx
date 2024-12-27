@@ -23,6 +23,7 @@ import {PatchIssueStatusDragRequest} from "../../interface/request";
 import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
 import ProjectModal from "../../component/modal/projectModal/projectModal";
 import {getKanbanName} from "../../constant/issueConstants";
+import kanbanStore from "../../store/kanbanStore";
 
 type KanbanType = {
     isTeamKanban: boolean
@@ -52,14 +53,8 @@ export default function KanbanBoard(props: KanbanType) {
             [KanbanBoardName.STUCK]: false,
             [KanbanBoardName.DONE]: false,
         });
-    //* state : 각 칸반보드의 데이터 배열 상태
-    const [eachKanbanIssues, setEachKanbanIssues] =
-        useState<Record<string, Issue[]>>({
-            [KanbanBoardName.NOT_START]: [],
-            [KanbanBoardName.ON_WORKING]: [],
-            [KanbanBoardName.STUCK]: [],
-            [kanbanBoardName.DONE]: []
-        })
+    //* global state : 각 칸반보드의 데이터 배열 상태
+    const {kanbanData, setKanbanData} = kanbanStore();
 
 
     // accessToken
@@ -131,7 +126,8 @@ export default function KanbanBoard(props: KanbanType) {
 
 
         // 상태 업데이트
-        setEachKanbanIssues(updatedKanbanIssues);
+        // setEachKanbanIssues(updatedKanbanIssues);
+        setKanbanData(updatedKanbanIssues);
 
     }
 
@@ -160,15 +156,15 @@ export default function KanbanBoard(props: KanbanType) {
         const {data} = responseBody as CreateIssueResponse;  // 이슈데이터를 받아옴
         const addedKanbanName = getKanbanName(data.addedIssue.stat);
 
-        // 상태 업데이트
+
         const updatedIssues = {
-            ...eachKanbanIssues,
+            ...kanbanData,
             [addedKanbanName]: [
-                data.addedIssue, ...eachKanbanIssues[addedKanbanName]
+                data.addedIssue, ...kanbanData[addedKanbanName]
             ]
         }
 
-        setEachKanbanIssues(updatedIssues);
+        setKanbanData(updatedIssues);
 
         // 이슈 추가시 배열에 추가가 필요함.
     }
@@ -187,19 +183,35 @@ export default function KanbanBoard(props: KanbanType) {
     //function : 이슈카드 옮긴 후 상태 업데이트 함수
     const updateKanbanState = (sourceArr: Issue[], dstArr: Issue[] | null, srcBoardId: string, dstBoardId: string | null) => {
 
+        // if (dstArr && dstBoardId) {
+        //     setEachKanbanIssues(prevState => ({
+        //         ...prevState,
+        //         [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr,
+        //         [getKanbanName(parseInt(dstBoardId, 10))]: dstArr
+        //     }))
+        // } else {
+        //     setEachKanbanIssues(prevState => ({
+        //         ...prevState,
+        //         [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr
+        //     }))
+        // }
 
         if (dstArr && dstBoardId) {
-            setEachKanbanIssues(prevState => ({
-                ...prevState,
+            const updatedData= {
+                ...kanbanData,
                 [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr,
                 [getKanbanName(parseInt(dstBoardId, 10))]: dstArr
-            }))
+            }
+            setKanbanData(updatedData);
         } else {
-            setEachKanbanIssues(prevState => ({
-                ...prevState,
+            const updatedData = {
+                ...kanbanData,
                 [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr
-            }))
+            }
+            setKanbanData(updatedData)
         }
+
+
     }
 
 
@@ -243,7 +255,8 @@ export default function KanbanBoard(props: KanbanType) {
                 dstPreNode: null
             };
 
-            let dstIssues = eachKanbanIssues[getKanbanName(parseInt(dstInfo.droppableId, 10))];
+            //let dstIssues = eachKanbanIssues[getKanbanName(parseInt(dstInfo.droppableId, 10))];
+            let dstIssues = kanbanData[getKanbanName(parseInt(dstInfo.droppableId, 10))];
 
             if (source.droppableId === dstInfo.droppableId) {
                 dstIssues = dstIssues.filter(value => value.issueSequence != draggableId);
@@ -254,7 +267,8 @@ export default function KanbanBoard(props: KanbanType) {
             return result;
         }
 
-        const draggedIssue = eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))][source.index];
+        // const draggedIssue = eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))][source.index];
+        const draggedIssue = kanbanData[getKanbanName(parseInt(source.droppableId, 10))][source.index];
 
         // //이동되는 이슈가 맨처음으로 이동되거나 맨 마지막으로 이동되는 경우를 따져야 한다.
         const requestBody: PatchIssueStatusDragRequest = {
@@ -267,13 +281,16 @@ export default function KanbanBoard(props: KanbanType) {
 
 
         // 즉시 반영을 위한 상태변경
-        const tSourceIssues = [...eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))]];
+        // const tSourceIssues = [...eachKanbanIssues[getKanbanName(parseInt(source.droppableId, 10))]];
+        const tSourceIssues = [...kanbanData[getKanbanName(parseInt(source.droppableId, 10))]];
         // 배열의복사
         const srcArr: Issue[] = tSourceIssues.map(value => ({...value}))
 
 
         if (source.droppableId !== destination.droppableId) {
-            const tDstIssues = [...eachKanbanIssues[getKanbanName(parseInt(destination.droppableId, 10))]];
+            // const tDstIssues = [...eachKanbanIssues[getKanbanName(parseInt(destination.droppableId, 10))]];
+            const tDstIssues = [...kanbanData[getKanbanName(parseInt(destination.droppableId, 10))]];
+
             const dstArr: Issue[] = tDstIssues.map(value => ({...value}));
 
             draggedIssue.stat = parseInt(destination.droppableId, 10);
@@ -324,12 +341,6 @@ export default function KanbanBoard(props: KanbanType) {
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div id={"kanban-board-wrapper"}>
-                {isModalOpen && modalType === ModalType.ISSUE_INFO && (
-                    <IssueModal
-                        isTeamModal={isTeamKanban}
-                        eachKanbanIssues={eachKanbanIssues}
-                        setEachKanbanIssues={setEachKanbanIssues}/>
-                )}
 
                 <div className={"kanban-board-top-container"}>
                     <KanbanTopComponent isTeamPage={isTeamKanban}
@@ -352,7 +363,7 @@ export default function KanbanBoard(props: KanbanType) {
 
 
                                     <div className={"kanban-board-panel-name"}>
-                                        {`${item.boardName} / ${eachKanbanIssues[item.boardName].length}`}
+                                        {`${item.boardName} / ${kanbanData[item.boardName].length}`}
                                     </div>
 
                                     {addBtnRenderState[item.boardName] ?
@@ -370,7 +381,7 @@ export default function KanbanBoard(props: KanbanType) {
                                         <div ref={provided.innerRef} {...provided.droppableProps}
                                              className={"kanban-board-panel-item-box"}>
 
-                                            {eachKanbanIssues[item.boardName].map((item, index) => (
+                                            {kanbanData[item.boardName].map((item, index) => (
 
                                                 <Draggable key={item.issueSequence} draggableId={item.issueSequence}
                                                            index={index}>
@@ -383,8 +394,8 @@ export default function KanbanBoard(props: KanbanType) {
                                                                 subIssueCnt={0}
                                                                 commentCnt={0}
                                                                 isTeamKanban={isTeamKanban}
-                                                                eachKanbanState={eachKanbanIssues}
-                                                                setEachKanbanState={setEachKanbanIssues}
+                                                                eachKanbanState={kanbanData}
+                                                                setEachKanbanState={setKanbanData}
                                                             />
                                                         </div>
 

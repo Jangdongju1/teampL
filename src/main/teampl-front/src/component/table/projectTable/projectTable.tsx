@@ -5,6 +5,7 @@ import {useTheme} from "@table-library/react-table-library/theme";
 import {getTheme} from "@table-library/react-table-library/baseline";
 import {Project, ProjectTableData} from "../../../interface/types";
 import {getFormattedDate} from "../../../util";
+import InitialsImg from "../../InitialsImg";
 
 type TableProps = {
     header: string [],
@@ -50,23 +51,17 @@ export default function ProjectTable(props: TableProps) {
                                      return () => {
                                      };  // 기본 빈 함수
                                  }}>
-                                {/*{Object.entries(item).map(([key, value], index) => {*/}
-                                {/*        if (tableType === "Personal" || tableType === "Team") {*/}
-                                {/*            const lowerCaseHeader = header.map(item => item.toLowerCase());*/}
-                                {/*            if (!lowerCaseHeader.includes(key.toLowerCase())) {*/}
-                                {/*                return null;*/}
-                                {/*            }*/}
-                                {/*        }*/}
-                                {/*        return (*/}
-                                {/*            <Cell className={"common-table-body-cell"}>{value as string | number}</Cell>*/}
-                                {/*        )*/}
-                                {/*    }*/}
-                                {/*)}*/}
                                 <Cell className={"common-table-body-cell"}>{item.projectName}</Cell>
                                 <Cell className={"common-table-body-cell"}>{getFormattedDate(item.createDate)}</Cell>
-                                <Cell className={"common-table-body-cell"}>{item.creator}</Cell>
+                                <Cell className={"common-table-body-cell"}>
+                                    <InitialsImg name={item.creator} width={26} height={26}/>
+                                </Cell>
                                 <Cell className={"common-table-body-cell"}>{tableType === "Team"? item.teamName : "-"}</Cell>
-                                <Cell className={"common-table-body-cell"}>{item.stat}</Cell>
+                                <Cell className={"common-table-body-cell"}>
+                                    {item.stat === 0?
+                                    <div className={"common-table-body-stat"} style={{backgroundColor : "rgba(253,188,100)"}}>진행중</div> :
+                                    <div className={"common-table-body-stat"} style={{backgroundColor :"rgb(51, 211, 145)"}}>완료</div>}
+                                </Cell>
                                 <Cell className={"common-table-body-cell"}>{item.processed}</Cell>
                                 <Cell className={"common-table-body-cell"}>{item.unProcessed}</Cell>
                             </Row>

@@ -1,11 +1,10 @@
 package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
-import com.persnal.teampl.dto.request.project.GetPersonalPrjInfoRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
-import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
+import com.persnal.teampl.dto.response.project.GetPrjListPaginationResponse;
 import com.persnal.teampl.dto.response.project.GetPrjListResponse;
 import com.persnal.teampl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProjectController {
 
-    private  final ProjectService projectService;
+    private final ProjectService projectService;
+
     @PostMapping("/create-project")
     public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createProject(
             @AuthenticationPrincipal String email,
@@ -28,22 +28,24 @@ public class ProjectController {
     }
 
     @GetMapping("/t-project-list")
-    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(
-            @AuthenticationPrincipal String email){
+    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectListPagination(
+            @AuthenticationPrincipal String email) {
 
-        return projectService.getPersonalPrjList(email);
+        return projectService.getProjectListPagination(email);
     }
 
     @GetMapping("/personal-project-info/{projectNum}")
     public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(
             @AuthenticationPrincipal String email,
-            @PathVariable("projectNum") int projectNum){
+            @PathVariable("projectNum") int projectNum) {
 
         return projectService.getPersonalPrjInfo(email, projectNum);
     }
 
     @GetMapping("/project-list")
-    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(@AuthenticationPrincipal String email){
+    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(
+            @AuthenticationPrincipal String email) {
+
         return projectService.getProjectList(email);
     }
 }

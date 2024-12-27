@@ -10,6 +10,7 @@ import CreationModal from "../../../component/modal/creationModal/creationModal"
 import {ModalType} from "../../../common";
 import IssueModal from "../../../component/modal/issueModal/issueModal";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
+import KanbanStore from "../../../store/kanbanStore";
 
 
 export default function MainContainer() {
@@ -35,6 +36,9 @@ export default function MainContainer() {
     } = headerMenuStore();
     // state : 헤더메뉴 오픈 상태
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+    // global State : 칸반 모달에 관련된 글로벌 상태
+    const {kanbanData,setKanbanData,isTeamKanban} = KanbanStore();
 
     //* eventHandler : 메인 컨테이너 클릭 이벤트헨들러 > 컨테이너를 클릭하면 상단 메뉴가 닫혀야 한다.
     const onMainContainerClickEventHandler = () => {
@@ -124,6 +128,13 @@ export default function MainContainer() {
 
             {isModalOpen && modalType === ModalType.PROJECT_LIST && (
                 <ProjectModal/>
+            )}
+
+            {isModalOpen && modalType === ModalType.ISSUE_INFO && (
+                <IssueModal
+                    isTeamModal={isTeamKanban}
+                    eachKanbanIssues={kanbanData}
+                    setEachKanbanIssues={setKanbanData}/>
             )}
 
             <div id={"main-wrapper"}>

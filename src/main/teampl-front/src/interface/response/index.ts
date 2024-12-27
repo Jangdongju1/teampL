@@ -4,7 +4,7 @@ import AuthCodeConfirmResponse from "./auth/authCodeConfirmResponse";
 import SignUpResponse from "./auth/SignUpResponse";
 import LoginUserResponse from "./user/loginUserResponse";
 import SignInResponse from "./auth/signInResponse";
-import GetPersonalPrjListResponse from "./project/getPersonalPrjListResponse";
+import GetPrjListPaginationResponse from "./project/getPrjListPaginationResponse";
 import PatchIssueTitleResponse from "./issue/patchIssueTitleResponse";
 import GetPersonalIssueByNumResponse from "./issue/getPersonalIssueByNumResponse";
 import PatchIssuePriorityResponse from "./issue/patchIssuePriorityResponse";
@@ -25,7 +25,7 @@ export type {
     SignUpResponse,
     LoginUserResponse,
     SignInResponse,
-    GetPersonalPrjListResponse,
+    GetPrjListPaginationResponse,
     PatchIssueTitleResponse,
     GetPersonalIssueByNumResponse,
     PatchIssuePriorityResponse,

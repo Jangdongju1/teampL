@@ -5,7 +5,7 @@ import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.entities.ProjectEntity;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +13,19 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-public class GetPersonalPrjListResponse {
+@Builder
+public class GetPrjListPaginationResponse {
     private final List<ProjectObj> list;
-
-    public GetPersonalPrjListResponse(List<ProjectObj> result) {
+    public GetPrjListPaginationResponse(List<ProjectObj> result) {
         this.list = result;
+
     }
 
-    public static ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> success(List<ProjectObj> result) {
-        ApiResponse<GetPersonalPrjListResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> success(List<ProjectObj> list) {
+        ApiResponse<GetPrjListPaginationResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPersonalPrjListResponse(result));
+                new GetPrjListPaginationResponse(list));
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

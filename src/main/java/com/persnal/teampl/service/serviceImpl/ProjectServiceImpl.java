@@ -1,6 +1,5 @@
 package com.persnal.teampl.service.serviceImpl;
 
-import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.ProjectInfoObj;
 import com.persnal.teampl.dto.obj.ProjectObj;
@@ -9,7 +8,7 @@ import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.project.CreateProjectResponse;
 import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
-import com.persnal.teampl.dto.response.project.GetPersonalPrjListResponse;
+import com.persnal.teampl.dto.response.project.GetPrjListPaginationResponse;
 import com.persnal.teampl.dto.response.project.GetPrjListResponse;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
@@ -53,21 +52,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(String email) {
-        List<ProjectObj> result = null;
+    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectListPagination(String email) {
+        List<ProjectObj> list = null;
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
-            if (userEntity == null) return GetPersonalPrjListResponse.notExistUser();
+            if (userEntity == null) return GetPrjListPaginationResponse.notExistUser();
 
-            result = projectRepository.getTProjectList(email);
-
-
+            list = projectRepository.getProjectListPagination(email);
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPersonalPrjListResponse.success(result);
+        return GetPrjListPaginationResponse.success(list);
     }
 
     @Override

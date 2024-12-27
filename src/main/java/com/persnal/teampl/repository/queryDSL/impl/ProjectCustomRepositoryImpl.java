@@ -3,6 +3,7 @@ package com.persnal.teampl.repository.queryDSL.impl;
 import com.persnal.teampl.common.Enum.issue.IssueStatus;
 import com.persnal.teampl.dto.obj.ProjectInfoObj;
 import com.persnal.teampl.dto.obj.ProjectObj;
+import com.persnal.teampl.dto.response.project.GetPrjListPaginationResponse;
 import com.persnal.teampl.entities.*;
 import com.persnal.teampl.repository.queryDSL.ProjectCustomRepository;
 import com.querydsl.core.types.ExpressionUtils;
@@ -40,14 +41,11 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                         .where(userEntity.email.eq(email)
                                 .or(projectEntity.projectType.eq(0).and(projectEntity.userEntity.email.eq(email))))
                         .fetch();
-
-
-
         return result;
     }
 
     @Override
-    public List<ProjectObj> getTProjectList(String email) {
+    public List<ProjectObj> getProjectListPagination(String email) {
         QProjectEntity project = QProjectEntity.projectEntity;
         QUserEntity user = QUserEntity.userEntity;
         QTeamEntity team = QTeamEntity.teamEntity;
@@ -76,11 +74,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                 .innerJoin(user).on(project.userEntity.email.eq(user.email))
                 .leftJoin(team).on(project.teamEntity.regNum.eq(team.regNum)).fetchJoin()
                 .where(user.email.eq(email))
-
                 .orderBy(project.createDate.desc())
-
-
-
                 .fetch();
 
 

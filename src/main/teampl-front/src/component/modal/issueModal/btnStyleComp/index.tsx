@@ -18,7 +18,9 @@ type ModalCompBtnStyleProps<T> = {
         value: T,
         setValue: React.Dispatch<React.SetStateAction<T>>,
         eachKanbanIssues? : Record<string, Issue[]>,
-        setEachKanbanIssues? : React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+        //setEachKanbanIssues? : React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+        setEachKanbanIssues? : (newValue : Record<string, Issue[]>) => void;
+
     },
     onChange?: (date: Date | null) => void,
     compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default"

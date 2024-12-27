@@ -7,7 +7,7 @@ import {
     GET_PROJECT_LIST_TEMP
 } from "../constant/indicator";
 import CreateProjectResponse from "../interface/response/project/createProjectResponse";
-import {GetPersonalPrjListResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
+import {GetPrjListPaginationResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
 
 const DOMAIN = "http://localhost:4000";
@@ -46,7 +46,7 @@ export const createProjectRequest = async (requestBody: CreateProjecRequest, acc
 export const getTProjectListRequest = async (accessToken: string) => {
     try {
         const result = await axios.get(apiEndPoint(GET_PROJECT_LIST()), Authorization(accessToken));
-        const responseBody: GetPersonalPrjListResponse = result.data;
+        const responseBody: GetPrjListPaginationResponse = result.data;
 
         return responseBody;
     } catch (error) {

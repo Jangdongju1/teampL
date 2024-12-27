@@ -18,7 +18,8 @@ type IssueCardProps = {
     commentCnt: number,
     isTeamKanban: boolean,
     eachKanbanState : Record<string, Issue[]>,
-    setEachKanbanState: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+    // setEachKanbanState: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+    setEachKanbanState: (newValue : Record<string, Issue[]>) => void
 }
 
 export default function IssueCard(props: IssueCardProps) {

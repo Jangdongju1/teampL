@@ -32,7 +32,7 @@ export const usePagination = (countPerPage: number) => {
     // 전체 댓글 갯수가 변경될 때마다 갱신함.
     useEffect(() => {
         const totalPage = Math.ceil(totalCount / countPerPage);
-        const totalSection = Math.ceil(totalCount / (countPerPage * 10)) // 1색션== 10개의 번호
+        const totalSection = Math.ceil(totalCount / (countPerPage * 10)) // 1색션 == 10개의 번호
         const pageList: number[] = [];
 
         for (let page = 1; page <= totalPage; page++) pageList.push(page)  // 전체 페이지 리스트를 만들고

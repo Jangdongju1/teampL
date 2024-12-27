@@ -89,18 +89,37 @@
 
 }
 .home-prj-bottom-container{
+    width: 100%;
     box-sizing: border-box;
     padding: 10px;
 
     display: flex;
     flex-direction: column;
+    gap: 10px;
+
 }
 .home-prj-bottom-title-box{
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
 }
 .home-prj-bottom-title{
     font-family: "Noto Sans KR Sans KR";
     font-size: 23px;
+}
+.home-prj-bottom-table-box{
+    width: 100%;
+    /*max-height: 375px;*/
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+.home-prj-bottom-table{
+    width: 100%;
+}
+.home-prj-bottom-pagination{
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

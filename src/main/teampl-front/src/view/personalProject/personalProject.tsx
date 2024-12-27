@@ -4,37 +4,56 @@ import {useCookies} from "react-cookie";
 import {projectStore, userEmailStore} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {getTProjectListRequest} from "../../api/projectApi";
-import {GetPersonalPrjListResponse, ResponseDto} from "../../interface/response";
+import {GetPrjListPaginationResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Project, ProjectTableData} from "../../interface/types";
 import {ProjectType} from "../../common";
-import projectType from "../../common/enum/projectType";
 import ProjectTable from "../../component/table/projectTable/projectTable";
+import ClientSidePagination from "../../component/pagination/client";
+import useCSPagination from "../../hook/pagination/client/pagination_client";
 
 
 export default function PersonalProject() {
     //* navigate : 네비게이트 함수
     const navigator = useNavigate();
-
-    const {projects, setProjects} = projectStore();
     // global state : 유저의 이메일 상태
     const {loginUserEmail} = userEmailStore();
     // state : 쿠키 상태
     const [cookies, setCookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
 
-
-    //* state: 상단 드롭다운 관련 값들
+    //* state: 상단 드롭다운 관련 상태값들
     const menus = ["Personal", "Team"];
+
     const [menu, setMenu] = useState<{
         clickStat: boolean, menuStat: "Personal" | "Team"
     }>({clickStat: false, menuStat: "Personal"});
+
+    // global state : 표에 표기할 프로젝트 데이터 관련상태.
+    const {projects, setProjects} = projectStore();
+
+
+    //state : 하단 페이지네이션 상태값들 전체 리스트의 갯수 + 한페이지에 표기할 갯수로 현재 표기할 페이지네이션의 숫자를 계산해줌
+    const PER_PAGE = 10;
+    const {
+        currentPage,
+        totalSection,
+        viewList,
+        viewPageList,
+        currentSection,
+        setCurrentPage,
+        setCurrentSection,
+        setTotalList
+    } = useCSPagination<ProjectTableData>(PER_PAGE);
+
+    // console.log(currentSection)
+    // console.log(viewList);
+    // console.log(viewPageList);
 
 
     // tableHeaders
     const projectTableHeader = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
-    // const projectMockData = personalProjectListMock;  // 실제 프로젝트 리스트에 대한 응답값 모의데이터
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
     const onDropDownBtnClickEventHandler = () => {
@@ -73,7 +92,7 @@ export default function PersonalProject() {
         return (
             <div id={"home-prj-drop-down-wrapper"}>
                 {menuList.map((item, index) =>
-                    <div className={"home-prj-drop-down-menu-item-box"}
+                    <div key={index} className={"home-prj-drop-down-menu-item-box"}
                          onClick={() => onMenuClickEventHandler(item as "Personal" | "Team")}>
                         <div className={"home-prj-drop-down-menu-item"}>{item}</div>
                     </div>
@@ -84,7 +103,6 @@ export default function PersonalProject() {
 
     // function : project상태 업데이트
     const updateProjectState = (list: Project[]) => {
-
 
         const tableDataArr = list.map(project => {
             const tableData: ProjectTableData = {
@@ -119,12 +137,13 @@ export default function PersonalProject() {
         }
 
         setProjects(updateState);
+        // 페이지 네이션을 위한 hook에 세팅
+        setTotalList(personal);
     }
 
-    console.log(projects)
 
     // function : fetchData 에 대한 응답 처리 함수.
-    const getProjectListResponse = (responseBody: GetPersonalPrjListResponse | ResponseDto | null) => {
+    const getProjectListResponse = (responseBody: GetPrjListPaginationResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
 
@@ -133,7 +152,7 @@ export default function PersonalProject() {
             return;
         }
 
-        const {data} = responseBody as GetPersonalPrjListResponse;
+        const {data} = responseBody as GetPrjListPaginationResponse;
 
         updateProjectState(data.list);
 
@@ -147,17 +166,24 @@ export default function PersonalProject() {
             }
             const responseBody = await getTProjectListRequest(accessToken);
 
-            getProjectListResponse(responseBody);
+            await getProjectListResponse(responseBody);
+
         }
         fetchProjectData();
+
     }, []);
+
+    useEffect(() => {
+        setTotalList(menu.menuStat === "Team" ? projects.team : projects.personal);
+    }, [menu.menuStat]);
+
 
     return (
         <div id={"personal-project-wrapper"}>
 
             <div className={"home-prj-top-container"}>
                 <div className={"home-prj-drop-btn-box"}>
-                    <div className={"home-prj-drop-down-title"}>{"Personal"}</div>
+                    <div className={"home-prj-drop-down-title"}>{menu.menuStat}</div>
                     <div className={"icon home-prj-drop-down-btn arrow-down-icon"}
                          onClick={onDropDownBtnClickEventHandler}/>
                 </div>
@@ -180,12 +206,26 @@ export default function PersonalProject() {
                 </div>
 
                 <div className={"home-prj-bottom-table-box"}>
-                    <ProjectTable header={projectTableHeader}
-                                  data={menu.menuStat === "Team"? projects.team : projects.personal} tableType={menu.menuStat}
-                                  functions={{
-                                     onClick: onTableClickEventHandler
-                                 }}/>
+                    <div className={"home-prj-bottom-table"}>
+                        <ProjectTable header={projectTableHeader}
+                            //data={menu.menuStat === "Team" ? projects.team : projects.personal}
+                                      data={viewList}
+                                      tableType={menu.menuStat}
+                                      functions={{
+                                          onClick: onTableClickEventHandler
+                                      }}/>
+                    </div>
+                    <div className={"home-prj-bottom-pagination"}>
+                        <ClientSidePagination currentPage={currentPage}
+                                              currentSection={currentSection}
+                                              setCurrentPage={setCurrentPage}
+                                              setCurrentSection={setCurrentSection}
+                                              viewPageList={viewPageList}
+                                              totalSection={totalSection}/>
+
+                    </div>
                 </div>
+
 
             </div>
 

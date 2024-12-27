@@ -1,5 +1,5 @@
 import "./style.css"
-import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
+import React, {KeyboardEvent, useEffect, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
@@ -8,44 +8,47 @@ import Editor from "../../editor";
 import CommonBtn from "../../btn";
 import DOMPurify from "dompurify";
 import CommentComp from "./commentComp";
-import Pagination from "../../pagination";
+import Pagination from "../../pagination/server";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {
     getIssueCommentListRequest,
-    getPersonalIssueByIssueNum, getTotalCommentCountRequest,
+    getPersonalIssueByIssueNum,
+    getTotalCommentCountRequest,
     patchExpireDateRequest,
     patchIssueDetailRequest,
-    patchIssueTitleRequest, postIssueCommentRequest
+    patchIssueTitleRequest,
+    postIssueCommentRequest
 } from "../../../api/issueApi";
 import {
     GetCommentCountResponse,
     GetIssueCommentResponse,
     GetPersonalIssueByNumResponse,
     PatchIssueExpireDateResponse,
-    PatchIssueTitleResponse, PostIssueCommentResponse,
+    PatchIssueTitleResponse,
+    PostIssueCommentResponse,
     ResponseDto
 } from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
 import {
-    PostIssueCommentRequest,
     PatchIssueDetailRequest,
     PatchIssueExpireDateRequest,
-    PatchIssueTitleRequest
+    PatchIssueTitleRequest,
+    PostIssueCommentRequest
 } from "../../../interface/request";
 import {getFormattedDate, getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
 import {Issue, IssueComment} from "../../../interface/types";
-import usePagination from "../../../hook/pagination";
+import usePagination from "../../../hook/pagination/server/pagination";
 import GetIssueCommentListRequest from "../../../interface/request/issue/GetIssueCommentListRequest";
-import issueStatus from "../../../common/enum/IssueStatus";
 
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
     isTeamModal: boolean,
     eachKanbanIssues: Record<string, Issue[]>,
-    setEachKanbanIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+    // setEachKanbanIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+    setEachKanbanIssues: (newValue : Record<string, Issue[]>) => void;
 }
 
 //modalType : isu

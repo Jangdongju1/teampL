@@ -33,7 +33,8 @@ type BtnPopUpProps = {
         value: number
         setValue: React.Dispatch<React.SetStateAction<number>>,
         eachKanbanIssues?: Record<string, Issue[]>,
-        setEachKanbanIssues?: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+        // setEachKanbanIssues?: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
+        setEachKanbanIssues?: (newValue: Record<string,Issue[]>) => void;
     }
 
     popupType: "category" | "priority" | "status"
@@ -202,7 +203,7 @@ export default function BtnPopUp(props: BtnPopUpProps) {
                         .map(issue => issue.issueNum === issueNum ? {...issue, priority: newValue} : issue)
                 }
 
-                if (setEachKanbanIssues)  setEachKanbanIssues(updateIssues);
+                if (setEachKanbanIssues) setEachKanbanIssues(updateIssues);
 
             }
 

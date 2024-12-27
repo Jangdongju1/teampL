@@ -60,14 +60,14 @@ export default function CreationModal(props: HeaderBtnModalProps) {
 
 
     // function : 프로젝트 목록 가져오기 api 호출 응답 결과 처리함수.
-    // const getPersonalPrjResponse = (responseBody: ResponseDto | GetPersonalPrjListResponse | null)=>{
+    // const getPersonalPrjResponse = (responseBody: ResponseDto | GetPrjListPaginationResponse | null)=>{
     //     if (!responseBody) return;
     //     const {code,message} = responseBody as ResponseDto;
     //     if (code != ResponseCode.SUCCESS) {
     //         alert(message);
     //         return
     //     }
-    //     const {data} = responseBody as GetPersonalPrjListResponse;
+    //     const {data} = responseBody as GetPrjListPaginationResponse;
     //     setProjects(data.list);
     // }
 
