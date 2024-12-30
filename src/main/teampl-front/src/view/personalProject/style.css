@@ -98,6 +98,10 @@
     gap: 10px;
 
 }
+.home-prj-bottom-title-frame{
+    display: flex;
+    justify-content: space-between;
+}
 .home-prj-bottom-title-box{
     display: flex;
     flex-direction: column;

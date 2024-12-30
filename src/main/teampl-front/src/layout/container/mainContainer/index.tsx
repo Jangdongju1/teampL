@@ -5,7 +5,7 @@ import InitialsImg from "../../../component/InitialsImg";
 import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
-import {modalStore,headerMenuStore} from "../../../store";
+import {headerMenuStore, modalStore} from "../../../store";
 import CreationModal from "../../../component/modal/creationModal/creationModal";
 import {ModalType} from "../../../common";
 import IssueModal from "../../../component/modal/issueModal/issueModal";
@@ -118,12 +118,12 @@ export default function MainContainer() {
 
             <MainHeader/>
             {isModalOpen && modalType === ModalType.CREATE_PROJECT && (
-                <CreationModal title={"Create a Project"}
+                <CreationModal title={"Create Project"}
                                comment={"개인용 프로젝트를 생성합니다."}
                                nameLabel={"Project Name"}
                                nameToolTip={"이 프로젝트를 누가 보나요?"}
                                createBtnName={"프로젝트 생성"}
-                               isTeamCreationModal={false}/>
+                               modalType={ModalType.CREATE_PROJECT}/>
             )}
 
             {isModalOpen && modalType === ModalType.PROJECT_LIST && (
@@ -137,6 +137,15 @@ export default function MainContainer() {
                     setEachKanbanIssues={setKanbanData}/>
             )}
 
+            {isModalOpen && modalType === ModalType.CREATE_TEAM && (
+                <CreationModal title={"Create Team"}
+                               comment={"팀을 생성합니다 "}
+                               nameLabel={"Team Name"}
+                               nameToolTip={"팀프로젝트는 무엇인가요?"}
+                               createBtnName={"팀 생성"}
+                               modalType={ModalType.CREATE_TEAM}/>
+            )}
+
             <div id={"main-wrapper"}>
                 <div className={"main-container"} onClick={onMainContainerClickEventHandler}>
                     <div className={"main-left-container"}>
@@ -144,7 +153,7 @@ export default function MainContainer() {
                     </div>
                     <div className={"main-right-container"}>
                         <div className={"main-right-participants-container"}>
-                            <div className={"main-right-participants-title"}>{"팀 참여자"}</div>
+                            <div className={"main-right-participants-title"}>{"회원 정보를 등록하세요"}</div>
                             <div className={"main-right-participants-divider"}></div>
                             <div className={"main-right-participants-body"}>
                                 <ParticipantsCardItem email={"jdj881204@naver.cowewefewwem"} nickname={"동주"}

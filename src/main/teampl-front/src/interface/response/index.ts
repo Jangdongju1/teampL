@@ -18,6 +18,7 @@ import GetIssueCommentResponse from "./issue/getIssueCommentResponse";
 import PatchIssueCommentResponse from "./issue/patchIssueCommentResponse";
 import GetCommentCountResponse from "./issue/getCommentCountResponse";
 import GetProjectListResponse from "./project/getProjectListResponse";
+import CreateTeamResponse from "./team/createTeamResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -38,5 +39,6 @@ export type {
     GetIssueCommentResponse,
     PatchIssueCommentResponse,
     GetCommentCountResponse,
-    GetProjectListResponse
+    GetProjectListResponse,
+    CreateTeamResponse
 }

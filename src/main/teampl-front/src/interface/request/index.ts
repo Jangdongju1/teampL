@@ -14,6 +14,7 @@ import PatchIssueDetailRequest from "./issue/patchIssueDetailRequest";
 import PostIssueCommentRequest from "./issue/postIssueCommentRequest";
 import PatchIssueCommentRequest from "./issue/patchIssueCommentRequest";
 import PatchIssueStatusDragRequest from "./issue/patchIssueStatusDragRequest";
+import CreateTeamRequest from "./team/createTeamRequest";
 
 export type {
     AuthCodeRequest,
@@ -31,5 +32,6 @@ export type {
     PatchIssueDetailRequest,
     PostIssueCommentRequest,
     PatchIssueCommentRequest,
-    PatchIssueStatusDragRequest
+    PatchIssueStatusDragRequest,
+    CreateTeamRequest
 }

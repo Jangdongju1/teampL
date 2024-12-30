@@ -11,6 +11,8 @@ import {ProjectType} from "../../common";
 import ProjectTable from "../../component/table/projectTable/projectTable";
 import ClientSidePagination from "../../component/pagination/client";
 import useCSPagination from "../../hook/pagination/client/pagination_client";
+import SearchBar from "../../component/searchBar/searchBar";
+import {ChangeEvent} from "react";
 
 
 export default function PersonalProject() {
@@ -46,15 +48,27 @@ export default function PersonalProject() {
         setTotalList
     } = useCSPagination<ProjectTableData>(PER_PAGE);
 
-    // console.log(currentSection)
-    // console.log(viewList);
-    // console.log(viewPageList);
+    // state : 검색바 입력상태
+    const [searchWord, setSearchWord] = useState<string>("");
 
-
-    // tableHeaders
+    // tableHeaders : 메인페이지 테이블 헤더
     const projectTableHeader = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
+    const filteredProject  = ()=>{
+        // viewList를 기준으로 검색
+        const personalFiltered  =
+            viewList.filter(project => project.projectName.toLowerCase().includes(searchWord));
+        const teamFiltered =
+            viewList.filter(project => project.projectName.toLowerCase().includes(searchWord))
+        return menu.menuStat === "Team"? teamFiltered : personalFiltered;
+    }
 
+
+    // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
+    const onSearchbarChangeEventHandler = (e : ChangeEvent<HTMLInputElement> )=>{
+        const value = e.target.value;
+        setSearchWord(value)
+    }
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
     const onDropDownBtnClickEventHandler = () => {
         const updateState = {
@@ -65,8 +79,9 @@ export default function PersonalProject() {
         setMenu(updateState);
     }
     // eventHandler : 테이블 메뉴 선택시 이벤트 헨들러 >> 페이지 이동 처리.
-    const onTableClickEventHandler = (projectNum: number, regNum?: number) => {
-        console.log(projectNum, regNum);
+    const onTableClickEventHandler = (projectNum: number, owner: string, regNum?: number) => {
+        const encodedEmail = btoa(owner);
+        navigator(`${String(projectNum)}`);
     }
 
 
@@ -125,6 +140,7 @@ export default function PersonalProject() {
 
 
         const totalData = tableDataArr;
+
         const personal =
             tableDataArr.filter(item => item.projectType === ProjectType.PERSONAL_PROJECT);
         const team =
@@ -199,17 +215,20 @@ export default function PersonalProject() {
 
             <div className={"home-prj-bottom-container"}>
                 <div className={"home-prj-bottom-title-box"}>
-                    <div className={"home-prj-bottom-title"}>{
-                        menu.menuStat === "Personal" ? "개인 프로젝트 목록" : "팀 프로젝트 목록"
-                    }</div>
+                    <div className={"home-prj-bottom-title-frame"}>
+                        <div className={"home-prj-bottom-title"}>{
+                            menu.menuStat === "Personal" ? "개인 프로젝트 목록" : "팀 프로젝트 목록"
+                        }</div>
+                        <SearchBar value={searchWord} onChange={onSearchbarChangeEventHandler} placeHolder={"프로젝트 명"}/>
+                    </div>
+
                     <div className={"divider"}></div>
                 </div>
 
                 <div className={"home-prj-bottom-table-box"}>
                     <div className={"home-prj-bottom-table"}>
                         <ProjectTable header={projectTableHeader}
-                            //data={menu.menuStat === "Team" ? projects.team : projects.personal}
-                                      data={viewList}
+                                      data={filteredProject()}
                                       tableType={menu.menuStat}
                                       functions={{
                                           onClick: onTableClickEventHandler

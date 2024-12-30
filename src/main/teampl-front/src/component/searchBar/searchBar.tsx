@@ -18,13 +18,13 @@ type SearchBarProps = {
             height: number,
             fontSize?: number
         }
-
     }
     icon?: string
+    placeHolder?: string
 }
 
 export default function SearchBar(props: SearchBarProps) {
-    const {icon, value, onChange, cssOption} = props
+    const {icon, value, onChange, cssOption, placeHolder} = props
 
     const defaultValue = {
         size: {width: 236, height: 32},
@@ -68,7 +68,8 @@ export default function SearchBar(props: SearchBarProps) {
             <div className={"search-bar"}>
                 <input className={"search-bar-input"} type={"text"} value={value}
                        onChange={onChange}
-                       style={inputSize()}/>
+                       style={inputSize()}
+                       placeholder={placeHolder? placeHolder : ""}/>
             </div>
             <div className={`icon search-icon-btn ${icon ? icon : defaultValue.icon}`}
                  style={iconSize()}></div>

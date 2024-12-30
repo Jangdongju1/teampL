@@ -1,7 +1,7 @@
 import {CreateProjecRequest} from "../interface/request";
 import axios from "axios";
 import {
-    CREATE_PERSONAL_PROJECT,
+    CREATE_PERSONAL_PROJECT, DOMAIN,
     GET_PERSONAL_PROJECT_INFO,
     GET_PROJECT_LIST,
     GET_PROJECT_LIST_TEMP
@@ -10,7 +10,6 @@ import CreateProjectResponse from "../interface/response/project/createProjectRe
 import {GetPrjListPaginationResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
 
-const DOMAIN = "http://localhost:4000";
 const BASE_URL = "/api/v1/project"
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
 

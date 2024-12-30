@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QTeamMember is a Querydsl query type for TeamMember
+ * QTeamMemberEntity is a Querydsl query type for TeamMemberEntity
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QTeamMember extends EntityPathBase<TeamMember> {
+public class QTeamMemberEntity extends EntityPathBase<TeamMemberEntity> {
 
-    private static final long serialVersionUID = -1400800921L;
+    private static final long serialVersionUID = 510091306L;
 
-    public static final QTeamMember teamMember = new QTeamMember("teamMember");
+    public static final QTeamMemberEntity teamMemberEntity = new QTeamMemberEntity("teamMemberEntity");
 
     public final BooleanPath isWithdrawal = createBoolean("isWithdrawal");
 
@@ -27,16 +27,16 @@ public class QTeamMember extends EntityPathBase<TeamMember> {
 
     public final NumberPath<Integer> teamRole = createNumber("teamRole", Integer.class);
 
-    public QTeamMember(String variable) {
-        super(TeamMember.class, forVariable(variable));
+    public QTeamMemberEntity(String variable) {
+        super(TeamMemberEntity.class, forVariable(variable));
     }
 
-    public QTeamMember(Path<? extends TeamMember> path) {
+    public QTeamMemberEntity(Path<? extends TeamMemberEntity> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QTeamMember(PathMetadata metadata) {
-        super(TeamMember.class, metadata);
+    public QTeamMemberEntity(PathMetadata metadata) {
+        super(TeamMemberEntity.class, metadata);
     }
 
 }

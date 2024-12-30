@@ -7,6 +7,7 @@
     justify-content: center;
     cursor: pointer;
 }
+
 .icon-logo {
     width: 15px;
     height: 15px;
@@ -20,136 +21,179 @@
     background-position: 50% 50%;
     background-size: 100% 100%;
 }
-.emphasis{
-    color: rgba(0,0,0,1);
+
+.emphasis {
+    color: rgba(0, 0, 0, 1);
     font-weight: 600;
 }
-.cursor-pointer{
+
+.cursor-pointer {
     cursor: pointer;
 }
 
-.key-light-off-icon{
+.key-light-off-icon {
     background-image: url("asset/key_off.png");
 
 }
-.key-light-on-icon{
+
+.key-light-on-icon {
     background-image: url("asset/key_on.png");
 }
-.naver-icon{
+
+.naver-icon {
     background-image: url("https://play-lh.googleusercontent.com/YW_Rd7EUbZZ6gyEblSbXHGSPOy54FzBgtFmWgCSYioTskmhP5n1-L-Ay7fCdE0RUvzI=w240-h480-rw");
 }
-.google-icon{
+
+.google-icon {
     background-image: url("https://cdn-icons-png.flaticon.com/128/300/300221.png");
 }
-.tool-logo{
+
+.tool-logo {
     background-image: url("asset/main_logo.png");
 }
-.arrow-down-icon{
+
+.arrow-down-icon {
     background-image: url("asset/arrow_down.png");
 }
-.group-add-icon{
+
+.group-add-icon {
     background-image: url("asset/group_add_icon.png");
 }
-.add-icon{
+
+.add-icon {
     background-image: url("asset/add_icon.png");
 }
-.search-icon{
+
+.search-icon {
     background-image: url("asset/search_icon.png");
 }
-.more-list-icon{
+
+.more-list-icon {
     background-image: url("asset/more_list_icon.png");
 }
-.personal-project-icon{
+
+.personal-project-icon {
     background-image: url("asset/personal_project_icon.png");
 }
-.issue-icon{
+
+.issue-icon {
     background-image: url("asset/issue_icon.png");
 }
-.complete-icon{
+
+.complete-icon {
     background-image: url("asset/complete_icon.png");
 }
-.comment-icon{
+
+.comment-icon {
     background-image: url("asset/comment_icon.png");
 }
-.connect-icon{
+
+.connect-icon {
     background-image: url("asset/connect_icon.png");
 }
-.person-check-icon{
+
+.person-check-icon {
     background-image: url("asset/person_check.png");
 }
-.waiting-icon{
+
+.waiting-icon {
     background-image: url("asset/waiting_icon.png");
 }
-.in-progress-icon{
+
+.in-progress-icon {
     background-image: url("asset/in_progress-icon.png");
 }
-.folder-open-icon{
+
+.folder-open-icon {
     background-image: url("asset/folder_open.png");
 }
-.tool-tip-icon{
+
+.tool-tip-icon {
     background-image: url("asset/tool_tip_icon.png");
 }
-.description-icon{
+
+.description-icon {
     background-image: url("asset/description_icon.png");
 }
-.favorite-off{
+
+.favorite-off {
     background-image: url("asset/favorite_off.png");
 }
-.favorite-on{
+
+.favorite-on {
     background-image: url("asset/favorite_on.png");
 }
-.project-item-picture{
+
+.project-item-picture {
     background-image: url("https://cdn.monday.com/images/quick_search_recent_board.svg");
 }
-.creation-picture{
+
+.creation-picture {
     background-image: url("asset/creation_picture.png");
 }
-.slide-left-button{
+
+.slide-left-button {
     background-image: url("asset/expand-left-light-icon.png");
 }
-.slide-right-button{
+
+.slide-right-button {
     background-image: url("asset/expand-right-light-icon.png");
 }
-.home-icon{
+
+.home-icon {
     background-image: url("asset/home_icon.png");
 }
-.people-icon{
+
+.people-icon {
     background-image: url("asset/participants_icon.png");
 }
-.kanban-item-add-icon{
+
+.kanban-item-add-icon {
     background-image: url("asset/kanban_item_add_icon.png");
 }
-.text-icon{
+
+.text-icon {
     background-image: url("asset/title_revision_icon.png");
 }
-.issue-modal-team-icon{
+
+.issue-modal-team-icon {
     background-image: url("asset/issue_modal-team_icon.png");
 }
-.issue-modal-participants-icon{
+
+.issue-modal-participants-icon {
     background-image: url("asset/issue_modal_participants_icon.png");
 }
-.incharge-icon{
+
+.incharge-icon {
     background-image: url("asset/inCharge_icon.png");
 }
-.close-icon{
+
+.close-icon {
     background-image: url("asset/close_icon.png");
 }
 
-.divider{
+.my-team-icon {
+    background-image: url("asset/my_team_icon.png");
+}
+
+.divider {
     height: 0;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     width: 100%;
 }
-.divider2{
+
+.divider2 {
     height: 0;
-    border-top: 1px solid rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
     width: 100%;
 }
-.personal-prj-item-favorite-icon{
+
+.personal-prj-item-favorite-icon {
     margin-right: 8px;
     width: 20px;
     height: 20px;
 }
+
 /* 모달이 켜졌을때 배경*/
 .body-blackout-style {
     position: fixed;
@@ -161,6 +205,7 @@
     backdrop-filter: blur(5px); /* 블러 효과 */
     z-index: 1011; /* 모달보다 아래 */
 }
+
 /*.multiline-ellipsis {*/
 /*    !*firefox등 브라우저에는 적용되지 않을 수 있음*!*/
 /*    display: -webkit-box;*/

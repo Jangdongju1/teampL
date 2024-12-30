@@ -3,7 +3,7 @@ import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
 import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
-import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH} from "../../../constant/path";
+import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH} from "../../../constant/path";
 import ModalType from "../../../common/enum/modalType";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
 
@@ -26,7 +26,7 @@ export default function MainHeader() {
     // global state : 로그인한 유저의 이메일 상태
     const {loginUserEmail} = userEmailStore();
 
-    // eventHandler : 버튼 클릭 공통 헨들러
+    // eventHandler : 버튼 클릭시 다른 메뉴 상태를 false로
     const onMenuBtnClickEventHandler = (btnType: string) => {
         setTeamBtnClickState(btnType === "team" ? !teamBtnClickState : false);
         setCurrentBtnClickState(btnType === "current" ? !currentBtnClickState : false);
@@ -59,12 +59,25 @@ export default function MainHeader() {
     }
 
     const TeamDetailComp = () => {
+        // eventHandler : 팀 생성 버튼 클릭 이벤트 헨들러
+        const onTeamCreationBtnClickEventHandler = ()=>{
+            setTeamBtnClickState(false); // 메뉴 닫기
+            setModalType(ModalType.CREATE_TEAM);
+            setIsModalOpen(true);
+        }
+
+        // eventHandler : 나의 팀 버튼 클릭 이벤트 헨들러
+        const onMyTeamBtnClickEventHandler = ()=>{
+            const encodedEmail = btoa(loginUserEmail);
+            navigator(HOME_PATH()+"/"+TEAM_MAIN_PATH(encodedEmail))
+        }
         return (
             <div className={"team-detail-wrapper"}>
                 <ul className={"team-detail-menu"}>
-                    <li><span className={"icon group-add-icon"}></span>{"팀 생성"}</li>
+                    <li onClick={onMyTeamBtnClickEventHandler}><span className={"icon my-team-icon"}></span>{"나의 팀"}</li>
+                    <li onClick={onTeamCreationBtnClickEventHandler}><span className={"icon group-add-icon"}></span>{"팀 생성"}</li>
                     <li><span className={"icon add-icon"}></span>{"TeamPL에 사용자 초대"}</li>
-                    <li><span className={"icon search-icon-btn"}></span>{"사용자 및 팀 검색"}</li>
+                    <li><span className={"icon search-icon"}></span>{"사용자 및 팀 검색"}</li>
                 </ul>
             </div>
         )

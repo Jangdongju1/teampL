@@ -2,12 +2,14 @@ import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
 import {modalStore} from "../../../store";
-import {CreateProjecRequest} from "../../../interface/request";
+import {CreateProjecRequest, CreateTeamRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest} from "../../../api/projectApi";
-import {ResponseDto} from "../../../interface/response";
+import {CreateTeamResponse, ResponseDto} from "../../../interface/response";
 import CreateProjectResponse from "../../../interface/response/project/createProjectResponse";
 import ResponseCode from "../../../common/enum/responseCode";
+import {ModalType} from "../../../common";
+import {createTeamRequest} from "../../../api/teamApi";
 
 type HeaderBtnModalProps = {
     title: string,  // 모달의 제목
@@ -15,7 +17,7 @@ type HeaderBtnModalProps = {
     nameLabel: string, // 이름 input의 라벨
     nameToolTip: string,// 툴팁 멘트
     createBtnName: string, //생성 버튼 이름
-    isTeamCreationModal: boolean  // 팀생성 모달인지 여부
+    modalType: ModalType  // 팀생성 모달인지 여부
 }
 // 1) 팀 생성, 2)프로젝트 생성 3)팀프로젝트 생성 3곳에서 쓰일 모달창.
 export default function CreationModal(props: HeaderBtnModalProps) {
@@ -25,20 +27,28 @@ export default function CreationModal(props: HeaderBtnModalProps) {
         nameLabel,
         nameToolTip,
         createBtnName,
-        isTeamCreationModal
+        modalType
     } = props;
     // global State: 모달의 전역상태
     const {setIsModalOpen, setModalType} = modalStore();
     // global State: 개인프로젝트 상태
     // const {setProjects} = projectStore();
+
     // state : 쿠키상태
     const [cookies, setCookies] = useCookies();
-
+    const accessToken = cookies.accessToken_Main;
     // state : name 인풋 상태
     const [nameState, setNameState] = useState<string>("");
     // state : description 인풋 상태
     const [descriptionState, setDescriptionState] = useState<string>("");
 
+    // 모달 타입에 따른 생성버튼 클릭시 이벤트 헨들러
+    const eventHandler = ()=>{
+        if (modalType === ModalType.CREATE_PROJECT)
+            return onProjectCreateBtnClickEventHandler;
+        if (modalType === ModalType.CREATE_TEAM)
+            return onTeamCreateBtnClickEventHandler
+    }
 
     //eventHandler :  name상태 변경 이벤트 처리 헨들러
     const onNameInputStateChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,17 +69,23 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     }
 
 
-    // function : 프로젝트 목록 가져오기 api 호출 응답 결과 처리함수.
-    // const getPersonalPrjResponse = (responseBody: ResponseDto | GetPrjListPaginationResponse | null)=>{
-    //     if (!responseBody) return;
-    //     const {code,message} = responseBody as ResponseDto;
-    //     if (code != ResponseCode.SUCCESS) {
-    //         alert(message);
-    //         return
-    //     }
-    //     const {data} = responseBody as GetPrjListPaginationResponse;
-    //     setProjects(data.list);
-    // }
+    // function: 팀 생성 응답처리 함수
+    const createTeamResponse = (responseBody : CreateTeamResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
+        const {code,message} = responseBody as ResponseDto;
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as CreateTeamResponse;
+        // 상태 새팅
+
+        alert("팀이 생성되었습니다")
+        setModalType("");
+        setIsModalOpen(false);
+    }
 
     // function: 프로젝트 생성 응답처리함수
     const createProjectResponse = async (responseBody: ResponseDto | CreateProjectResponse | null) => {
@@ -82,15 +98,13 @@ export default function CreationModal(props: HeaderBtnModalProps) {
         } else {
             alert("프로젝트가 생성되었습니다.");
             setIsModalOpen(false);
-
             // 갱신을 위한 상태 업데이트 필요
         }
 
 
     }
-    // eventHandler : 생성하기 버튼 클릭 이벤트 헨들러
+    // eventHandler : 생성하기 버튼 클릭 이벤트 헨들러 =>> project
     const onProjectCreateBtnClickEventHandler = async () => {
-        const accessToken = cookies.accessToken_Main;
         if (!accessToken) return;
         const requestBody: CreateProjecRequest = {projectName: nameState, description: descriptionState};
 
@@ -99,9 +113,19 @@ export default function CreationModal(props: HeaderBtnModalProps) {
         await createProjectResponse(responseBody);
     }
 
-    const onTeamCreateBtnClickEventHandler = () => {
+    //eventHandler : 생성하기 버튼 클릭 이벤트 헨들러 >> team
+    const onTeamCreateBtnClickEventHandler = async () => {
+        if (!accessToken) {
+            alert("AccessToken is expired!!")
+            return;
+        }
+        const requestBody : CreateTeamRequest = {teamName: nameState, description : descriptionState};
 
+        const responseBody = await createTeamRequest(requestBody, accessToken);
+
+        createTeamResponse(responseBody);
     }
+
     return (
         <div id={"creation-modal-wrapper"}>
             <div className={"creation-modal-title-box"}>
@@ -148,7 +172,7 @@ export default function CreationModal(props: HeaderBtnModalProps) {
                         <div className={"creation-modal-bottom-btn-cancel"}
                              onClick={onCloseModalBtnClickEventHandler}>{"취소"}</div>
                         <div className={"creation-modal-bottom-btn-creation"}
-                             onClick={isTeamCreationModal ? onTeamCreateBtnClickEventHandler : onProjectCreateBtnClickEventHandler}>{createBtnName}</div>
+                             onClick={eventHandler()}>{createBtnName}</div>
                     </div>
                 </div>
             </div>

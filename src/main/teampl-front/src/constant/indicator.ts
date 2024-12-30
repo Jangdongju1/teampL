@@ -1,5 +1,11 @@
 // api 호출 URL에 대한 식별자
 
+//common;
+export const DOMAIN = "http://localhost:4000"
+
+
+
+
 //auth
 export const EMAIL_AUTH_URL = () => "/api/v1/auth/auth-code";
 export const AUTH_CODE_CONFIRM_URL = () => "/api/v1/auth/confirm-code";
@@ -35,4 +41,5 @@ export const GET_TOTAL_COMMENT_COUNT =
 export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 
 
-
+// team
+export const CREATE_TEAM = ()=>"/create-team";

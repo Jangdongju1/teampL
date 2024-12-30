@@ -1,47 +1,53 @@
 import axios from "axios";
 import {
-    CREATE_PERSONAL_ISSUE, GET_ISSUE_COMMENT_LIST,
+    CREATE_PERSONAL_ISSUE,
+    DOMAIN,
+    GET_ISSUE_COMMENT_LIST,
     GET_PERSONAL_ISSUE_BY_NUMBER,
     GET_PERSONAL_ISSUE_BY_STATUS,
-    GET_PERSONAL_ISSUE_LIST, GET_TOTAL_COMMENT_COUNT, PATCH_DRAG_ISSUE_STATUS,
-    PATCH_ISSUE_CATEGORY, PATCH_ISSUE_COMMENT,
+    GET_PERSONAL_ISSUE_LIST,
+    GET_TOTAL_COMMENT_COUNT,
+    PATCH_DRAG_ISSUE_STATUS,
+    PATCH_ISSUE_CATEGORY,
+    PATCH_ISSUE_COMMENT,
     PATCH_ISSUE_DETAIL,
     PATCH_ISSUE_EXPIRE_DATE,
     PATCH_ISSUE_PRIORITY,
     PATCH_ISSUE_STATUS,
-    PATCH_ISSUE_TITLE, POST_ISSUE_COMMENT
+    PATCH_ISSUE_TITLE,
+    POST_ISSUE_COMMENT
 } from "../constant/indicator";
 import {
-    GetPersonalIssueByNumResponse,
-    PatchIssueTitleResponse,
-    ResponseDto,
-    PatchIssuePriorityResponse,
-    GetPersonalIssueListResponse,
     CreateIssueResponse,
-    PatchIssueStatusResponse,
+    GetCommentCountResponse,
+    GetPersonalIssueByNumResponse,
+    GetPersonalIssueListResponse,
     PatchIssueCategoryResponse,
-    PatchIssueExpireDateResponse,
-    PostIssueCommentResponse,
     PatchIssueCommentResponse,
-    GetCommentCountResponse
+    PatchIssueExpireDateResponse,
+    PatchIssuePriorityResponse,
+    PatchIssueStatusResponse,
+    PatchIssueTitleResponse,
+    PostIssueCommentResponse,
+    ResponseDto
 } from "../interface/response";
 import {
+    CreateIssueRequest,
+    PatchIssueCategoryRequest,
+    PatchIssueCommentRequest,
+    PatchIssueDetailRequest,
+    PatchIssueExpireDateRequest,
+    PatchIssueStatusDragRequest,
+    PatchIssueStatusRequest,
     PatchIssueTitleRequest,
     PatchPriorityRequest,
-    CreateIssueRequest,
-    PatchIssueStatusRequest,
-    PatchIssueCategoryRequest,
-    PatchIssueExpireDateRequest,
-    PatchIssueDetailRequest,
-    PostIssueCommentRequest, PatchIssueCommentRequest, PatchIssueStatusDragRequest
+    PostIssueCommentRequest
 } from "../interface/request";
 import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDetailResponse";
-import {log} from "node:util";
 import GetIssueCommentListRequest from "../interface/request/issue/GetIssueCommentListRequest";
 import PatchIssueStatusDragResponse from "../interface/response/issue/patchIssueStatusDragResponse";
 
 
-const DOMAIN = "http://localhost:4000";
 const BASE_URL = "/api/v1/issue";
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
 

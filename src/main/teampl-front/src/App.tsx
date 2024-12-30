@@ -9,7 +9,7 @@ import {
     PASSWORD_REGISTRATION_PATH,
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
-    SIGN_IN_PATH
+    SIGN_IN_PATH, TEAM_MAIN_PATH
 } from "./constant/path";
 import Authentication from "./view/authentication";
 import PasswordRegistration from "./view/authentication/passwordRegistration";
@@ -22,6 +22,7 @@ import {LoginUserResponse, ResponseDto} from "./interface/response";
 import ResponseCode from "./common/enum/responseCode";
 import {modalStore, userEmailStore} from "./store";
 import {isLoginUserRequest} from "./api/authApi";
+import TeamPage from "./view/team/teamPage";
 
 function App() {
     //navigator
@@ -74,6 +75,7 @@ function App() {
                     <Route path={HOME_PATH()}>
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
                         <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard isTeamKanban={false}/>}/>
+                        <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
                     </Route>
                 </Route>
             </Routes>
