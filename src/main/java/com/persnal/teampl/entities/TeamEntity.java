@@ -1,10 +1,14 @@
 package com.persnal.teampl.entities;
 
+import com.persnal.teampl.dto.obj.TeamListObj;
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
+import com.persnal.teampl.repository.resultSet.GetTeamListResultSet;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -55,7 +59,27 @@ public class TeamEntity {
                 .isDeleted(false)
                 .build();
 
+    }
 
+    public static List<TeamListObj> getList(List<GetTeamListResultSet> resultSets) {
+        List<TeamListObj> list = new ArrayList<>();
+
+        for (GetTeamListResultSet resultSet : resultSets) {
+
+            TeamListObj element = TeamListObj.builder()
+                    .regNum(resultSet.getRegNum())
+                    .email(resultSet.getEmail())
+                    .teamName(resultSet.getTeamName())
+                    .sequence(resultSet.getSequence())
+                    .createDate(resultSet.getCreateDate())
+                    .projects(resultSet.getProjects())
+                    .members(resultSet.getMembers())
+                    .build();
+
+            list.add(element);
+        }
+
+        return list;
     }
 
 }

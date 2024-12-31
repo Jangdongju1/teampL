@@ -1,7 +1,7 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
-import {modalStore} from "../../../store";
+import {modalStore, teamStore, userEmailStore} from "../../../store";
 import {CreateProjecRequest, CreateTeamRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest} from "../../../api/projectApi";
@@ -10,6 +10,7 @@ import CreateProjectResponse from "../../../interface/response/project/createPro
 import ResponseCode from "../../../common/enum/responseCode";
 import {ModalType} from "../../../common";
 import {createTeamRequest} from "../../../api/teamApi";
+import {Team, TeamTableData} from "../../../interface/types";
 
 type HeaderBtnModalProps = {
     title: string,  // 모달의 제목
@@ -31,8 +32,8 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     } = props;
     // global State: 모달의 전역상태
     const {setIsModalOpen, setModalType} = modalStore();
-    // global State: 개인프로젝트 상태
-    // const {setProjects} = projectStore();
+    // global State: 팀상태
+    const {teams, setTeams} = teamStore();
 
     // state : 쿠키상태
     const [cookies, setCookies] = useCookies();
@@ -41,6 +42,8 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     const [nameState, setNameState] = useState<string>("");
     // state : description 인풋 상태
     const [descriptionState, setDescriptionState] = useState<string>("");
+    // state 로그인 유저 이메일
+    const {loginUserEmail}= userEmailStore();
 
     // 모달 타입에 따른 생성버튼 클릭시 이벤트 헨들러
     const eventHandler = ()=>{
@@ -81,6 +84,19 @@ export default function CreationModal(props: HeaderBtnModalProps) {
 
         const {data} = responseBody as CreateTeamResponse;
         // 상태 새팅
+
+        const updateData  : Team = {
+            regNum : data.teamInfo.regNum,
+            teamName : data.teamInfo.teamName,
+            sequence : data.teamInfo.sequence,
+            description : data.teamInfo.description,
+            createDate : data.teamInfo.createDate,
+            email : loginUserEmail,
+            projects : 0,
+            members : 1
+        }
+        const updateState = [updateData,...teams]
+        setTeams(updateState);
 
         alert("팀이 생성되었습니다")
         setModalType("");

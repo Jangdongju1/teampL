@@ -2,6 +2,7 @@ package com.persnal.teampl.entities;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.persnal.teampl.entities.compositekey.QTeamMemberPk;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -23,7 +24,9 @@ public class QTeamMemberEntity extends EntityPathBase<TeamMemberEntity> {
 
     public final NumberPath<Integer> position = createNumber("position", Integer.class);
 
-    public final SimplePath<com.persnal.teampl.entities.compositeKey.TeamMemberPk> teamMemberPk = createSimple("teamMemberPk", com.persnal.teampl.entities.compositeKey.TeamMemberPk.class);
+    public final QTeamMemberPk teamMemberPk = new QTeamMemberPk("teamMemberPk");
+
+   // public final SimplePath<com.persnal.teampl.entities.compositeKey.TeamMemberPk> teamMemberPk = createSimple("teamMemberPk", com.persnal.teampl.entities.compositeKey.TeamMemberPk.class);
 
     public final NumberPath<Integer> teamRole = createNumber("teamRole", Integer.class);
 

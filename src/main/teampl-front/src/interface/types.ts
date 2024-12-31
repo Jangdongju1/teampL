@@ -61,10 +61,12 @@ export type IssueComment = {
 export type Team = {
     regNum: number,
     teamName: string,
+    sequence: string,
+    email: string,
     createDate: string,
     description: string,
-    projects : number,
-    members : number,
+    projects: number,
+    members: number,
 }
 
 // Team Table 제공용 객체
@@ -72,9 +74,11 @@ export type TeamTableData = {
     id: number
     regNum: number,
     teamName: string,
+    sequence: string,
+    creator : string,
     createDate: string,
-    projects : number,
-    members : number,
+    projects: number,
+    members: number,
 }
 
 // Project Table 제공용 객체

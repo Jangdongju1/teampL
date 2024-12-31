@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-@Builder
 public class GetPrjListPaginationResponse {
     private final List<ProjectObj> list;
     public GetPrjListPaginationResponse(List<ProjectObj> result) {

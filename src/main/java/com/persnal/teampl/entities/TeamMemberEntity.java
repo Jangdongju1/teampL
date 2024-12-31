@@ -26,6 +26,7 @@ public class TeamMemberEntity {
     private boolean isWithdrawal;
 
 
+
     public static TeamMemberEntity fromRequest(String email, Integer regNum){
         TeamMemberPk teamMemberPk = new TeamMemberPk(email, regNum);
 

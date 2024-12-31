@@ -24,7 +24,7 @@ export default function ProjectTable(props: TableProps) {
     const theme = useTheme(getTheme());
     const resize = {minWidth: 25}
     // 마우스 호버상태
-    const [isHover, setIsHover] = useState<boolean>(false);
+
 
 
     return (
@@ -34,7 +34,8 @@ export default function ProjectTable(props: TableProps) {
                     <Header>
                         <HeaderRow>
                             {header.map((item, index) =>
-                                <HeaderCell resize={resize} className={"common-table-header"}
+                                <HeaderCell className={"common-table-header"}
+                                            resize={resize}
                                             key={index}>{item}</HeaderCell>
                             )}
                         </HeaderRow>
