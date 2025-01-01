@@ -220,8 +220,14 @@
     font-size: 13px;
     font-family: "Noto Sans KR Sans KR"
 }
+.common-table-body-cell > div:hover{
+    cursor: pointer;
+}
 .common-table-body-stat{
     color: rgba(255,255,255,1);
     border-radius: 8px;
     padding: 5px;
+}
+.draggable {
+    user-select: text;  /* 텍스트 선택 가능하도록 */
 }

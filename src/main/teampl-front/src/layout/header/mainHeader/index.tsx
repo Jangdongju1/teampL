@@ -69,7 +69,9 @@ export default function MainHeader() {
         // eventHandler : 나의 팀 버튼 클릭 이벤트 헨들러
         const onMyTeamBtnClickEventHandler = ()=>{
             const encodedEmail = btoa(loginUserEmail);
+            setTeamBtnClickState(false);
             navigator(HOME_PATH()+"/"+TEAM_MAIN_PATH(encodedEmail))
+
         }
         return (
             <div className={"team-detail-wrapper"}>

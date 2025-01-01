@@ -54,18 +54,21 @@ export default function PersonalProject() {
     // tableHeaders : 메인페이지 테이블 헤더
     const projectTableHeader = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
-    const filteredProject  = ()=>{
+    const filteredProject = () => {
+        const word = searchWord.trim()
         // viewList를 기준으로 검색
-        const personalFiltered  =
-            viewList.filter(project => project.projectName.toLowerCase().includes(searchWord));
-        const teamFiltered =
-            viewList.filter(project => project.projectName.toLowerCase().includes(searchWord))
-        return menu.menuStat === "Team"? teamFiltered : personalFiltered;
+        if (menu.menuStat === "Team") {
+            return viewList.filter(project => project.projectName.toLowerCase().includes(word))
+        } else if (menu.menuStat == "Personal") {
+            return viewList.filter(project => project.projectName.toLowerCase().includes(word));
+        }
+
+        return []
     }
 
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
-    const onSearchbarChangeEventHandler = (e : ChangeEvent<HTMLInputElement> )=>{
+    const onSearchbarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchWord(value)
     }
@@ -139,7 +142,6 @@ export default function PersonalProject() {
         });
 
 
-        const totalData = tableDataArr;
 
         const personal =
             tableDataArr.filter(item => item.projectType === ProjectType.PERSONAL_PROJECT);
@@ -147,7 +149,7 @@ export default function PersonalProject() {
             tableDataArr.filter(item => item.projectType === ProjectType.TEAM_PROJECT);
 
         const updateState = {
-            projects: totalData,
+            projects: tableDataArr,
             personal: personal,
             team: team
         }

@@ -2,18 +2,23 @@ import "./style.css"
 import SearchBar from "../../component/searchBar/searchBar";
 import {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {Body, Cell, Header, HeaderCell, HeaderRow, Row, Table} from "@table-library/react-table-library";
-import {teamStore} from "../../store";
+import {teamStore, userEmailStore} from "../../store";
 import {useCookies} from "react-cookie";
 import {getTeamListRequest} from "../../api/teamApi";
-import {CreateTeamResponse, GetTeamResponse, ResponseDto} from "../../interface/response";
+import {GetTeamResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
-import modalType from "../../common/enum/modalType";
 import {useTheme} from "@table-library/react-table-library/theme";
 import {getTheme} from "@table-library/react-table-library/baseline";
-import {Team, TeamTableData} from "../../interface/types";
+import {TeamTableData} from "../../interface/types";
 import {getFormattedDate} from "../../util";
+import useCSPagination from "../../hook/pagination/client/pagination_client";
+import ClientSidePagination from "../../component/pagination/client";
+import {useNavigate} from "react-router-dom";
+import {HOME_PATH, TEAM_PROJECT_PATH} from "../../constant/path";
 
 export default function TeamPage() {
+    //네이게이트 함수
+    const navigator = useNavigate();
 
     //* global state: 표기할 팀배열 상태
     const {teams, setTeams} = teamStore();
@@ -25,6 +30,8 @@ export default function TeamPage() {
     const [cookies, setCookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
 
+    // global state 로그인한 유저의 이메일
+    const {loginUserEmail} = userEmailStore();
 
     // 불필요한 계산 방지
     const tableData = useMemo(() => {
@@ -35,7 +42,7 @@ export default function TeamPage() {
                 regNum: team.regNum,
                 teamName: team.teamName,
                 sequence: sequence,
-                creator : team.email,
+                creator: team.email,
                 createDate: team.createDate,
                 projects: team.projects,
                 members: team.members,
@@ -45,6 +52,30 @@ export default function TeamPage() {
             return item;
         });
     }, [teams]); // teams 배열이 변경될 때만 재계산
+
+    // 검색용 햇을때 필터된 데이터
+    const filteredTableData = () => {
+        // 공백 제거 처리
+        const word = searchWord.trim();
+
+        return viewList.filter
+        (team =>
+            team.teamName.includes(word) || String(team.sequence).includes(word))
+    }
+
+    // custom hook : pagination 훅
+    const PER_PAGE = 10;
+    const {
+        currentPage,
+        viewPageList,
+        totalSection,
+        currentSection,
+        viewList,
+        setCurrentPage,
+        setCurrentSection,
+        setTotalList
+    } = useCSPagination<TeamTableData>(PER_PAGE);
+
 
     // eventHandler : 검색바 변경 감지이벤트
     const onSearchWordChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,9 +110,15 @@ export default function TeamPage() {
 
         const theme = useTheme(getTheme());
         const resize = {minWidth: 25}
+
+       // 테이블의 프로젝트 클릭시 이벤트 헨들러
+        const onTableElementClickEventHandler = (teamNum : number, creator : string)=>{
+            const encodedEmail = btoa(creator);
+            navigator(`${HOME_PATH()}/${TEAM_PROJECT_PATH(encodedEmail, String(teamNum))}`);
+        }
+
+
         return (
-
-
             <Table data={node} theme={theme}>
                 {(list: TeamTableData[]) => (
                     <>
@@ -95,13 +132,14 @@ export default function TeamPage() {
                         <Body>
                             {list.map((item, index) =>
 
-                                <Row item={item}>
-                                    <Cell className={"common-table-body-cell"}>{item.teamName}</Cell>
-                                    <Cell className={"common-table-body-cell"}>{item.sequence}</Cell>
-                                    <Cell className={"common-table-body-cell"}>{item.creator}</Cell>
-                                    <Cell className={"common-table-body-cell"}>{getFormattedDate(item.createDate)}</Cell>
-                                    <Cell className={"common-table-body-cell"}>{item.members}</Cell>
-                                    <Cell className={"common-table-body-cell"}>{item.projects}</Cell>
+                                <Row item={item} onClick={() => onTableElementClickEventHandler(item.regNum, item.creator)}>
+                                    <Cell className={"common-table-body-cell draggable"}>{item.teamName}</Cell>
+                                    <Cell className={"common-table-body-cell draggable"}>{item.sequence}</Cell>
+                                    <Cell className={"common-table-body-cell draggable"}>{item.creator}</Cell>
+                                    <Cell
+                                        className={"common-table-body-cell draggable"}>{getFormattedDate(item.createDate)}</Cell>
+                                    <Cell className={"common-table-body-cell draggable"}>{item.members}</Cell>
+                                    <Cell className={"common-table-body-cell draggable"}>{item.projects}</Cell>
                                 </Row>
                             )}
 
@@ -126,21 +164,39 @@ export default function TeamPage() {
             getTeamListResponse(responseBody);
 
         }
-
         fetchTeamData()
-    }, []);
+    }, [loginUserEmail]);
+
+    // 데이터가 바뀔 때마다  페이지네이션에 대한 데이터를 다시 세팅해야함.
+    useEffect(() => {
+        setTotalList(tableData)
+    }, [teams]);
     return (
         <div id={"team-page-wrapper"}>
             <div className={"team-page-top-container"}>
                 <div className={"team-page-title-box"}>
                     <div className={"team-page-title"}>{"나의 팀 목록"}</div>
-                    <SearchBar value={searchWord} onChange={onSearchWordChangeEventHandler}/>
+                    <SearchBar value={searchWord}
+                               onChange={onSearchWordChangeEventHandler}
+                               placeHolder={"팀이름 또는 시퀀스로 찾기"}/>
                 </div>
                 <div className={"divider"}></div>
             </div>
 
             <div className={"team-page-bottom-container"}>
-                <TeamTable data={tableData}/>
+                <div className={"team-page-bottom-table"}>
+                    <TeamTable data={filteredTableData()}/>
+                </div>
+                <div className={"team-page-bottom-pagination"}>
+                    <ClientSidePagination currentPage={currentPage}
+                                          currentSection={currentSection}
+                                          setCurrentPage={setCurrentPage}
+                                          setCurrentSection={setCurrentSection}
+                                          viewPageList={viewPageList}
+                                          totalSection={totalSection}/>
+
+                </div>
+
             </div>
 
         </div>

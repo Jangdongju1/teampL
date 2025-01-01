@@ -1,31 +1,21 @@
-#team-page-wrapper{
+#team-project-wrapper{
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-.team-page-top-container{
+
+.team-project-top-container{
     width: inherit;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-.team-page-title-box{
+.team-project-title-box{
     display: flex;
     justify-content: space-between;
 }
-.team-page-title{
+.team-project-title{
     font-size: 23px;
     font-family: "Noto Sans KR Sans KR";
-}
-
-.team-page-bottom-container{
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.team-page-bottom-pagination{
-    display: flex;
-    justify-content: center;
 }
