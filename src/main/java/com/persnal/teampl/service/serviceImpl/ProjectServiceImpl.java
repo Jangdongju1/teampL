@@ -4,15 +4,14 @@ import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.ProjectInfoObj;
 import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
+import com.persnal.teampl.dto.request.project.CreateTeamPrjRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.dto.response.project.CreateProjectResponse;
-import com.persnal.teampl.dto.response.project.GetPersonalPrjInfoResponse;
-import com.persnal.teampl.dto.response.project.GetPrjListPaginationResponse;
-import com.persnal.teampl.dto.response.project.GetPrjListResponse;
+import com.persnal.teampl.dto.response.project.*;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.repository.jpa.ProjectRepository;
+import com.persnal.teampl.repository.jpa.TeamRepository;
 import com.persnal.teampl.repository.jpa.UserRepository;
 import com.persnal.teampl.service.ProjectService;
 import com.persnal.teampl.util.Utils;
@@ -30,12 +29,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
     @Override
-    public ResponseEntity<? super ApiResponse<CreateProjectResponse>> createPersonalPrj(String email, CreatePrjRequest request) {
+    public ResponseEntity<? super ApiResponse<CreatePrjResponse>> createPersonalPrj(String email, CreatePrjRequest request) {
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
-            if (userEntity == null) return CreateProjectResponse.notExistUser();
+            if (userEntity == null) return CreatePrjResponse.notExistUser();
 
 
             ProjectEntity entity = ProjectEntity.fromRequest(email, userEntity, request);
@@ -48,7 +48,27 @@ public class ProjectServiceImpl implements ProjectService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return CreateProjectResponse.success();
+        return CreatePrjResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<CreateTeamPrjResponse>> createTeamPrj(String email, CreateTeamPrjRequest req) {
+        ProjectEntity projectEntity = null;
+
+        try {
+            boolean isExistTeam = teamRepository.existsById(req.getRegNum());
+
+            if (!isExistTeam) return CreateTeamPrjResponse.notExistTeam();
+
+            projectEntity = ProjectEntity.fromRequest(email, req);
+
+            projectRepository.save(projectEntity);
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return CreateTeamPrjResponse.success(projectEntity);
     }
 
     @Override

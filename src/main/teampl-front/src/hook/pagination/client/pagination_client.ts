@@ -39,7 +39,7 @@ const useCSPagination = <T>(countPerPage: number) => {
 
     // effect: totalList 변경 시마다 실행할 작업
     useEffect(() => {
-        if (totalList.length === 0) return; // totalList가 비어있으면 처리하지 않음
+        //if (totalList.length === 0) return; // totalList가 비어있으면 처리하지 않음
 
         // 전체 페이지 수 계산
         const totalPage = Math.ceil(totalList.length / countPerPage);
@@ -52,6 +52,7 @@ const useCSPagination = <T>(countPerPage: number) => {
         // 상태 업데이트
         setTotalPageList(totalPageList);
 
+
         setTotalSection(totalSection);
 
         // 초기 페이지 설정
@@ -63,7 +64,7 @@ const useCSPagination = <T>(countPerPage: number) => {
 
     // effect: totalPageList 변경 시마다 실행할 작업
     useEffect(() => {
-        if (totalPageList.length === 0) return;
+      //  if (totalPageList.length === 0) return;
         // 페이지 리스트와 보여줄 데이터 세팅
         setViewPage();
         setView();

@@ -14,6 +14,11 @@ public class ResponseDto {
     private String message;
 
 
+    public static ResponseEntity<ResponseDto> notExistTeam(){
+        ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_TEAM, ResponseMessage.NOT_EXIST_TEAM);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
     public static ResponseEntity<ResponseDto> notExistComment() {
         ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_COMMENT, ResponseMessage.NOT_EXIST_RESOURCE);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 @NoArgsConstructor
-public class CreateProjectResponse {
+public class CreatePrjResponse {
 
-    public static ResponseEntity<? super ApiResponse<CreateProjectResponse>> success(){
-        ApiResponse<CreateProjectResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<? super ApiResponse<CreatePrjResponse>> success(){
+        ApiResponse<CreatePrjResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
                 null

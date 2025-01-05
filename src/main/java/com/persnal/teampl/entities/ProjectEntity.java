@@ -3,8 +3,8 @@ package com.persnal.teampl.entities;
 import com.persnal.teampl.common.Enum.project.ProjectStat;
 import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.dto.obj.ProjectObj;
-import com.persnal.teampl.dto.request.issue.CreateIssueRequest;
 import com.persnal.teampl.dto.request.project.CreatePrjRequest;
+import com.persnal.teampl.dto.request.project.CreateTeamPrjRequest;
 import com.persnal.teampl.util.Utils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -54,6 +54,30 @@ public class ProjectEntity {
     }
 
 
+    public static ProjectEntity fromRequest(String email, CreateTeamPrjRequest req) {
+        LocalDateTime now = LocalDateTime.now();
+
+        TeamEntity teamEntity = TeamEntity.builder()
+                .regNum(req.getRegNum())
+                .build();
+
+        UserEntity userEntity = UserEntity.builder()
+                .email(email)
+                .build();
+
+        return ProjectEntity.builder()
+                .projectName(req.getProjectName())
+                .teamEntity(teamEntity)
+                .userEntity(userEntity)
+                .description(req.getDescription())
+                .createDate(now.toString())
+                .projectType(ProjectType.TEAM_PROJECT.getValue())
+                .stat(ProjectStat.ON_WORKING.getValue())
+                .isDeleted(false)
+                .build();
+    }
+
+
     public static List<ProjectObj> getProejctList(List<ProjectEntity> entities) {
         List<ProjectObj> list = new ArrayList<>();
         for (ProjectEntity entity : entities) {
@@ -65,15 +89,16 @@ public class ProjectEntity {
     }
 
     public static ProjectObj getProjectInfo(ProjectEntity entity){
-        ProjectObj projectInfo  = new ProjectObj();
 
-        projectInfo.setProjectNum(entity.getProjectNum());
-        projectInfo.setProjectName(entity.getProjectName());
-        projectInfo.setDescription(entity.getDescription());
-        projectInfo.setCreateDate(entity.getCreateDate());
-        projectInfo.setCreator(entity.getUserEntity().getEmail());
-        projectInfo.setStat(entity.getStat());
-        projectInfo.setProjectType(entity.getProjectType());
-        return projectInfo;
+        return ProjectObj.builder()
+                .projectNum(entity.getProjectNum())
+                .projectName(entity.getProjectName())
+                .description(entity.getDescription())
+                .createDate(entity.getCreateDate())
+                .creator(entity.getUserEntity().getEmail())
+                .stat(entity.getStat())
+                .projectType(entity.getProjectType())
+                .regNum(entity.getTeamEntity().getRegNum())
+                .build();
     }
 }

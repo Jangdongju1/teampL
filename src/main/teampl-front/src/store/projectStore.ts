@@ -1,4 +1,4 @@
-import {ProjectTableData} from "../interface/types";
+    import {ProjectTableData} from "../interface/types";
 import {create} from "zustand/react";
 
 interface PersonalPrj {

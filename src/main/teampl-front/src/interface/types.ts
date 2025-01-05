@@ -14,7 +14,7 @@ export type Project = {
     teamName: string | null, // 팀의 이름
     totalIssueCnt: number,  // 처리된 이슈의 갯수
     processed: number, // 미처리의 이슈의 갯수
-    id: number
+    // id: number
 }
 //프로젝트 탐색용 모달에 존재하는 프로젝트 리스트의 객체 타입
 export type ProjectListEle = {

@@ -19,3 +19,30 @@
     font-size: 23px;
     font-family: "Noto Sans KR Sans KR";
 }
+.team-project-bottom-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.team-project-bottom-table{
+    width: inherit;
+    margin-top: 10px;
+}
+.team-project-bottom-add-btn-box{
+    width: 100%;
+    display: flex;
+    justify-content: right;
+
+}
+.team-project-data-null{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 26px;
+    color: rgba(0,0,0,0.3);
+    font-weight: 600;
+}

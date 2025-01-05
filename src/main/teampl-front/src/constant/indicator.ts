@@ -4,8 +4,6 @@
 export const DOMAIN = "http://localhost:4000"
 
 
-
-
 //auth
 export const EMAIL_AUTH_URL = () => "/api/v1/auth/auth-code";
 export const AUTH_CODE_CONFIRM_URL = () => "/api/v1/auth/confirm-code";
@@ -15,6 +13,7 @@ export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
 
 //project
 export const CREATE_PERSONAL_PROJECT = () => "/create-project";
+export const CREATE_TEAM_PROJECT = () => "/create-team-project"
 export const GET_PROJECT_LIST = () => `/t-project-list`; //수정요망
 export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
 export const GET_PROJECT_LIST_TEMP = () => "/project-list";
@@ -42,5 +41,5 @@ export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 
 
 // team
-export const CREATE_TEAM = ()=>"/create-team";
-export const GET_TEAM = () =>"/team-list"
+export const CREATE_TEAM = () => "/create-team";
+export const GET_TEAM = () => "/team-list"

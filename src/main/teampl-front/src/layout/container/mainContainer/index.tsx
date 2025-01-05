@@ -141,10 +141,20 @@ export default function MainContainer() {
                 <CreationModal title={"Create Team"}
                                comment={"팀을 생성합니다 "}
                                nameLabel={"Team Name"}
-                               nameToolTip={"팀프로젝트는 무엇인가요?"}
+                               nameToolTip={"팀은 왜 생성하나요?"}
                                createBtnName={"팀 생성"}
                                modalType={ModalType.CREATE_TEAM}/>
             )}
+
+            {isModalOpen && modalType === ModalType.CREATE_TEAM_PROJECT && (
+                <CreationModal title={"Create Team Project"}
+                               comment={"팀 프로젝트를 생성합니다. "}
+                               nameLabel={"Team Name"}
+                               nameToolTip={"팀프로젝트는 무엇인가요?"}
+                               createBtnName={"프로젝트 생성"}
+                               modalType={ModalType.CREATE_TEAM_PROJECT}/>
+            )}
+
 
             <div id={"main-wrapper"}>
                 <div className={"main-container"} onClick={onMainContainerClickEventHandler}>

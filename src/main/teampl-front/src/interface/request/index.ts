@@ -2,7 +2,7 @@ import AuthCodeRequest from "./auth/authCodeRequest";
 import AuthCodeConfirmRequest from "./auth/authCodeConfirmRequest";
 import SignUpRequest from "./auth/signUpRequest";
 import SignInRequest from "./auth/signInRequest";
-import CreateProjecRequest from "./project/createProjecRequest";
+import CreateProjectRequest from "./project/createProjectRequest";
 import GetPersonalPrjInfoRequest from "./project/getPersonalPrjInfoRequest";
 import PatchIssueTitleRequest from "./issue/patchIssueTitleRequest";
 import PatchPriorityRequest from "./issue/patchPriorityRequest";
@@ -21,7 +21,7 @@ export type {
     AuthCodeConfirmRequest,
     SignUpRequest,
     SignInRequest,
-    CreateProjecRequest,
+    CreateProjectRequest,
     GetPersonalPrjInfoRequest,
     PatchIssueTitleRequest,
     PatchPriorityRequest,

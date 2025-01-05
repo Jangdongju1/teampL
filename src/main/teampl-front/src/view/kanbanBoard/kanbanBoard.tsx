@@ -36,8 +36,7 @@ export default function KanbanBoard(props: KanbanType) {
     const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
     const [topMenu, setTopMenu] = useState<"kanban" | "main">("kanban");
-    // global state: 모달상태
-    const {isModalOpen, modalType} = modalStore();
+
     const {projectNum} = useParams();
     //* state: 쿠키상태
     const [cookies, setCookies] = useCookies();

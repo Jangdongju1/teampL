@@ -1,7 +1,7 @@
-import {CreateProjecRequest} from "../interface/request";
+import {CreateProjectRequest} from "../interface/request";
 import axios from "axios";
 import {
-    CREATE_PERSONAL_PROJECT, DOMAIN,
+    CREATE_PERSONAL_PROJECT, CREATE_TEAM_PROJECT, DOMAIN,
     GET_PERSONAL_PROJECT_INFO,
     GET_PROJECT_LIST,
     GET_PROJECT_LIST_TEMP
@@ -9,6 +9,8 @@ import {
 import CreateProjectResponse from "../interface/response/project/createProjectResponse";
 import {GetPrjListPaginationResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
+import CreateTeamProjectRequest from "../interface/request/project/createTeamProjectRequest";
+import CreateTeamProjectResponse from "../interface/response/project/createTeamProjectResponse";
 
 const BASE_URL = "/api/v1/project"
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
@@ -18,7 +20,7 @@ const Authorization = (token: string) => {
 };
 
 //* 개인 프로젝트 생성 api 호출
-export const createProjectRequest = async (requestBody: CreateProjecRequest, accessToken: string) => {
+export const createProjectRequest = async (requestBody: CreateProjectRequest, accessToken: string) => {
 
     try {
         const result = await axios.post <CreateProjectResponse>(
@@ -41,6 +43,30 @@ export const createProjectRequest = async (requestBody: CreateProjecRequest, acc
         }
     }
 }
+// 팀프로젝트 생성 요청
+export const createTeamProjectRequest = async (requestBody: CreateTeamProjectRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.post(apiEndPoint(CREATE_TEAM_PROJECT()),requestBody, Authorization(accessToken))
+
+        const responseBody : CreateTeamProjectResponse  = result.data;
+
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.error("unexpected error", error.message);
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody
+        } else {
+            console.error("not axios error", error)
+            return null;
+        }
+
+    }
+}
 
 export const getTProjectListRequest = async (accessToken: string) => {
     try {
@@ -54,7 +80,7 @@ export const getTProjectListRequest = async (accessToken: string) => {
                 console.log(error.message);
                 return null;
             }
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
         } else {
             console.error(error)

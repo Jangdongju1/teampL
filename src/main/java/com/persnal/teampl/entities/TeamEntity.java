@@ -58,7 +58,6 @@ public class TeamEntity {
                 .Sequence(teamPrefix + "-" + teamSuffix)  // 시퀀스 설정
                 .isDeleted(false)
                 .build();
-
     }
 
     public static List<TeamListObj> getList(List<GetTeamListResultSet> resultSets) {

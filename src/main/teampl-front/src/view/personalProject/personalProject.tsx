@@ -13,6 +13,7 @@ import ClientSidePagination from "../../component/pagination/client";
 import useCSPagination from "../../hook/pagination/client/pagination_client";
 import SearchBar from "../../component/searchBar/searchBar";
 import {ChangeEvent} from "react";
+import projectType from "../../common/enum/projectType";
 
 
 export default function PersonalProject() {
@@ -56,16 +57,8 @@ export default function PersonalProject() {
 
     const filteredProject = () => {
         const word = searchWord.trim()
-        // viewList를 기준으로 검색
-        if (menu.menuStat === "Team") {
-            return viewList.filter(project => project.projectName.toLowerCase().includes(word))
-        } else if (menu.menuStat == "Personal") {
-            return viewList.filter(project => project.projectName.toLowerCase().includes(word));
-        }
-
-        return []
+        return viewList.filter(project => project.projectName.toLowerCase().includes(word));
     }
-
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
     const onSearchbarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +112,7 @@ export default function PersonalProject() {
         )
     }
 
-    // function : project상태 업데이트
+    // function : project 상태 업데이트
     const updateProjectState = (list: Project[]) => {
 
         const tableDataArr = list.map(project => {
@@ -140,7 +133,6 @@ export default function PersonalProject() {
 
             return tableData;
         });
-
 
 
         const personal =
@@ -172,7 +164,7 @@ export default function PersonalProject() {
 
         const {data} = responseBody as GetPrjListPaginationResponse;
 
-        updateProjectState(data.list);
+        //updateProjectState(data.list);
 
     }
     // 마운트시 실행할 함수
@@ -191,7 +183,9 @@ export default function PersonalProject() {
 
     }, []);
 
+
     useEffect(() => {
+
         setTotalList(menu.menuStat === "Team" ? projects.team : projects.personal);
     }, [menu.menuStat]);
 

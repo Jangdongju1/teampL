@@ -78,7 +78,7 @@ export default function MainHeader() {
                 <ul className={"team-detail-menu"}>
                     <li onClick={onMyTeamBtnClickEventHandler}><span className={"icon my-team-icon"}></span>{"나의 팀"}</li>
                     <li onClick={onTeamCreationBtnClickEventHandler}><span className={"icon group-add-icon"}></span>{"팀 생성"}</li>
-                    <li><span className={"icon add-icon"}></span>{"TeamPL에 사용자 초대"}</li>
+                    <li><span className={"icon add-icon"}></span>{"팀프로젝트 생성"}</li>
                     <li><span className={"icon search-icon"}></span>{"사용자 및 팀 검색"}</li>
                 </ul>
             </div>
