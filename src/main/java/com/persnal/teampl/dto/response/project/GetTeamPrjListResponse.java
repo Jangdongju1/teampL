@@ -3,6 +3,7 @@ package com.persnal.teampl.dto.response.project;
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.dto.obj.ProjectObj;
+import com.persnal.teampl.dto.obj.temp.TeamInfo;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import lombok.Getter;
@@ -12,25 +13,28 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-public class GetPrjListPaginationResponse {
+public class GetTeamPrjListResponse {
+    private final TeamInfo info;
     private final List<ProjectObj> list;
-    public GetPrjListPaginationResponse(List<ProjectObj> result) {
-        this.list = result;
 
+
+
+    public GetTeamPrjListResponse(List<ProjectObj> list, TeamInfo info) {
+        this.list = list;
+        this.info = info;
     }
 
-    public static ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> success(List<ProjectObj> list) {
-        ApiResponse<GetPrjListPaginationResponse> responseBody = new ApiResponse<>(
+
+    public static ResponseEntity<ApiResponse<GetTeamPrjListResponse>> success(GetTeamPrjListResponse response){
+        ApiResponse<GetTeamPrjListResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPrjListPaginationResponse(list));
+                response);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> notExistUser() {
-        return ResponseDto.notExistedUser();
+    public static ResponseEntity<ResponseDto> notExistTeam(){
+        return ResponseDto.notExistTeam();
     }
-
-
 }

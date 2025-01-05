@@ -9,7 +9,7 @@ import {
     PASSWORD_REGISTRATION_PATH,
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
-    SIGN_IN_PATH, TEAM_MAIN_PATH, TEAM_PROJECT_PATH
+    SIGN_IN_PATH, TEAM_MAIN_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH, TEAM_PROJECT_PATH
 } from "./constant/path";
 import Authentication from "./view/authentication";
 import PasswordRegistration from "./view/authentication/passwordRegistration";
@@ -78,6 +78,9 @@ function App() {
                         <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard isTeamKanban={false}/>}/>
                         <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
                         <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
+                        <Route path={TEAM_PATH()}>
+                            <Route path={TEAM_PROJECT_BOARD_PATH(":creator", ":projectNum")} element={<KanbanBoard isTeamKanban={true}/>}/>
+                        </Route>
                     </Route>
                 </Route>
             </Routes>

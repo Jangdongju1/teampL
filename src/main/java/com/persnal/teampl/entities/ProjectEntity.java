@@ -78,7 +78,7 @@ public class ProjectEntity {
     }
 
 
-    public static List<ProjectObj> getProejctList(List<ProjectEntity> entities) {
+    public static List<ProjectObj> getProjectList(List<ProjectEntity> entities) {
         List<ProjectObj> list = new ArrayList<>();
         for (ProjectEntity entity : entities) {
             ProjectObj obj = getProjectInfo(entity);
@@ -89,7 +89,8 @@ public class ProjectEntity {
     }
 
     public static ProjectObj getProjectInfo(ProjectEntity entity){
-
+        // 개인프로젝트의 경우 teamEntity가 null일 수 있으므로 null에 대한 처리를 해줘야 함.
+        TeamEntity teamEntity = entity.getTeamEntity();
         return ProjectObj.builder()
                 .projectNum(entity.getProjectNum())
                 .projectName(entity.getProjectName())
@@ -98,7 +99,7 @@ public class ProjectEntity {
                 .creator(entity.getUserEntity().getEmail())
                 .stat(entity.getStat())
                 .projectType(entity.getProjectType())
-                .regNum(entity.getTeamEntity().getRegNum())
+                .regNum(teamEntity == null? null : teamEntity.getRegNum())
                 .build();
     }
 }

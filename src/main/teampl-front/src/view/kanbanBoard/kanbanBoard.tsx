@@ -8,20 +8,16 @@ import GetPersonalPrjInfoResponse from "../../interface/response/project/getPers
 import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, Project} from "../../interface/types";
-import {IssueStatus, KanbanBoardName, ModalType, ProjectStatus, ProjectType} from "../../common";
+import {IssueStatus, KanbanBoardName, ProjectStatus, ProjectType} from "../../common";
 import {createIssueRequest, getPersonalIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
-import IssueModal from "../../component/modal/issueModal/issueModal";
-import {modalStore} from "../../store";
 import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
 import issueStatus from "../../common/enum/IssueStatus";
 import IssueCard from "../../component/issueCard/issueCard";
 import CreateIssueRequest from "../../interface/request/issue/createIssueRequest";
 import CreateIssueResponse from "../../interface/response/issue/createIssueResponse";
-import kanbanBoardName from "../../common/enum/kanbanBoardName";
 import {PatchIssueStatusDragRequest} from "../../interface/request";
 import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
-import ProjectModal from "../../component/modal/projectModal/projectModal";
 import {getKanbanName} from "../../constant/issueConstants";
 import kanbanStore from "../../store/kanbanStore";
 
@@ -153,6 +149,7 @@ export default function KanbanBoard(props: KanbanType) {
         if (code !== ResponseCode.SUCCESS) alert(message);
 
         const {data} = responseBody as CreateIssueResponse;  // 이슈데이터를 받아옴
+        console.log(data.addedIssue)
         const addedKanbanName = getKanbanName(data.addedIssue.stat);
 
 
@@ -318,6 +315,7 @@ export default function KanbanBoard(props: KanbanType) {
     useEffect(() => {
         const fetchProjectInfo = async () => {
             if (!accessToken || projectNum === undefined) return;
+
             const responseBody = await getPersonalPrjInfoRequest(projectNum, accessToken);
 
             getPersonalPrjInfoResponse(responseBody);
@@ -325,6 +323,7 @@ export default function KanbanBoard(props: KanbanType) {
         }
         fetchProjectInfo();
     }, [location]);
+
 
     useEffect(() => {
         // api 호출없이도 totalIssues를 자식 컴포넌트로 보내서 리렌더링 되도록 바꿀 예정.

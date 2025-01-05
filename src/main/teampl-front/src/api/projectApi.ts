@@ -1,16 +1,18 @@
 import {CreateProjectRequest} from "../interface/request";
 import axios from "axios";
 import {
-    CREATE_PERSONAL_PROJECT, CREATE_TEAM_PROJECT, DOMAIN,
+    CREATE_PERSONAL_PROJECT,
+    CREATE_TEAM_PROJECT,
+    DOMAIN,
     GET_PERSONAL_PROJECT_INFO,
-    GET_PROJECT_LIST,
-    GET_PROJECT_LIST_TEMP
+    GET_PROJECT_LIST, GET_TEAM_PROJECT_LIST
 } from "../constant/indicator";
 import CreateProjectResponse from "../interface/response/project/createProjectResponse";
-import {GetPrjListPaginationResponse, GetProjectListResponse, ResponseDto} from "../interface/response";
+import {GetPrjListPaginationResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
 import CreateTeamProjectRequest from "../interface/request/project/createTeamProjectRequest";
 import CreateTeamProjectResponse from "../interface/response/project/createTeamProjectResponse";
+import GetTeamProjectListResponse from "../interface/response/project/getTeamProjectListResponse";
 
 const BASE_URL = "/api/v1/project"
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
@@ -47,9 +49,9 @@ export const createProjectRequest = async (requestBody: CreateProjectRequest, ac
 export const createTeamProjectRequest = async (requestBody: CreateTeamProjectRequest, accessToken: string) => {
     try {
         const result =
-            await axios.post(apiEndPoint(CREATE_TEAM_PROJECT()),requestBody, Authorization(accessToken))
+            await axios.post(apiEndPoint(CREATE_TEAM_PROJECT()), requestBody, Authorization(accessToken))
 
-        const responseBody : CreateTeamProjectResponse  = result.data;
+        const responseBody: CreateTeamProjectResponse = result.data;
 
         return responseBody;
     } catch (error) {
@@ -68,7 +70,8 @@ export const createTeamProjectRequest = async (requestBody: CreateTeamProjectReq
     }
 }
 
-export const getTProjectListRequest = async (accessToken: string) => {
+// 서버단의 페이지네이션이 적용된 프로젝트 리스트 요청.
+export const getProjectListRequest = async (accessToken: string) => {
     try {
         const result = await axios.get(apiEndPoint(GET_PROJECT_LIST()), Authorization(accessToken));
         const responseBody: GetPrjListPaginationResponse = result.data;
@@ -90,6 +93,26 @@ export const getTProjectListRequest = async (accessToken: string) => {
     }
 }
 
+export const getTeamProjectListRequest = async (regNum: string, accessToken: string) => {
+    try {
+        const result =
+            await axios.get(apiEndPoint(GET_TEAM_PROJECT_LIST(regNum)), Authorization(accessToken));
+
+        const responseBody: GetTeamProjectListResponse = result.data;
+        return responseBody;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.log("unexpected error", error);
+            return null;
+        }
+    }
+}
+
 //* 특정 개인프로젝트의 정보를 가져오는 api호출
 export const getPersonalPrjInfoRequest = async (projectNum: string, accessToken: string) => {
     try {
@@ -107,28 +130,5 @@ export const getPersonalPrjInfoRequest = async (projectNum: string, accessToken:
             console.log("unexpected error", error);
             return null;
         }
-    }
-}
-
-// 프로젝트의 리스트를 가져오는 api
-export const getProjectListRequest = async (accessToken: string) => {
-    try {
-        const result = await axios.get(apiEndPoint(GET_PROJECT_LIST_TEMP()), Authorization(accessToken));
-        const responseBody: GetProjectListResponse = result.data;
-        return responseBody;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (!error.response) {
-                console.error("unexpected error", error.message);
-                return null;
-            }
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody
-        } else {
-            console.error("not axios error", error)
-            return null;
-        }
-
-
     }
 }

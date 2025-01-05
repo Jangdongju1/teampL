@@ -33,11 +33,18 @@ public class ProjectController {
         return projectService.createTeamPrj(email,req);
     }
 
-    @GetMapping("/t-project-list")
-    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectListPagination(
+    @GetMapping("/project-list")
+    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectList(
             @AuthenticationPrincipal String email) {
+        return projectService.getProjectList(email);
+    }
 
-        return projectService.getProjectListPagination(email);
+    @GetMapping("/team-project-list")
+    public ResponseEntity<? super ApiResponse<GetTeamPrjListResponse>> getTeamProjectList(
+            @AuthenticationPrincipal String email,
+            @RequestParam("regNum") Integer regNum){
+
+        return projectService.getTeamPrjList(email, regNum);
     }
 
     @GetMapping("/personal-project-info/{projectNum}")
@@ -46,13 +53,6 @@ public class ProjectController {
             @PathVariable("projectNum") int projectNum) {
 
         return projectService.getPersonalPrjInfo(email, projectNum);
-    }
-
-    @GetMapping("/project-list")
-    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(
-            @AuthenticationPrincipal String email) {
-
-        return projectService.getProjectList(email);
     }
 
 }

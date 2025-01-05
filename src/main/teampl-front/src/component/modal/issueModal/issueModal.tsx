@@ -328,6 +328,8 @@ export default function IssueModal(props: IssueModalProps) {
         }
 
         const {data} = responseBody as GetPersonalIssueByNumResponse;
+
+
         const {
             projectNum,
             title,
@@ -357,6 +359,7 @@ export default function IssueModal(props: IssueModalProps) {
 
     }
 
+
     // function : 이슈에 대한 댓글 요청후 처리 함수
     const getIssueCommentResponse = (responseBody: GetIssueCommentResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -376,6 +379,7 @@ export default function IssueModal(props: IssueModalProps) {
 
     //  마운트시 : 이슈에 대한 데이터를 불러옴.
     useEffect(() => {
+
         // 특정 issue에 해당하는 데이터를 불러오는 api호출
         if (!accessToken || !issueNum) return;
 

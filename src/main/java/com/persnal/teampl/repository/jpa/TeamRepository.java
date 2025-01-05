@@ -26,5 +26,7 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Integer> {
             , nativeQuery = true)
     List<GetTeamListResultSet> getTeamList(String email);
 
+    TeamEntity findByRegNum(Integer regNum);
+
 
 }

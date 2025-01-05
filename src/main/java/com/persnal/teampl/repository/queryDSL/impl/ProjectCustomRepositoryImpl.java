@@ -20,32 +20,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ProjectInfoObj> getProjectList(String email) {
-        QTeamEntity teamEntity = QTeamEntity.teamEntity;
-        QUserEntity userEntity = QUserEntity.userEntity;
-        QProjectEntity projectEntity = QProjectEntity.projectEntity;
-
-        // Projections.constructor는 DTO를 바로 새성하면서 값을 넣을 수 있게 해준다 QueryDsl의 기능임.
-        List<ProjectInfoObj> result =
-                queryFactory.select(Projections.constructor(ProjectInfoObj.class,
-                                projectEntity.projectNum,
-                                projectEntity.projectName,
-                                projectEntity.userEntity.email,
-                                projectEntity.projectType,
-                                projectEntity.stat,
-                                teamEntity.teamName))
-                        .from(teamEntity)
-                        .innerJoin(userEntity).on(teamEntity.email.eq(userEntity.email))
-                        .rightJoin(projectEntity).on(teamEntity.regNum.eq(projectEntity.teamEntity.regNum))
-                        .fetchJoin()
-                        .where(userEntity.email.eq(email)
-                                .or(projectEntity.projectType.eq(0).and(projectEntity.userEntity.email.eq(email))))
-                        .fetch();
-        return result;
-    }
-
-    @Override
-    public List<ProjectObj> getProjectListPagination(String email) {
+    public List<ProjectObj> getProjectList(String email) {
         QProjectEntity project = QProjectEntity.projectEntity;
         QUserEntity user = QUserEntity.userEntity;
         QTeamEntity team = QTeamEntity.teamEntity;
@@ -79,6 +54,41 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
 
 
         return list;
+    }
 
+    @Override
+    public List<ProjectObj> getTeamProjectList(String email, Integer regNum) {
+        QProjectEntity project = QProjectEntity.projectEntity;
+        QUserEntity user = QUserEntity.userEntity;
+        QTeamEntity team = QTeamEntity.teamEntity;
+        QIssueEntity issue = QIssueEntity.issueEntity;
+
+        List<ProjectObj> list = queryFactory.select(Projections.constructor(ProjectObj.class,
+                        project.projectNum,
+                        project.teamEntity.regNum,
+                        project.projectName,
+                        project.description,
+                        project.createDate,
+                        user.email,
+                        project.stat,
+                        project.projectType,
+                        team.teamName,
+                        // 서브쿼리
+                        JPAExpressions.select(issue.issueNum.count().as("totalIssueCnt"))
+                                .from(issue)
+                                .where(issue.projectEntity.projectNum.eq(project.projectNum))
+                        ,
+                        JPAExpressions.select(issue.issueNum.count().as("processed"))
+                                .from(issue)
+                                .where(issue.projectEntity.projectNum.eq(project.projectNum).and(issue.stat.eq(IssueStatus.DONE.getValue())))
+
+                )).from(project)
+                .innerJoin(user).on(project.userEntity.email.eq(user.email))
+                .leftJoin(team).on(project.teamEntity.regNum.eq(team.regNum)).fetchJoin()
+                .where(user.email.eq(email).and(team.regNum.eq(regNum)))
+                .orderBy(project.createDate.desc())
+                .fetch();
+
+        return list;
     }
 }

@@ -5,6 +5,7 @@ import projectStore from "./projectStore";
 import issueStore from "./issueStore";
 import teamStore from "./teamStore";
 import kanbanStore from "./kanbanStore";
+import teamProjectStore from "./teamProjectStore";
 export {
     userEmailStore,
     modalStore,
@@ -12,5 +13,6 @@ export {
     projectStore,
     issueStore,
     teamStore,
-    kanbanStore
+    kanbanStore,
+    teamProjectStore
 }

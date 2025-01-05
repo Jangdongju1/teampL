@@ -7,7 +7,7 @@ import {getProjectListRequest} from "../../../api/projectApi";
 import {useCookies} from "react-cookie";
 import {GetProjectListResponse, ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
-import {ProjectListEle} from "../../../interface/types";
+import {Project} from "../../../interface/types";
 import {useNavigate, useParams} from "react-router-dom";
 import {getProjectStatus, getProjectType} from "../../../constant/projectConstants";
 import InitialsImg from "../../InitialsImg";
@@ -22,10 +22,10 @@ export default function ProjectModal() {
 
     //* state :  받아올 프로젝트리스트 데이터 상태
     const [projects, setProjects] =
-        useState<{ projects: ProjectListEle[], viewProjects: ProjectListEle[] }>({projects: [], viewProjects: []});
+        useState<{ projects: Project[], viewProjects: Project[] }>({projects: [], viewProjects: []});
     //* state :  프로젝트 메뉴의 선택 상태
     const [menuItemSelectState, setMenuItemSelectState] =
-        useState<{ projectNum: number, owner: string }>({projectNum: pathId ? parseInt(pathId, 10) : -1, owner: ""})
+        useState<{ projectNum: number, creator: string }>({projectNum: pathId ? parseInt(pathId, 10) : -1, creator: ""})
     //* state : 검색바 입력상태
     const [searchWord, setSearchWord] = useState<string>("");
     //* globalState: 모달상태
@@ -40,7 +40,7 @@ export default function ProjectModal() {
         return (
             // 대소문자 구분을 업애기 위해서 영어는 모두 소문자로 변경해서
             project.projectName.toLowerCase().includes(searchWord.toLowerCase()) ||
-            project.owner.toLowerCase().includes(searchWord.toLowerCase())
+            project.creator.toLowerCase().includes(searchWord.toLowerCase())
         );
     });
 
@@ -66,7 +66,7 @@ export default function ProjectModal() {
         setIsModalOpen(false);
 
 
-        const encodedEmail = btoa(menuItemSelectState.owner);
+        const encodedEmail = btoa(menuItemSelectState.creator);
         navigator( HOME_PATH()+"/"+PERSONAL_PROJECT_BOARD_PATH(encodedEmail, String(menuItemSelectState.projectNum)));
     }
 
@@ -84,6 +84,8 @@ export default function ProjectModal() {
         const {data} = responseBody as GetProjectListResponse;
 
 
+
+
         setProjects(prevState => ({
             viewProjects: [...data.list],
             projects: [...data.list]
@@ -92,9 +94,9 @@ export default function ProjectModal() {
     }
 
     type PrjListCompProps = {
-        data: ProjectListEle,
+        data: Project,
         hooks: {
-            setMenuItemSelectState: React.Dispatch<React.SetStateAction<{ projectNum: number, owner: string }>>
+            setMenuItemSelectState: React.Dispatch<React.SetStateAction<{ projectNum: number, creator: string }>>
         }
         isSelected: boolean;
     }
@@ -108,14 +110,14 @@ export default function ProjectModal() {
             projectType,
             projectName,
             teamName,
-            owner,
+            creator,
             stat
         } = data;
 
         //eventHandler: 리스트 선택시 동작할 이벤드 헨들러;
 
         const onListSelectEventHandler = () => {
-            const updateState = {projectNum : projectNum, owner : owner}
+            const updateState = {projectNum : projectNum, creator : creator}
             setMenuItemSelectState(updateState);
 
         }
@@ -128,7 +130,7 @@ export default function ProjectModal() {
                 <ul className={"prj-li-comp-ul"}>
                     <li className={"prj-modal-ul-li-title"}>{projectName}</li>
                     <li className={"prj-modal-ul-li-owner"}>
-                        <InitialsImg name={owner} width={26} height={26}/>
+                        <InitialsImg name={creator} width={26} height={26}/>
                     </li>
                     <li className={"prj-modal-ul-li-team"}>{(teamName === null) || (teamName.length === 0) ? "-" : teamName}</li>
                     <li className={"prj-modal-ul-li-type"}>{getProjectType(projectType)}</li>

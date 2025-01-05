@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 public interface ProjectService {
     ResponseEntity<? super ApiResponse<CreatePrjResponse>> createPersonalPrj(String email, CreatePrjRequest request);
     ResponseEntity<? super ApiResponse<CreateTeamPrjResponse>> createTeamPrj(String email, CreateTeamPrjRequest req);
-    ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectListPagination(String email);
+    ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectList(String email);
     ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>>getPersonalPrjInfo(String email, int projectNum);
-    ResponseEntity<? super ApiResponse<GetPrjListResponse>>getProjectList(String email);
+    ResponseEntity<? super ApiResponse<GetTeamPrjListResponse>>getTeamPrjList(String email, Integer regNum);
 
 }

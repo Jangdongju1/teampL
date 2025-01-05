@@ -5,7 +5,6 @@ import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.entities.ProjectEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +13,15 @@ import org.springframework.http.ResponseEntity;
 public class CreateTeamPrjResponse {
     private final ProjectObj created;
 
-    public CreateTeamPrjResponse(ProjectEntity entity) {
-        this.created = ProjectEntity.getProjectInfo(entity);
+    public CreateTeamPrjResponse(ProjectObj info) {
+        this.created = info;
     }
 
-    public static ResponseEntity<ApiResponse<CreateTeamPrjResponse>> success(ProjectEntity entity){
+    public static ResponseEntity<ApiResponse<CreateTeamPrjResponse>> success(ProjectObj info){
         ApiResponse<CreateTeamPrjResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new CreateTeamPrjResponse(entity)
+                new CreateTeamPrjResponse(info)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);

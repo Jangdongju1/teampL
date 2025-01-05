@@ -16,9 +16,11 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>
 
     ProjectEntity findByProjectNum(Integer projectNum);
 
-    @Override
-    List<ProjectInfoObj> getProjectList(String email);
+    List<ProjectEntity> findAllByTeamEntityRegNum(Integer regNum);
 
     @Override
-    List<ProjectObj> getProjectListPagination(String email);
+    List<ProjectObj> getProjectList(String email);
+
+    @Override
+    List<ProjectObj> getTeamProjectList(String email, Integer regNum);
 }

@@ -1,9 +1,9 @@
 import "./style.css";
-import React, {useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {useCookies} from "react-cookie";
 import {projectStore, userEmailStore} from "../../store";
 import {useNavigate} from "react-router-dom";
-import {getTProjectListRequest} from "../../api/projectApi";
+import {getProjectListRequest} from "../../api/projectApi";
 import {GetPrjListPaginationResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Project, ProjectTableData} from "../../interface/types";
@@ -12,8 +12,7 @@ import ProjectTable from "../../component/table/projectTable/projectTable";
 import ClientSidePagination from "../../component/pagination/client";
 import useCSPagination from "../../hook/pagination/client/pagination_client";
 import SearchBar from "../../component/searchBar/searchBar";
-import {ChangeEvent} from "react";
-import projectType from "../../common/enum/projectType";
+import {getTableData} from "../../util";
 
 
 export default function PersonalProject() {
@@ -54,6 +53,16 @@ export default function PersonalProject() {
 
     // tableHeaders : 메인페이지 테이블 헤더
     const projectTableHeader = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
+
+    const projectTableData = useMemo(() => {
+
+        const personalTableData = getTableData(projects.personal);
+        const teamTableData = getTableData(projects.team);
+
+        return {personal: personalTableData, team: teamTableData};
+    }, [projects])
+
+
 
     const filteredProject = () => {
         const word = searchWord.trim()
@@ -114,41 +123,15 @@ export default function PersonalProject() {
 
     // function : project 상태 업데이트
     const updateProjectState = (list: Project[]) => {
-
-        const tableDataArr = list.map(project => {
-            const tableData: ProjectTableData = {
-                projectNum: project.projectNum,
-                regNum: project.regNum,
-                projectName: project.projectName,
-                description: project.description,
-                createDate: project.createDate,
-                creator: project.creator,
-                teamName: project.teamName,
-                stat: project.stat,
-                projectType: project.projectType,
-                processed: project.processed,
-                unProcessed: (project.totalIssueCnt - project.processed),
-                id: project.projectNum
-            }
-
-            return tableData;
-        });
-
-
-        const personal =
-            tableDataArr.filter(item => item.projectType === ProjectType.PERSONAL_PROJECT);
-        const team =
-            tableDataArr.filter(item => item.projectType === ProjectType.TEAM_PROJECT);
+        const personal = list.filter(project => project.projectType === ProjectType.PERSONAL_PROJECT);
+        const team = list.filter(project => project.projectType === ProjectType.TEAM_PROJECT);
 
         const updateState = {
-            projects: tableDataArr,
+            total: list,
             personal: personal,
             team: team
         }
-
         setProjects(updateState);
-        // 페이지 네이션을 위한 hook에 세팅
-        setTotalList(personal);
     }
 
 
@@ -164,7 +147,7 @@ export default function PersonalProject() {
 
         const {data} = responseBody as GetPrjListPaginationResponse;
 
-        //updateProjectState(data.list);
+        updateProjectState(data.list);
 
     }
     // 마운트시 실행할 함수
@@ -174,7 +157,7 @@ export default function PersonalProject() {
                 alert("accessToken is expired!!")
                 return;
             }
-            const responseBody = await getTProjectListRequest(accessToken);
+            const responseBody = await getProjectListRequest(accessToken);
 
             await getProjectListResponse(responseBody);
 
@@ -185,9 +168,9 @@ export default function PersonalProject() {
 
 
     useEffect(() => {
-
-        setTotalList(menu.menuStat === "Team" ? projects.team : projects.personal);
-    }, [menu.menuStat]);
+        // setTotalList(menu.menuStat === "Team" ? projects.team : projects.personal);
+        setTotalList(menu.menuStat === "Team"? projectTableData.team : projectTableData.personal);
+    }, [projectTableData, menu.menuStat]);
 
 
     return (

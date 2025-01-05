@@ -16,15 +16,6 @@ export type Project = {
     processed: number, // 미처리의 이슈의 갯수
     // id: number
 }
-//프로젝트 탐색용 모달에 존재하는 프로젝트 리스트의 객체 타입
-export type ProjectListEle = {
-    projectNum: number,
-    projectName: string,
-    owner: string,
-    projectType: number
-    stat: number,
-    teamName: string | null;   // 개인프로젝트 일 경우에 null 일 수 있음.
-}
 
 // 이슈객체
 export type Issue = {
@@ -68,6 +59,12 @@ export type Team = {
     projects: number,
     members: number,
 }
+export type TeamInfo = {
+    teamName: string,
+    creator: string,
+    description: string,
+    sequence: string
+}
 
 // Team Table 제공용 객체
 export type TeamTableData = {
@@ -75,7 +72,7 @@ export type TeamTableData = {
     regNum: number,
     teamName: string,
     sequence: string,
-    creator : string,
+    creator: string,
     createDate: string,
     projects: number,
     members: number,

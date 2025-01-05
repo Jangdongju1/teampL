@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "issue")
 @Builder
 public class IssueEntity {
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int issueNum;
 
     @ManyToOne(fetch = FetchType.LAZY)

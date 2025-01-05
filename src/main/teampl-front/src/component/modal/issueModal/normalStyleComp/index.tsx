@@ -8,6 +8,7 @@ type ModalCompNormalProps = {
 }
 export default function ModalCompNormal(props:ModalCompNormalProps){
     const {viewData,labelIcon,labelName}=props;
+
     return (
         <div className={"issue-modal-normal-comp-wrapper"}>
             <div className={"issue-modal-normal-comp-label-box"}>

@@ -1,7 +1,7 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
-import {modalStore, projectStore, teamStore, userEmailStore} from "../../../store";
+import {modalStore, projectStore, teamProjectStore, teamStore, userEmailStore} from "../../../store";
 import {CreateProjectRequest, CreateTeamRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest, createTeamProjectRequest} from "../../../api/projectApi";
@@ -14,6 +14,7 @@ import {Team} from "../../../interface/types";
 import teamParamStore from "../../../store/teamParamStore";
 import CreateTeamProjectRequest from "../../../interface/request/project/createTeamProjectRequest";
 import CreateTeamProjectResponse from "../../../interface/response/project/createTeamProjectResponse";
+import TeamProjectStore from "../../../store/teamProjectStore";
 
 type HeaderBtnModalProps = {
     title: string,  // 모달의 제목
@@ -38,7 +39,7 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     // global State: 팀상태
     const {teams, setTeams} = teamStore();
     // global State : 프로젝트 상태
-    const {projects,setProjects} = projectStore();
+    const {projects,setProjects} = teamProjectStore();
 
     // state : 쿠키상태
     const [cookies, setCookies] = useCookies();
@@ -94,9 +95,13 @@ export default function CreationModal(props: HeaderBtnModalProps) {
             return;
         }
         // 상태 새팅
+        const {data} = responseBody as CreateTeamProjectResponse;
+        const updateValue = [data.created,...projects]
+        setProjects(updateValue);
 
-
-
+        alert("프로젝트가 생성되었습니다.")
+        setModalType("");
+        setIsModalOpen(false);
     }
 
 
