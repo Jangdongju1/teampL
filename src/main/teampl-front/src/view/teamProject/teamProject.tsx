@@ -53,14 +53,12 @@ export default function TeamProject() {
     // function : 팀프로젝트 목록요청에 대한 응답함수
     const getTeamProjectListResponse = (responseBody: GetTeamProjectListResponse | ResponseDto | null) => {
         if (!responseBody) return;
-
         const {code, message} = responseBody as ResponseDto;
 
         if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
-
         const {data} = responseBody as GetTeamProjectListResponse;
 
         setProjects(data.list);
@@ -162,7 +160,6 @@ export default function TeamProject() {
             const responseBody = await getTeamProjectListRequest(regNum, accessToken);
             getTeamProjectListResponse(responseBody);
         }
-
         fetchTeamProjectData();
     }, []);
 

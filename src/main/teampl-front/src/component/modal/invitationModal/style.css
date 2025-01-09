@@ -1,6 +1,6 @@
 .invitation-modal-wrapper{
     width: 450px;
-    height: 530px;
+    max-height: 530px;
     background-color: rgba(255, 255, 255, 1);
     position: fixed;
     left: 50%;
@@ -61,68 +61,10 @@
     border: none;
     outline: none;
 }
-
-/*search drop down comp*/
-#search-drop-down-wrapper{
-    position: absolute;
-    width: 410px;
-    max-height: 200px;
-    box-sizing: border-box;
-    padding: 10px 17px 10px 10px;
-    display: flex;
-    right: -1px;
-    top: 30px;
-
-    border: 1px solid rgba(0,0,0,0.3);
-    border-radius: 10px;
-    background-color: rgba(255,255,255,1);
-}
-.search-bar-drop-down-title{
-    font-size: 14px;
-    font-family: "Noto Sans KR Sans KR";
-    color: #676879;
-    font-weight: 600;
-}
-.search-drop-down-item-box{
-    width: inherit;
-    height: inherit;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-}
-.search-drop-down-info-box{
-    margin-top: 10px;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    gap: 10px;
-}
-.search-drop-down-profile-image{
-    width: 26px;
-    height: 26px;
-}
-
-.search-drop-down-email{
-    font-family: "Noto Sans KR Sans KR";
-    font-size: 16px;
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.search-drop-down-data-null{
-    margin-top: 10px;
-    font-size: 14px;
-    font-family: "Noto Sans KR Sans KR";
-    color: #676879;
-}
-.search-drop-down-info-box:hover{
-    background-color: rgba(0,0,0,0.3);
-    cursor: pointer;
-}
 .invitation-selected-user-box{
     margin-top: 20px;
     width: 100%;
-    height: 300px;
+    max-height: 300px;
     box-sizing: border-box;
     padding: 5px;
 
@@ -190,4 +132,69 @@
     font-size: 14px;
     font-family: "Noto Sans KR Sans KR";
     color: #676879;
+}
+.invitation-selected-user-btn-box{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+/*search drop down comp*/
+#search-drop-down-wrapper{
+    position: absolute;
+    width: 410px;
+    max-height: 200px;
+    box-sizing: border-box;
+    padding: 10px 17px 10px 10px;
+    display: flex;
+    right: -1px;
+    top: 30px;
+
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: rgba(255,255,255,1);
+}
+.search-bar-drop-down-title{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    color: #676879;
+    font-weight: 600;
+}
+.search-drop-down-item-box{
+    width: inherit;
+    height: inherit;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+.search-drop-down-info-box{
+    margin-top: 10px;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    gap: 10px;
+}
+.search-drop-down-profile-image{
+    width: 26px;
+    height: 26px;
+}
+
+.search-drop-down-email{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.search-drop-down-data-null{
+    margin-top: 10px;
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    color: #676879;
+}
+.search-drop-down-info-box:hover{
+    background-color: rgba(0,0,0,0.3);
+    cursor: pointer;
 }

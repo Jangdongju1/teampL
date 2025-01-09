@@ -3,9 +3,9 @@ import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
 import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
-import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH, TEAM_PATH} from "../../../constant/path";
+import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH} from "../../../constant/path";
 import ModalType from "../../../common/enum/modalType";
-import ProjectModal from "../../../component/modal/projectModal/projectModal";
+import {useEffect, useState} from "react";
 
 export default function MainHeader() {
 
@@ -26,11 +26,34 @@ export default function MainHeader() {
     // global state : 로그인한 유저의 이메일 상태
     const {loginUserEmail} = userEmailStore();
 
-    // eventHandler : 버튼 클릭시 다른 메뉴 상태를 false로
+
+    // state : 개인메뉴 클릭상태
+    const [individualMenuClick, setIndividualMenuClick] =
+        useState<boolean>(false);
+
+    // array : 개인메뉴의 목록
+    const individualMenuList : string[] = ["마이페이지", "초대알림"];
+
+
+    // function : 개인메뉴 외의 외부 클릭시 실행할 함수
+    const handleClickOutside = (e:MouseEvent)=>{
+        // element : 개인 메뉴 엘리먼트
+        const individualElement = document.querySelector(".main-header-individual-content-box");
+
+        if (individualElement && !individualElement.contains(e.target as Node)){
+            setIndividualMenuClick(false);
+        }
+    }
+
+
+
+    // eventHandler : 메뉴버튼 클릭시 중앙 이벤트 헨들러
     const onMenuBtnClickEventHandler = (btnType: string) => {
         setTeamBtnClickState(btnType === "team" ? !teamBtnClickState : false);
         setCurrentBtnClickState(btnType === "current" ? !currentBtnClickState : false);
         setPersonalPrjBtnClickState(btnType === "personal" ? !personalPrjBtnClickState : false);
+        setIndividualMenuClick(btnType === "individual"? !individualMenuClick : false);
+
     }
 
     const onTeamBtnClickEventHandler = () => {
@@ -45,8 +68,16 @@ export default function MainHeader() {
         onMenuBtnClickEventHandler("personal");
     }
 
+    // eventHandler : 개인 아이콘 클릭 이벤트 헨들러
+    const onIndividualIconClickEventHandler = ()=>{
+        //setIndividualMenuClick(prevState => !prevState);
+        onMenuBtnClickEventHandler("individual");
+    }
+
+
     // eventHandler : 개인프로젝트 > 프로젝트 목록 버튼 클릭 이벤트 헨들러
     const onHomeBtnClickEventHandler = () => {
+        onMenuBtnClickEventHandler("home");
         const encodedEmail = btoa(loginUserEmail);
         navigator(HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(encodedEmail));
     }
@@ -57,6 +88,7 @@ export default function MainHeader() {
         setModalType(ModalType.PROJECT_LIST);
         setIsModalOpen(true);
     }
+
 
     const TeamDetailComp = () => {
         // eventHandler : 팀 생성 버튼 클릭 이벤트 헨들러
@@ -122,13 +154,19 @@ export default function MainHeader() {
         )
     }
 
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () =>{
+            document.removeEventListener("mousedown",handleClickOutside);
+        }
+    }, []);
     return (
         <div id={"main-header-wrapper"}>
-            {modalType === ModalType.PROJECT_LIST && (
-                <ProjectModal/>
-            )}
+
             <div className={"main-header-container"}>
                 <div className={"main-header-content-box"}>
+
                     <div className={"main-header-content1"}>
                         <div className={"main-header-logo-content-box"}>
                             <div className={"main-header-logo tool-logo"}></div>
@@ -153,10 +191,19 @@ export default function MainHeader() {
                         {personalPrjBtnClickState && (
                             <div className={"main-header-menu-detail3"}><PersonalPrjDetailComp/></div>)}
                     </div>
+
                     <div className={"main-header-content2"}>
+
                         <div className={"main-header-individual-content-box"}>
-                            <InitialsImg name={"jdj881204@naver.com"} height={36} width={36}/>
+                            <InitialsImg name={"jdj881204@naver.com"} height={36} width={36} onClick={onIndividualIconClickEventHandler}/>
+                            {individualMenuClick && (<div className={"main-header-individual-menu"}>
+                                {individualMenuList.map((item, index)=>
+                                    <div className={"main-header-individual-menu-element"}>{item}</div>
+                                )}
+                            </div>)}
+
                         </div>
+
                     </div>
                 </div>
             </div>

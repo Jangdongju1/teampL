@@ -6,16 +6,19 @@ interface InitialsImgProps {
     name: string,
     width: number,
     height: number;
+    onClick?: () => void;
 }
 
 export default function InitialsImg(props: InitialsImgProps) {
     // ref
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const {name,height,width} = props;
+    const {name, height, width, onClick} = props;
+
 
     const getInitials = (name: string) => {
         return name.charAt(0).toUpperCase();
     }
+
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -47,6 +50,8 @@ export default function InitialsImg(props: InitialsImgProps) {
 
     if (!name) return null;
     return (
-        <canvas className={"initial-canvas"} ref={canvasRef} width={width} height={height}/>
+        <div className={"canvas-wrapper"} onClick={onClick? onClick : ()=>{}}>
+            <canvas className={"initial-canvas"} ref={canvasRef} width={width} height={height}/>
+        </div>
     )
 }

@@ -1,10 +1,12 @@
 import "./style.css";
 import {modalStore} from "../../../store";
 import {ModalType} from "../../../common";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import InitialsImg from "../../InitialsImg";
 import {SearchUser} from "../../../interface/types";
 import searchUserMock from "../../../mock/searchMember.mock";
+import CommonBtn from "../../btn";
+import {debounce} from "lodash";
 
 
 export default function InvitationModal() {
@@ -22,7 +24,15 @@ export default function InvitationModal() {
     // state :검색바 상태
     const [searchWord, setSearchWord] = useState<string>("");
 
-    // state : 선택된 인원
+    // function: 검색함수
+    const handleSearch = useCallback((query: string) => {
+        console.log(query);
+        // api호출 및 상태 세팅
+    }, [])
+
+
+    // 500밀리 세컨이 지나고나서 실행되도록 debounce를 적용함.
+    const debounceSearch = useCallback(debounce(handleSearch, 1000), []);
 
     // eventHandler : 닫기버튼 클릭 이벤트 헨드러
     const onModalCloseBtnClickEventHandler = () => {
@@ -34,6 +44,12 @@ export default function InvitationModal() {
     const onSearchBarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchWord(value);
+        if (value.length > 3) {
+            debounceSearch(value);
+        }else {  // 3글자 미만일때 검색을 취소해 주어야 이전 상태에서의 타이머가 취소된다.
+            debounceSearch.cancel();
+        }
+
     }
 
     // 선택된유저의 삭제버튼 클릭 이벤트 헨들러
@@ -85,8 +101,6 @@ export default function InvitationModal() {
                             </div>) :
                         <div className={"search-drop-down-data-null"}>{"검색결과가 없습니다."}</div>
                     }
-
-
                 </div>
             </div>
         )
@@ -117,31 +131,51 @@ export default function InvitationModal() {
                 </div>
             </div>
 
-            <div className={"invitation-selected-user-box"}>
-                <div className={"invitation-selected-user-title"}>{"인원(선택됨)"}</div>
-                <div className={"invitation-selected-user-item-box"}>
-
-                    {selected.length !== 0 ?
-                        selected.map((item, index) =>
-                            <div className={"invitation-selected-user-info-box"}>
-                                <div className={"invitation-selected-user-profile-image"}>
-                                    <InitialsImg name={item.email} width={20} height={20}/>
-
-                                </div>
-                                <div className={"invitation-selected-user-email"}>{item.email}</div>
-
-                                <div className={"invitation-selected-user-delete-icon-box"}
-                                     onClick={() => onDeleteBtnClickEventHandler(item)}>
-                                    <div className={" icon invitation-selected-user-delete-icon close-icon"}></div>
-                                </div>
-                            </div>)
-                        :
-                        <div className={"invitation-selected-user-data-null"}>{"선택된 인원이 없습니다."}</div>
-                    }
+            {selected.length > 0 && (
+                <div className={"invitation-selected-user-box"}>
 
 
+                    <div className={"invitation-selected-user-title"}>{"인원(선택됨)"}</div>
+                    <div className={"invitation-selected-user-item-box"}>
+
+                        {selected.length !== 0 ?
+                            selected.map((item, index) =>
+                                <div className={"invitation-selected-user-info-box"}>
+                                    <div className={"invitation-selected-user-profile-image"}>
+                                        <InitialsImg name={item.email} width={20} height={20}/>
+
+                                    </div>
+                                    <div className={"invitation-selected-user-email"}>{item.email}</div>
+
+                                    <div className={"invitation-selected-user-delete-icon-box"}
+                                         onClick={() => onDeleteBtnClickEventHandler(item)}>
+                                        <div className={" icon invitation-selected-user-delete-icon close-icon"}></div>
+                                    </div>
+                                </div>)
+                            :
+                            <div className={"invitation-selected-user-data-null"}>{"선택된 인원이 없습니다."}</div>
+                        }
+                    </div>
                 </div>
+            )}
+
+            <div className={"invitation-selected-user-btn-box"}>
+                <CommonBtn
+                    style={
+                        {
+                            size: {width: 300, height: 32},
+                            btnName: "팀원 초대하기",
+                            backgroundColor: "#0C66E4",
+                            hoverColor: "#0052CC",
+                            hoverStyle: "background",
+                            fontSize: 16,
+                            fontColor: "rgba(255,255,255,1)"
+                        }
+                    }
+                    onClick={() => console.log("초대")}/>
             </div>
+
+
         </div>
     )
 }
