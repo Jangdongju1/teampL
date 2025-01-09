@@ -29,3 +29,11 @@
     display: flex;
     justify-content: center;
 }
+.team-page-data-null{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 26px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+}

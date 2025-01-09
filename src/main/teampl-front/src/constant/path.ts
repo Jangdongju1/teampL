@@ -7,7 +7,7 @@ export const TEAM_PATH = () => "team";
 export const PERSONAL_PAGE_PATH = (email: string) => `${email}`;
 export const PERSONAL_PROJECT_HOME_PATH = (email: string) => `${email}/personal-project`;
 export const PERSONAL_PROJECT_BOARD_PATH = (email: string, projectNum: string) => `${email}/personal-project/${projectNum}`;
-export const TEAM_MAIN_PATH = (email: string) => `${email}/team`;
+export const TEAM_MAIN_PATH = (email: string) => `${HOME_PATH()}/${TEAM_PATH()}/${email}`;
 export const TEAM_PROJECT_PATH = (email: string, regNum: string) => `${TEAM_MAIN_PATH(email)}/${regNum}/project`;
 export const TEAM_PROJECT_BOARD_PATH = (creator: string, projectNum: string) => `${creator}/board/${projectNum}`
 

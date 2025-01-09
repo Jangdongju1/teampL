@@ -63,11 +63,12 @@ export default function PersonalProject() {
     }, [projects])
 
 
-
-    const filteredProject = () => {
-        const word = searchWord.trim()
-        return viewList.filter(project => project.projectName.toLowerCase().includes(word));
+    //menuStat 별 데이터
+    const dataByMenu = ()=>{
+        return menu.menuStat ==="Personal"? projectTableData.personal : projectTableData.team;
     }
+
+
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
     const onSearchbarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -168,9 +169,15 @@ export default function PersonalProject() {
 
 
     useEffect(() => {
-        // setTotalList(menu.menuStat === "Team" ? projects.team : projects.personal);
         setTotalList(menu.menuStat === "Team"? projectTableData.team : projectTableData.personal);
     }, [projectTableData, menu.menuStat]);
+
+    // 검색필터의 상태가 바뀔때마다 재차 세팅 해줌
+    useEffect(() => {
+        const word = searchWord.trim()
+        const viewData = dataByMenu().filter(project => project.projectName.toLowerCase().includes(word));
+        setTotalList(viewData);
+    }, [searchWord]);
 
 
     return (
@@ -198,31 +205,37 @@ export default function PersonalProject() {
                         <div className={"home-prj-bottom-title"}>{
                             menu.menuStat === "Personal" ? "개인 프로젝트 목록" : "팀 프로젝트 목록"
                         }</div>
-                        <SearchBar value={searchWord} onChange={onSearchbarChangeEventHandler} placeHolder={"프로젝트 명"}/>
+                        {(projects.team.length === 0 && projects.personal.length ===0)? null :
+                            <SearchBar value={searchWord} onChange={onSearchbarChangeEventHandler} placeHolder={"프로젝트 명"}/>
+                        }
+
                     </div>
 
                     <div className={"divider"}></div>
                 </div>
 
-                <div className={"home-prj-bottom-table-box"}>
-                    <div className={"home-prj-bottom-table"}>
-                        <ProjectTable header={projectTableHeader}
-                                      data={filteredProject()}
-                                      tableType={menu.menuStat}
-                                      functions={{
-                                          onClick: onTableClickEventHandler
-                                      }}/>
-                    </div>
-                    <div className={"home-prj-bottom-pagination"}>
-                        <ClientSidePagination currentPage={currentPage}
-                                              currentSection={currentSection}
-                                              setCurrentPage={setCurrentPage}
-                                              setCurrentSection={setCurrentSection}
-                                              viewPageList={viewPageList}
-                                              totalSection={totalSection}/>
+                {dataByMenu().length === 0 ? <div className={"home-table-data-null"}>{"진행중인 프로젝트가 없습니다."}</div> :
 
+                    <div className={"home-prj-bottom-table-box"}>
+                        <div className={"home-prj-bottom-table"}>
+                            <ProjectTable header={projectTableHeader}
+                                          data={viewList}
+                                          tableType={menu.menuStat}
+                                          functions={{
+                                              onClick: onTableClickEventHandler
+                                          }}/>
+                        </div>
+                        <div className={"home-prj-bottom-pagination"}>
+                            <ClientSidePagination currentPage={currentPage}
+                                                  currentSection={currentSection}
+                                                  setCurrentPage={setCurrentPage}
+                                                  setCurrentSection={setCurrentSection}
+                                                  viewPageList={viewPageList}
+                                                  totalSection={totalSection}/>
+
+                        </div>
                     </div>
-                </div>
+                }
 
 
             </div>

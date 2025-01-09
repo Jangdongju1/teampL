@@ -4,13 +4,14 @@ import MainHeader from "../../header/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
 import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {useCookies} from "react-cookie";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {headerMenuStore, modalStore} from "../../../store";
 import CreationModal from "../../../component/modal/creationModal/creationModal";
 import {ModalType} from "../../../common";
 import IssueModal from "../../../component/modal/issueModal/issueModal";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
 import KanbanStore from "../../../store/kanbanStore";
+import InvitationModal from "../../../component/modal/invitationModal/invitationModal";
 
 
 export default function MainContainer() {
@@ -115,8 +116,9 @@ export default function MainContainer() {
 
     return (
         <>
-
+            {isModalOpen && <div className="body-blackout-style"/>}
             <MainHeader/>
+
             {isModalOpen && modalType === ModalType.CREATE_PROJECT && (
                 <CreationModal title={"Create Project"}
                                comment={"개인용 프로젝트를 생성합니다."}
@@ -126,9 +128,7 @@ export default function MainContainer() {
                                modalType={ModalType.CREATE_PROJECT}/>
             )}
 
-            {isModalOpen && modalType === ModalType.PROJECT_LIST && (
-                <ProjectModal/>
-            )}
+            {isModalOpen && modalType === ModalType.PROJECT_LIST && (<ProjectModal/>)}
 
             {isModalOpen && modalType === ModalType.ISSUE_INFO && (
                 <IssueModal
@@ -154,6 +154,9 @@ export default function MainContainer() {
                                createBtnName={"프로젝트 생성"}
                                modalType={ModalType.CREATE_TEAM_PROJECT}/>
             )}
+
+            {isModalOpen && modalType === ModalType.TEAM_MEMBER_INVITATION && (<InvitationModal/>)}
+
 
 
             <div id={"main-wrapper"}>

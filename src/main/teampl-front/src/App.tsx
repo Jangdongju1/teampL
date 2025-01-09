@@ -61,7 +61,6 @@ function App() {
 
     return (
         <div>
-            {isModalOpen && <div className="body-blackout-style" />}
             <Routes>
                 <Route element={<AuthContainer/>}>
                     <Route path={"/"} element={<Navigate to={`${AUTH_PATH()}/${SIGN_IN_PATH()}`}/>}/>
@@ -73,15 +72,22 @@ function App() {
                 </Route>
 
                 <Route element={<MainContainer/>}>
+
                     <Route path={HOME_PATH()}>
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
-                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard isTeamKanban={false}/>}/>
-                        <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
-                        <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
+                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard/>}/>
+
+
                         <Route path={TEAM_PATH()}>
-                            <Route path={TEAM_PROJECT_BOARD_PATH(":creator", ":projectNum")} element={<KanbanBoard isTeamKanban={true}/>}/>
+                            <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
+                            <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
+                            <Route path={TEAM_PROJECT_BOARD_PATH(":creator", ":projectNum")} element={<KanbanBoard/>}/>
                         </Route>
+
                     </Route>
+
+
+
                 </Route>
             </Routes>
         </div>

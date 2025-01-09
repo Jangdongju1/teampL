@@ -3,7 +3,7 @@ import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate} from "react-router-dom";
 import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
-import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH} from "../../../constant/path";
+import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH, TEAM_PATH} from "../../../constant/path";
 import ModalType from "../../../common/enum/modalType";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
 
@@ -70,7 +70,7 @@ export default function MainHeader() {
         const onMyTeamBtnClickEventHandler = ()=>{
             const encodedEmail = btoa(loginUserEmail);
             setTeamBtnClickState(false);
-            navigator(HOME_PATH()+"/"+TEAM_MAIN_PATH(encodedEmail))
+            navigator(TEAM_MAIN_PATH(encodedEmail));
 
         }
         return (

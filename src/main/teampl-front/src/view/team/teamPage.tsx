@@ -53,15 +53,6 @@ export default function TeamPage() {
         });
     }, [teams]); // teams 배열이 변경될 때만 재계산
 
-    // 검색용 햇을때 필터된 데이터
-    const filteredTableData = () => {
-        // 공백 제거 처리
-        const word = searchWord.trim();
-
-        return viewList.filter
-        (team =>
-            team.teamName.includes(word) || String(team.sequence).includes(word))
-    }
 
     // custom hook : pagination 훅
     const PER_PAGE = 10;
@@ -111,10 +102,10 @@ export default function TeamPage() {
         const theme = useTheme(getTheme());
         const resize = {minWidth: 25}
 
-       // 테이블의 프로젝트 클릭시 이벤트 헨들러
-        const onTableElementClickEventHandler = (teamNum : number, creator : string)=>{
+        // 테이블의 프로젝트 클릭시 이벤트 헨들러
+        const onTableElementClickEventHandler = (teamNum: number, creator: string) => {
             const encodedEmail = btoa(creator);
-            navigator(`${HOME_PATH()}/${TEAM_PROJECT_PATH(encodedEmail, String(teamNum))}`);
+            navigator(`${TEAM_PROJECT_PATH(encodedEmail, String(teamNum))}`);
         }
 
 
@@ -132,7 +123,8 @@ export default function TeamPage() {
                         <Body>
                             {list.map((item, index) =>
 
-                                <Row item={item} onClick={() => onTableElementClickEventHandler(item.regNum, item.creator)}>
+                                <Row item={item}
+                                     onClick={() => onTableElementClickEventHandler(item.regNum, item.creator)}>
                                     <Cell className={"common-table-body-cell draggable"}>{item.teamName}</Cell>
                                     <Cell className={"common-table-body-cell draggable"}>{item.sequence}</Cell>
                                     <Cell className={"common-table-body-cell draggable"}>{item.creator}</Cell>
@@ -153,6 +145,7 @@ export default function TeamPage() {
         )
     }
 
+    // 팀관련 데이터 api 호출
     useEffect(() => {
         const fetchTeamData = async () => {
             if (!accessToken) {
@@ -167,37 +160,57 @@ export default function TeamPage() {
         fetchTeamData()
     }, [loginUserEmail]);
 
+
     // 데이터가 바뀔 때마다  페이지네이션에 대한 데이터를 다시 세팅해야함.
     useEffect(() => {
         setTotalList(tableData)
     }, [teams]);
+
+    // 검색바 상태에 따른 필터링된 데이터를 세팅
+    useEffect(() => {
+        const word = searchWord.trim();
+
+        const filteredData =
+            tableData.filter(team => team.teamName.includes(word) || String(team.sequence).includes(word));
+        setTotalList(filteredData);
+    }, [searchWord]);
+
+
     return (
         <div id={"team-page-wrapper"}>
             <div className={"team-page-top-container"}>
                 <div className={"team-page-title-box"}>
                     <div className={"team-page-title"}>{"나의 팀 목록"}</div>
-                    <SearchBar value={searchWord}
-                               onChange={onSearchWordChangeEventHandler}
-                               placeHolder={"팀이름 또는 시퀀스로 찾기"}/>
+
+                    {teams.length === 0 ? null :
+                        <SearchBar value={searchWord}
+                                   onChange={onSearchWordChangeEventHandler}
+                                   placeHolder={"팀이름 또는 시퀀스로 찾기"}/>
+                    }
+
+
                 </div>
                 <div className={"divider"}></div>
             </div>
 
-            <div className={"team-page-bottom-container"}>
-                <div className={"team-page-bottom-table"}>
-                    <TeamTable data={filteredTableData()}/>
-                </div>
-                <div className={"team-page-bottom-pagination"}>
-                    <ClientSidePagination currentPage={currentPage}
-                                          currentSection={currentSection}
-                                          setCurrentPage={setCurrentPage}
-                                          setCurrentSection={setCurrentSection}
-                                          viewPageList={viewPageList}
-                                          totalSection={totalSection}/>
+            {teams.length === 0 ? <div className={"team-page-data-null"}>{"참여중인 팀이 없습니다."}</div> :
+                <div className={"team-page-bottom-container"}>
+                    <div className={"team-page-bottom-table"}>
+                        <TeamTable data={viewList}/>
+                    </div>
+                    <div className={"team-page-bottom-pagination"}>
+                        <ClientSidePagination currentPage={currentPage}
+                                              currentSection={currentSection}
+                                              setCurrentPage={setCurrentPage}
+                                              setCurrentSection={setCurrentSection}
+                                              viewPageList={viewPageList}
+                                              totalSection={totalSection}/>
+
+                    </div>
 
                 </div>
+            }
 
-            </div>
 
         </div>
     )

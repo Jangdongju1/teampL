@@ -1,9 +1,9 @@
 import "./style.css"
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import SearchBar from "../../component/searchBar/searchBar";
-import {modalStore, teamProjectStore} from "../../store";
+import {kanbanStore, modalStore, teamProjectStore} from "../../store";
 import {useNavigate, useParams} from "react-router-dom";
-import {Project, ProjectTableData, TeamInfo} from "../../interface/types";
+import {ProjectTableData, TeamInfo} from "../../interface/types";
 import {useTheme} from "@table-library/react-table-library/theme";
 import {getTheme} from "@table-library/react-table-library/baseline";
 import {Body, Cell, Header, HeaderCell, HeaderRow, Row, Table} from "@table-library/react-table-library";
@@ -17,6 +17,7 @@ import {ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {getFormattedDate, getTableData} from "../../util";
 import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../constant/path";
+import teamMemberMock from "../../mock/teamMember.mock";
 
 export default function TeamProject() {
     // navigate 함수
@@ -26,20 +27,18 @@ export default function TeamProject() {
     // path variable
     const {email, regNum} = useParams();
     // state : 팀의정보 상태
-    const [info , setInfo] = useState<TeamInfo | null>(null);
+    const [info, setInfo] = useState<TeamInfo | null>(null);
 
     // global state: 팀 프로젝트의 상태
-    const {projects,setProjects} = teamProjectStore();
-    // global state: 모달상태
-    const {setModalType, setIsModalOpen} = modalStore();
+    const {projects, setProjects} = teamProjectStore();
     // global state : 팀 등록번호 저장을 위한 상태
     const {setTeamNumber} = teamParamStore();
     // 쿠키 상태
-    const [cookies ,setCookies] = useCookies();
+    const [cookies, setCookies] = useCookies();
 
     const accessToken = cookies.accessToken_Main;
 
-
+    const { setIsModalOpen, setModalType} = modalStore();
 
 
     // 전역 프로젝트 상태에서 path variable에 맞는 배열을 찾아서 반환해서 보여주기
@@ -52,12 +51,12 @@ export default function TeamProject() {
     }, [projects]);
 
     // function : 팀프로젝트 목록요청에 대한 응답함수
-    const getTeamProjectListResponse = (responseBody:GetTeamProjectListResponse | ResponseDto | null)=>{
+    const getTeamProjectListResponse = (responseBody: GetTeamProjectListResponse | ResponseDto | null) => {
         if (!responseBody) return;
 
-        const {code,message} = responseBody as ResponseDto;
+        const {code, message} = responseBody as ResponseDto;
 
-        if (code !== ResponseCode.SUCCESS){
+        if (code !== ResponseCode.SUCCESS) {
             alert(message);
             return;
         }
@@ -80,6 +79,17 @@ export default function TeamProject() {
         setModalType(ModalType.CREATE_TEAM_PROJECT);
         setIsModalOpen(true);
     }
+
+    //eventHandler : 팀원초대 버튼 클릭 이벤트 헨들러
+    const onTeamMemberInvitationBtnClickEventHandler = () => {
+        setModalType(ModalType.TEAM_MEMBER_INVITATION);
+        setIsModalOpen(true);
+    }
+
+
+
+
+    // 팀프로젝트 테이블 props
     type TeamTableProps = {
         data: ProjectTableData[]
     }
@@ -97,8 +107,9 @@ export default function TeamProject() {
 
         const headers = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
-        const onListClickEventHandler = (projectNum : number, creator :string)=>{
-            navigator(`${HOME_PATH()}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(creator,String(projectNum))}`)
+        const onListClickEventHandler = (projectNum: number, creator: string) => {
+            const  encodedCreator  = btoa(creator);
+            navigator(`${HOME_PATH()}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(encodedCreator, String(projectNum))}`)
         }
 
         return (
@@ -115,10 +126,12 @@ export default function TeamProject() {
 
                         <Body>
                             {list.map(projectData =>
-                                <Row item={projectData} onClick={()=> onListClickEventHandler(projectData.projectNum, projectData.creator)}>
+                                <Row item={projectData}
+                                     onClick={() => onListClickEventHandler(projectData.projectNum, projectData.creator)}>
                                     <Cell
                                         className={"common-table-body-cell draggable"}>{projectData.projectName}</Cell>
-                                    <Cell className={"common-table-body-cell draggable"}>{getFormattedDate(projectData.createDate)}</Cell>
+                                    <Cell
+                                        className={"common-table-body-cell draggable"}>{getFormattedDate(projectData.createDate)}</Cell>
                                     <Cell className={"common-table-body-cell draggable"}>{projectData.creator}</Cell>
                                     <Cell className={"common-table-body-cell draggable"}>{projectData.teamName}</Cell>
                                     <Cell className={"common-table-body-cell draggable"}>
@@ -145,7 +158,7 @@ export default function TeamProject() {
     // 마운트시 실행할 함수
     useEffect(() => {
         if (!accessToken || !regNum) return;
-        const fetchTeamProjectData = async ()=>{
+        const fetchTeamProjectData = async () => {
             const responseBody = await getTeamProjectListRequest(regNum, accessToken);
             getTeamProjectListResponse(responseBody);
         }
@@ -157,7 +170,7 @@ export default function TeamProject() {
         <div id={"team-project-wrapper"}>
             <div className={"team-project-top-container"}>
                 <div className={"team-project-title-box"}>
-                    <div className={"team-project-title"}>{`진행중인 프로젝트`}</div>
+                    <div className={"team-project-title"}>{`팀명: ${info?.teamName}`}</div>
                     <div className={"team-project-search-bar"}>
                         <SearchBar value={searchWord}
                                    onChange={onSearchWordChangeEventHandler}
@@ -189,6 +202,46 @@ export default function TeamProject() {
                             }
                         }
                         onClick={onTeamPrjCreateBtnClickEventHandler}/>
+                </div>
+
+                <div className={"team-project-member-title-box"}>
+                    <div className={"team-project-member-title"}>{"참여중인 팀원"}</div>
+                </div>
+                <div className={"team-project-member-box"}>
+                    <div className={"team-project-member"}>
+
+                        <div className={"team-project-member-item-box"}>
+                            <div className={"team-project-member-items"}>
+                                {/*팀원이 10명 보다 많으면 슬라이스해서 10개만 보여줄 예정*/}
+                                {teamMemberMock.map((item, index) =>
+                                    <div className={"team-project-member-item circle"}></div>
+                                )}
+                            </div>
+                            {teamMemberMock.length < 10 ? null :
+                                <div className={"team-project-member-more-btn"}>
+                                    {"더보기"}
+                                </div>}
+                        </div>
+
+
+                        <div className={"team-project-member-comment-box"}>
+                            <CommonBtn
+                                style={
+                                    {
+                                        size: {width: 120, height: 32},
+                                        btnName: "팀원 초대",
+                                        backgroundColor: "#0C66E4",
+                                        hoverColor: "#0052CC",
+                                        hoverStyle: "background",
+                                        fontSize: 16,
+                                        fontColor: "rgba(255,255,255,1)"
+                                    }
+                                }
+                                onClick={onTeamMemberInvitationBtnClickEventHandler}/>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 

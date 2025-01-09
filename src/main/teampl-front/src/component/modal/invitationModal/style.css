@@ -1,0 +1,193 @@
+.invitation-modal-wrapper{
+    width: 450px;
+    height: 530px;
+    background-color: rgba(255, 255, 255, 1);
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 요소의 중앙을 기준으로 이동 */
+    z-index: 1011;
+    border-radius: 5px;
+
+    /*display: flex;*/
+    /*flex-direction: column;*/
+
+    box-sizing: border-box;
+    padding: 20px;
+}
+.invitation-modal-close-btn{
+    width: 26px;
+    height: 26px;
+    position: absolute;
+
+    right: 5px;
+    top: 5px;
+}
+.invitation-modal-close-btn:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.2);
+}
+.invitation-modal-title-box{
+    width: 100%;
+}
+.invitation-modal-title{
+    font-size: 26px;
+    font-family: "Noto Sans KR Sans KR";
+    font-weight: 500;
+}
+.invitation-modal-search-bar-box{
+    width: 100%;
+    height: 32px;
+}
+
+/* invitation search bar*/
+#invitation-search-bar-wrapper{
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,0.3);
+    box-sizing: border-box;
+    padding: 3px;
+    margin-top: 15px;
+    position: relative;
+}
+.invitation-search-bar-input{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 14px;
+
+    border: none;
+    outline: none;
+}
+
+/*search drop down comp*/
+#search-drop-down-wrapper{
+    position: absolute;
+    width: 410px;
+    max-height: 200px;
+    box-sizing: border-box;
+    padding: 10px 17px 10px 10px;
+    display: flex;
+    right: -1px;
+    top: 30px;
+
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: rgba(255,255,255,1);
+}
+.search-bar-drop-down-title{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    color: #676879;
+    font-weight: 600;
+}
+.search-drop-down-item-box{
+    width: inherit;
+    height: inherit;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+.search-drop-down-info-box{
+    margin-top: 10px;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    gap: 10px;
+}
+.search-drop-down-profile-image{
+    width: 26px;
+    height: 26px;
+}
+
+.search-drop-down-email{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.search-drop-down-data-null{
+    margin-top: 10px;
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    color: #676879;
+}
+.search-drop-down-info-box:hover{
+    background-color: rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+.invitation-selected-user-box{
+    margin-top: 20px;
+    width: 100%;
+    height: 300px;
+    box-sizing: border-box;
+    padding: 5px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.invitation-selected-user-title{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 14px;
+    font-weight: 500;
+}
+.invitation-selected-user-item-box{
+    width: inherit;
+    max-height: 250px;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 10px 17px 10px 10px;
+
+    overflow-x: auto;
+}
+.invitation-selected-user-info-box{
+    width: 100%;
+    height: 30px;
+    display: flex;
+    gap: 10px;
+}
+.invitation-selected-user-profile-image{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.invitation-selected-user-email{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 14px;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.invitation-selected-user-delete-icon-box{
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.invitation-selected-user-delete-icon{
+    width: 16px;
+    height: 16px;
+}
+.invitation-selected-user-delete-icon:hover{
+    background-color: rgba(0,0,0,0.3);
+}
+.invitation-selected-user-info-box:hover .invitation-selected-user-delete-icon-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.invitation-selected-user-data-null{
+    font-size: 14px;
+    font-family: "Noto Sans KR Sans KR";
+    color: #676879;
+}

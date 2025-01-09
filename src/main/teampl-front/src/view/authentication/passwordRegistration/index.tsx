@@ -68,6 +68,7 @@ export default function PasswordRegistration() {
             const {data}  = responseBody as SignUpResponse;
             const cookieExpireTime = new Date(new Date().getTime() + data.expireTimeSec * 1000);
             setCookie("accessToken_Main", data.accessToken_Main, {expires:cookieExpireTime, path:`/`})  //메인 페스만 유효한 것으로수정
+            alert("회원가입이 되었습니다.")
             // 메인페이지로 네비게이트
         }
     }
@@ -111,7 +112,7 @@ export default function PasswordRegistration() {
 
                     <div className={"bottom-container"}>
                         <div className={"password-reg-button-container"}>
-                            <div className={"password-reg-sign-up-button"}>{"가입하기"}</div>
+                            <div onClick={onSignUpBtnClickEventHandler} className={"password-reg-sign-up-button"}>{"가입하기"}</div>
                         </div>
 
                         <div className={"password-reg-etc-comment-container"}>

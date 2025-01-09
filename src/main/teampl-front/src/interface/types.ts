@@ -94,4 +94,10 @@ export type ProjectTableData = {
     unProcessed: number,
     id: number
 }
+// 팀원 검색에 대한 결과를 받아올 객체
+export type SearchUser = {
+    email : string,
+    profileImg : string | null,
+    nickname : string | null
+}
 

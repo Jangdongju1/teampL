@@ -20,16 +20,13 @@ import {PatchIssueStatusDragRequest} from "../../interface/request";
 import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIssueStatusDragResponse";
 import {getKanbanName} from "../../constant/issueConstants";
 import kanbanStore from "../../store/kanbanStore";
+import {HOME_PATH, TEAM_PATH} from "../../constant/path";
 
-type KanbanType = {
-    isTeamKanban: boolean
-}
 
-export default function KanbanBoard(props: KanbanType) {
+
+export default function KanbanBoard() {
     //  상태 갱신을 위한 location
     const location = useLocation();
-    // pros:칸반타입 >> 1)개인프로젝트 칸반보드 2) 팀프로젝트 칸반보드
-    const {isTeamKanban} = props
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
     const [topMenu, setTopMenu] = useState<"kanban" | "main">("kanban");
 
@@ -39,6 +36,8 @@ export default function KanbanBoard(props: KanbanType) {
     //* state: 프로젝트 상태
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
+    //global state : 칸반 상태
+    const {isTeamKanban,setIsTeamKanban}=kanbanStore();
 
     //* state : 칸반보드 패널의 추가버튼 렌더링 상태
     const [addBtnRenderState, setAddBtnRenderState] =
@@ -311,7 +310,14 @@ export default function KanbanBoard(props: KanbanType) {
         patchDragIssueResponse(responseBody);
     }
 
+    useEffect(() => {
+        const pathName = location.pathname;
+        const teamKanbanPath = HOME_PATH()+"/"+TEAM_PATH()
+        if (pathName.startsWith(teamKanbanPath))  setIsTeamKanban(true);
+        else setIsTeamKanban(false);
 
+
+    }, [location]);
     useEffect(() => {
         const fetchProjectInfo = async () => {
             if (!accessToken || projectNum === undefined) return;
@@ -326,7 +332,6 @@ export default function KanbanBoard(props: KanbanType) {
 
 
     useEffect(() => {
-        // api 호출없이도 totalIssues를 자식 컴포넌트로 보내서 리렌더링 되도록 바꿀 예정.
         if (!accessToken || projectNum === undefined) return;
 
         const fetchIssueList = async () => {
