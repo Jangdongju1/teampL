@@ -5,10 +5,8 @@ import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.entities.QTeamEntity;
 import com.persnal.teampl.entities.QTeamMemberEntity;
 import com.persnal.teampl.entities.QUserEntity;
-import com.persnal.teampl.entities.compositeKey.QTeamMemberPk;
 import com.persnal.teampl.repository.queryDSL.MemberCustomRepository;
 import com.persnal.teampl.util.Utils;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,7 +27,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
             QUserEntity user = QUserEntity.userEntity;
             QTeamEntity team = QTeamEntity.teamEntity;
             QTeamMemberEntity teamMember = QTeamMemberEntity.teamMemberEntity;
-            QTeamMemberPk teamMemberPk = QTeamMemberPk.teamMemberPk;
+
 //
 //            list = queryFactory.select(Projections.constructor(TeamMemberObj.class,
 //                            teamMember.teamMemberPk,

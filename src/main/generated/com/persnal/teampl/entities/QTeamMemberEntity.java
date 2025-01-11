@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,26 +18,37 @@ public class QTeamMemberEntity extends EntityPathBase<TeamMemberEntity> {
 
     private static final long serialVersionUID = 510091306L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QTeamMemberEntity teamMemberEntity = new QTeamMemberEntity("teamMemberEntity");
 
     public final BooleanPath isWithdrawal = createBoolean("isWithdrawal");
 
     public final NumberPath<Integer> position = createNumber("position", Integer.class);
 
-    //public final SimplePath<com.persnal.teampl.entities.compositeKey.TeamMemberPk> teamMemberPk = createSimple("teamMemberPk", com.persnal.teampl.entities.compositeKey.TeamMemberPk.class);
+    public final com.persnal.teampl.entities.compositeKey.QTeamMemberPk teamMemberPk;
 
     public final NumberPath<Integer> teamRole = createNumber("teamRole", Integer.class);
 
     public QTeamMemberEntity(String variable) {
-        super(TeamMemberEntity.class, forVariable(variable));
+        this(TeamMemberEntity.class, forVariable(variable), INITS);
     }
 
     public QTeamMemberEntity(Path<? extends TeamMemberEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QTeamMemberEntity(PathMetadata metadata) {
-        super(TeamMemberEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QTeamMemberEntity(PathMetadata metadata, PathInits inits) {
+        this(TeamMemberEntity.class, metadata, inits);
+    }
+
+    public QTeamMemberEntity(Class<? extends TeamMemberEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.teamMemberPk = inits.isInitialized("teamMemberPk") ? new com.persnal.teampl.entities.compositeKey.QTeamMemberPk(forProperty("teamMemberPk")) : null;
     }
 
 }
