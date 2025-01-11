@@ -11,6 +11,7 @@ type CommonBtnProps = {
         btnName?: string,
         fontSize?: number,
         fontColor?: string
+        border?  : string
     }
 }
 export default function CommonBtn({onClick, style}: CommonBtnProps) {
@@ -21,7 +22,8 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
         fontSize,
         fontColor,
         hoverColor,
-        hoverStyle
+        hoverStyle,
+        border
     } = style;
 
     // eventHandler : 마우스 엔터시 이벤트
@@ -64,6 +66,7 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
                      height: `${size.height}px`,
                      fontSize: `${fontSize}px`,
                      color: fontColor,
+                     border : border? border : ""
                  }}
                  onClick={onClick}
                  onMouseEnter={onMouseEnterEventHandler}

@@ -1,18 +1,33 @@
 import "./style.css";
-import {modalStore} from "../../../store";
+import {modalStore, teamStore, userEmailStore} from "../../../store";
 import {ModalType} from "../../../common";
-import React, {ChangeEvent, useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import InitialsImg from "../../InitialsImg";
 import {SearchUser} from "../../../interface/types";
-import searchUserMock from "../../../mock/searchMember.mock";
 import CommonBtn from "../../btn";
 import {debounce} from "lodash";
+import {useCookies} from "react-cookie";
+import {getSearchUserRequest} from "../../../api/userApi";
+import {GetSearchUserResponse, ResponseDto} from "../../../interface/response";
+import ResponseCode from "../../../common/enum/responseCode";
+import teamParamStore from "../../../store/teamParamStore";
+import {useParams} from "react-router-dom";
+import {InvitationMemberRequest} from "../../../interface/request";
+import {invitationTeamMemberRequest} from "../../../api/teamApi";
+import InvitationMemberResponse from "../../../interface/response/team/invitationMemberResponse";
+import ConfirmModal from "../ confim/confirmModal";
 
 
 export default function InvitationModal() {
+    // pathVariable
+    const {regNum} = useParams();
     // globalState  : 모달 상태
     const {setModalType, setIsModalOpen} = modalStore();
+    // globalState : 로그인한 유저
+    const {loginUserEmail} = userEmailStore();
 
+    // globalState : 팀 등록번호 관련 전역상태;
+    const {teamNumber, setTeamNumber} = teamParamStore();
     // state: 검색바 드롭다운  상태;
     const [dropDownData, setDropDownData] =
         useState<{ isOpen: boolean, data: SearchUser[] }>({isOpen: false, data: []});
@@ -20,22 +35,76 @@ export default function InvitationModal() {
     // state: 선택된 인원에 대한 상태 관리
     const [selected, setSelected] = useState<SearchUser[]>([]);
 
-
     // state :검색바 상태
     const [searchWord, setSearchWord] = useState<string>("");
 
+    // state : 팀원 초대 관련 확인용 모달 오픈상태
+    const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
+
+    // 쿠키 및 accessToken 상태
+    const [cookies, setCookies] = useCookies();
+    const accessToken = cookies.accessToken_Main;
+
+    // email 관련 정규식
+    const regex = new RegExp("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+
+
+    // function: 팀 멤버 초대요청에 대한 응답처리함수
+    const inviteTeamMemberResponse = (responseBody: InvitationMemberResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+        alert("초대 요청을 보냈습니다.")
+    }
+    // function : 유저 검색에 대한 응답처리 함수.
+    const getSearchUserResponse = (responseBody: GetSearchUserResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetSearchUserResponse;
+
+        const updateStates = {isOpen: true, data: data.list}
+
+        setDropDownData(updateStates);
+    }
+
     // function: 검색함수
-    const handleSearch = useCallback((query: string) => {
-        console.log(query);
+    const handleSearch = useCallback((word: string) => {
+        const isMatch = regex.test(word);
+        // 이메일에 관련된 정규 표현식에 맞지 않을때 무시함.
+        if (!isMatch || !accessToken) return;
+
         // api호출 및 상태 세팅
+        const fetchUserData = async () => {
+            const responseBody = await getSearchUserRequest(word, accessToken);
+            getSearchUserResponse(responseBody);
+        }
+
+        fetchUserData();
     }, [])
 
 
-    // 500밀리 세컨이 지나고나서 실행되도록 debounce를 적용함.
+    // 1000ms(1sec)이 지나고나서 실행되도록 debounce를 적용함.
     const debounceSearch = useCallback(debounce(handleSearch, 1000), []);
 
-    // eventHandler : 닫기버튼 클릭 이벤트 헨드러
+    // eventHandler : 닫기버튼 클릭 이벤트 헨들러
     const onModalCloseBtnClickEventHandler = () => {
+        setDropDownData(prevState => ({
+            ...prevState,
+            isOpen: false,
+            data: []
+        }));
+
         setModalType(ModalType.NONE);
         setIsModalOpen(false);
     }
@@ -44,21 +113,54 @@ export default function InvitationModal() {
     const onSearchBarChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchWord(value);
-        if (value.length > 3) {
-            debounceSearch(value);
-        }else {  // 3글자 미만일때 검색을 취소해 주어야 이전 상태에서의 타이머가 취소된다.
-            debounceSearch.cancel();
-        }
 
+        if (regex.test(value)) {
+            if (value === loginUserEmail) return;
+            debounceSearch(value);
+        } else {
+            debounceSearch.cancel();
+            setDropDownData(prevState => ({
+                ...prevState,
+                isOpen: false,
+                data: []
+            }));
+        }
     }
 
-    // 선택된유저의 삭제버튼 클릭 이벤트 헨들러
+    // eventHandler: 선택된유저의 삭제버튼 클릭 이벤트 헨들러
     const onDeleteBtnClickEventHandler = (element: SearchUser) => {
         setSelected(prevState => {
             return prevState.filter(user => user.email !== element.email);
         })
     }
 
+    // eventHandler  : 팀원 초대 버튼 클릭 이벤트 헨들러
+    const onInvitationConfirmBtnClickEventHandler = () => {
+        if (!accessToken || selected.length === 0 || !teamNumber) return;
+        const members: string[] = [];
+
+        for (const item of selected) {
+            members.push(item.email);
+        }
+
+        // 요청 바디
+        const requestBody: InvitationMemberRequest = {regNum: teamNumber, members};
+
+        const inviteTeamMember = async () => {
+            const responseBody = await invitationTeamMemberRequest(requestBody, accessToken);
+            inviteTeamMemberResponse(responseBody);
+        }
+        inviteTeamMember();
+    }
+    // eventHandler : 확인창  취소버튼 클릭 이벤트 헨들러
+    const onCancelBtnClickEventHandler = ()=>{
+        setIsConfirmOpen(false);
+    }
+
+    // eventHandler : 팀원초대버튼 클릭 이벤트 헨들러
+    const onMemberInvitationBtnClickEventHandler = () => {
+        setIsConfirmOpen(true);
+    }
 
     // type:드롭다운에 전달할 props
     type SearchDropDownProps = {
@@ -83,14 +185,13 @@ export default function InvitationModal() {
             })
         }
 
-
         return (
             <div id={"search-drop-down-wrapper"}>
                 <div className={"search-drop-down-item-box"}>
                     <div className={"search-bar-drop-down-title"}>{"사람"}</div>
 
-                    {searchUserMock.length !== 0 ?
-                        searchUserMock.map((item, index) =>
+                    {dropDownData.data.length !== 0 ?
+                        dropDownData.data.map((item, index) =>
                             <div className={"search-drop-down-info-box"}
                                  onClick={() => onSearchUserListClickEventHandler(item)}>
                                 <div className={"search-drop-down-profile-image"}>
@@ -106,8 +207,12 @@ export default function InvitationModal() {
         )
     }
 
+
     return (
         <div className={"invitation-modal-wrapper"}>
+            {isConfirmOpen && (
+                <div className={"invitation-modal-blur"}></div>
+            )}
             <div onClick={onModalCloseBtnClickEventHandler}
                  className={"icon invitation-modal-close-btn close-icon"}></div>
 
@@ -119,7 +224,7 @@ export default function InvitationModal() {
                 <div id={"invitation-search-bar-wrapper"}>
                     <input className={"invitation-search-bar-input"}
                            type={"text"}
-                           placeholder={"이메일로 검색하기"}
+                           placeholder={"이메일로 검색 ex) example@example.com"}
                            value={searchWord}
                            onChange={onSearchBarChangeEventHandler}
                     />
@@ -140,7 +245,7 @@ export default function InvitationModal() {
 
                         {selected.length !== 0 ?
                             selected.map((item, index) =>
-                                <div className={"invitation-selected-user-info-box"}>
+                                <div key={index} className={"invitation-selected-user-info-box"}>
                                     <div className={"invitation-selected-user-profile-image"}>
                                         <InitialsImg name={item.email} width={20} height={20}/>
 
@@ -172,8 +277,20 @@ export default function InvitationModal() {
                             fontColor: "rgba(255,255,255,1)"
                         }
                     }
-                    onClick={() => console.log("초대")}/>
+                    onClick={onMemberInvitationBtnClickEventHandler}/>
             </div>
+
+            {isConfirmOpen && (<ConfirmModal
+                cssOption={
+                    {
+                        size: {width: 350, height: 150},
+                        icon: "invitation-icon",
+                    }}
+                comment={"선택하신 팀원을 초대합니다."}
+                detail={"선택하신 팀원을 초대하시겠습니까?"}
+                confirm={() => console.log("확인")}
+                cancel={onCancelBtnClickEventHandler}
+            />)}
 
 
         </div>

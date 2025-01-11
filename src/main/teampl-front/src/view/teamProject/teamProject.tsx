@@ -20,6 +20,7 @@ import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../constant/path
 import teamMemberMock from "../../mock/teamMember.mock";
 import {getTeamMemberListRequest} from "../../api/teamApi";
 import GetTeamMemberResponse from "../../interface/response/team/getTeamMemberResponse";
+import InitialsImg from "../../component/InitialsImg";
 
 export default function TeamProject() {
     // navigate 함수
@@ -35,6 +36,8 @@ export default function TeamProject() {
     const {projects, setProjects} = teamProjectStore();
     // state : 팀 멤버 상태
     const [teamMember, setTeamMember ]= useState<TeamMember[]>([]);
+    // 팀 멤버는 10명까지만 보이고 나머지는 더보기를 클릭했을때 보이도록 할 것이다.
+    const displayTeamMember = teamMember.length >= 10? teamMember.slice(0,9) : teamMember;
 
     // global state : 팀 등록번호 저장을 위한 상태
     const {setTeamNumber} = teamParamStore();
@@ -44,6 +47,8 @@ export default function TeamProject() {
     const accessToken = cookies.accessToken_Main;
 
     const {setIsModalOpen, setModalType} = modalStore();
+
+
 
 
     // 전역 프로젝트 상태에서 path variable에 맞는 배열을 찾아서 반환해서 보여주기
@@ -95,7 +100,6 @@ export default function TeamProject() {
 
     //eventHandler : 팀프로젝트 생성 버튼 클릭 이벤트 헨들러
     const onTeamPrjCreateBtnClickEventHandler = () => {
-        setTeamNumber(regNum ? parseInt(regNum, 10) : null);
         setModalType(ModalType.CREATE_TEAM_PROJECT);
         setIsModalOpen(true);
     }
@@ -190,10 +194,20 @@ export default function TeamProject() {
 
             getTeamMemberResponse(responseBody);
         }
+        fetchTeamMember();
     }, [regNum]);
+
+    // 모달 전달용 전역상태 세팅
+    useEffect(() => {
+        if (!regNum) return;
+        setTeamNumber(parseInt(regNum,10));
+    }, [regNum]);
+
+
 
     return (
         <div id={"team-project-wrapper"}>
+
             <div className={"team-project-top-container"}>
                 <div className={"team-project-title-box"}>
                     <div className={"team-project-title"}>{`팀명: ${info?.teamName}`}</div>
@@ -239,11 +253,14 @@ export default function TeamProject() {
                         <div className={"team-project-member-item-box"}>
                             <div className={"team-project-member-items"}>
                                 {/*팀원이 10명 보다 많으면 슬라이스해서 10개만 보여줄 예정*/}
-                                {teamMemberMock.map((item, index) =>
-                                    <div key={index} className={"team-project-member-item circle"}></div>
-                                )}
+                                {displayTeamMember.map((item, index) => {
+                                        return item.profileImg ?
+                                            <div key={index} className={"team-project-member-item circle"}
+                                                 style={{backgroundImage : `url(${item.profileImg})`}}></div> :
+                                            <InitialsImg name={item.email} width={40} height={40}/>
+                                    })}
                             </div>
-                            {teamMemberMock.length < 10 ? null :
+                            {teamMember.length < 10 ? null :
                                 <div className={"team-project-member-more-btn"}>
                                     {"더보기"}
                                 </div>}

@@ -68,6 +68,8 @@
     height: 72px;
     background-color: #f5f6f8;
     border-radius: 10px;
+    box-sizing: border-box;
+    padding: 0 10px;
 
     display: flex;
     justify-content: space-between;
@@ -103,6 +105,9 @@
     display: flex;
     gap: 5px;
     max-width: 475px;
+
+    background-size: 100% 100%;
+    background-position: 50% 50%;
 }
 .team-project-member-more-btn{
     font-family: "Noto Sans KR Sans KR";

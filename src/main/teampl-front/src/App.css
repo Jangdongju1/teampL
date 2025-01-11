@@ -175,6 +175,12 @@
 .my-team-icon {
     background-image: url("asset/my_team_icon.png");
 }
+.invitation-icon{
+    background-image: url("asset/invitation_icon.png");
+}
+.warning-icon{
+    background-image: url("asset/warning_icon.png");
+}
 
 .divider {
     height: 0;

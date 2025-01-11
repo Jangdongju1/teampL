@@ -44,20 +44,4 @@ public class UserEntity {
 
     }
 
-    public static UserEntity fromRequest(String email){
-        return UserEntity.builder()
-                .email(email)
-                .build();
-    }
-
-//    public UserEntity(String password, String nickname, String email) {
-//        this.password = password;
-//        this.email = email;
-//        if (nickname.isEmpty()) {
-//            this.nickname = email;
-//        } else {
-//            this.nickname = nickname;
-//        }
-//    }
-
 }

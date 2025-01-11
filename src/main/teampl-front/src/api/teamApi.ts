@@ -1,8 +1,9 @@
-import {CREATE_TEAM, DOMAIN, GET_TEAM, GET_TEAM_MEMBER} from "../constant/indicator";
-import {CreateTeamRequest} from "../interface/request";
+import {CREATE_TEAM, DOMAIN, GET_TEAM, GET_TEAM_MEMBER, POST_INVITATION_TEAM_MEMBER} from "../constant/indicator";
+import {CreateTeamRequest, InvitationMemberRequest} from "../interface/request";
 import axios, {isAxiosError} from "axios";
 import {CreateTeamResponse, GetTeamResponse, ResponseDto} from "../interface/response";
 import GetTeamMemberResponse from "../interface/response/team/getTeamMemberResponse";
+import InvitationMemberResponse from "../interface/response/team/invitationMemberResponse";
 
 const BASE_URL = "/api/v1/team"
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
@@ -74,6 +75,30 @@ export const getTeamMemberListRequest = async (regNum: string, accessToken: stri
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         } else {
+            console.error(error);
+            return null;
+        }
+    }
+}
+
+//팀원 초대 요청
+export const invitationTeamMemberRequest = async (requestBody : InvitationMemberRequest, accessToken : string)=>{
+    try {
+        const result =
+           await axios.post(apiEndPoint(POST_INVITATION_TEAM_MEMBER()), requestBody, Authorization(accessToken));
+
+        const responseBody : InvitationMemberResponse = result.data;
+        return responseBody;
+
+    }catch (error){
+        if (axios.isAxiosError(error)){
+            if (!error.response){
+                console.log("Unexpected Axios Error!!", error.message);
+                return null;
+            }
+            const responseBody : ResponseDto = error.response.data;
+            return responseBody;
+        }else {
             console.error(error);
             return null;
         }

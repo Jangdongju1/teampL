@@ -14,7 +14,7 @@ import {getFormattedDate} from "../../util";
 import useCSPagination from "../../hook/pagination/client/pagination_client";
 import ClientSidePagination from "../../component/pagination/client";
 import {useNavigate} from "react-router-dom";
-import {HOME_PATH, TEAM_PROJECT_PATH} from "../../constant/path";
+import {TEAM_PROJECT_PATH} from "../../constant/path";
 
 export default function TeamPage() {
     //네이게이트 함수

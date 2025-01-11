@@ -20,6 +20,7 @@ import GetCommentCountResponse from "./issue/getCommentCountResponse";
 import GetProjectListResponse from "./project/getProjectListResponse";
 import CreateTeamResponse from "./team/createTeamResponse";
 import GetTeamResponse from "./team/getTeamResponse";
+import GetSearchUserResponse from "./user/getSearchUserResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -42,5 +43,6 @@ export type {
     GetCommentCountResponse,
     GetProjectListResponse,
     CreateTeamResponse,
-    GetTeamResponse
+    GetTeamResponse,
+    GetSearchUserResponse
 }

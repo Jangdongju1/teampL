@@ -58,6 +58,7 @@ public class TeamServiceImpl implements TeamService {
                     .sequence(team.getSequence())
                     .build();
 
+
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
@@ -99,6 +100,6 @@ public class TeamServiceImpl implements TeamService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return null;
+        return GetTeamMemberResponse.success(list);
     }
 }

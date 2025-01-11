@@ -1,4 +1,5 @@
 import {create} from "zustand/react";
+// 타입별 모달의 오픈 및 클로즈를 담당하는 전역 상태
 
 interface Modal {
     modalType : string,
@@ -8,7 +9,6 @@ interface Modal {
     setModalType:(type:string) => void,
 }
 
-// 필요한 모달의 숫자는 3 ~ 4개 정도가 있음.
 const modalStore = create<Modal>(setState => ({
     modalType : "",
     isModalOpen: false,

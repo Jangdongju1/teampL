@@ -25,6 +25,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     public List<TeamMemberObj> getTeamMemberList(String email, Integer regNum) {
         List<TeamMemberObj> list = null;
         try {
+
             QUserEntity user = QUserEntity.userEntity;
             QTeamEntity team = QTeamEntity.teamEntity;
             QTeamMemberEntity teamMember = QTeamMemberEntity.teamMemberEntity;

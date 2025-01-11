@@ -1,15 +1,14 @@
 package com.persnal.teampl.dto.obj;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-public class TeamMemberObj {
-    private Integer regNum;
+public class SearchUserObj {
     private String email;
+    private String nickname;
     private String profileImg;
-    private String teamName;
 }

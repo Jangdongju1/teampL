@@ -5,11 +5,13 @@ import com.persnal.teampl.common.ResponseMessage;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+@Getter
 public class GetTeamMemberResponse {
     private final List<TeamMemberObj> list;
 

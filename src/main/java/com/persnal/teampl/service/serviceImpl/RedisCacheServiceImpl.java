@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 
 @Service
-public class RedisServiceImpl implements RedisCacheService {
+public class RedisCacheServiceImpl implements RedisCacheService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private ValueOperations<String, Object> valueOperations;
     @Value("${token.expire.auth-code-token}")
     int cacheDataExpireTime;
 
-    public RedisServiceImpl(@Qualifier("redisTempForCache") RedisTemplate<String, Object> redisTemplate) {
+    public RedisCacheServiceImpl(@Qualifier("redisTempForCache") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate; //생성자 주입
 
     }

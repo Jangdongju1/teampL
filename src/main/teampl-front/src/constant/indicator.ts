@@ -1,6 +1,8 @@
 // api 호출 URL에 대한 식별자
 
 //common;
+import {escapeRegExp} from "lodash";
+
 export const DOMAIN = "http://localhost:4000"
 
 
@@ -42,5 +44,9 @@ export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 
 // team
 export const CREATE_TEAM = () => "/create-team";
-export const GET_TEAM = () => "/team-list"
-export const GET_TEAM_MEMBER = (regNum:string)=> `/team-member?regNum=${regNum}`
+export const GET_TEAM = () => "/team-list";
+export const GET_TEAM_MEMBER = (regNum:string)=> `/team-member?regNum=${regNum}`;
+export const POST_INVITATION_TEAM_MEMBER = ()=>"/invitation-member";
+
+// user
+export const GET_SEARCH_USER =(word: string)=>`/search-user?word=${word}`;

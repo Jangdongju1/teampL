@@ -64,6 +64,8 @@ public class ProjectServiceImpl implements ProjectService {
 
             ProjectEntity projectEntity = ProjectEntity.fromRequest(email, req);
 
+            projectRepository.save(projectEntity);
+
             info = ProjectObj.builder()
                     .projectNum(projectEntity.getProjectNum())
                     .projectName(projectEntity.getProjectName())
@@ -78,7 +80,6 @@ public class ProjectServiceImpl implements ProjectService {
                     .totalIssueCnt(0L) // 기본값
                     .build();
 
-            projectRepository.save(projectEntity);
 
 
         } catch (Exception e) {
