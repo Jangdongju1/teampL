@@ -101,3 +101,11 @@ export type SearchUser = {
     nickname : string | null
 }
 
+export type TeamMember = {
+    regNum : number,
+    email : string,
+    nickname : string | null,
+    profileImg : string | null,
+    teamName : string
+}
+

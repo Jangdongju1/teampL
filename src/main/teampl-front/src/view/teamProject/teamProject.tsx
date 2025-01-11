@@ -3,7 +3,7 @@ import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import SearchBar from "../../component/searchBar/searchBar";
 import {kanbanStore, modalStore, teamProjectStore} from "../../store";
 import {useNavigate, useParams} from "react-router-dom";
-import {ProjectTableData, TeamInfo} from "../../interface/types";
+import {ProjectTableData, TeamInfo, TeamMember} from "../../interface/types";
 import {useTheme} from "@table-library/react-table-library/theme";
 import {getTheme} from "@table-library/react-table-library/baseline";
 import {Body, Cell, Header, HeaderCell, HeaderRow, Row, Table} from "@table-library/react-table-library";
@@ -18,6 +18,8 @@ import ResponseCode from "../../common/enum/responseCode";
 import {getFormattedDate, getTableData} from "../../util";
 import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../constant/path";
 import teamMemberMock from "../../mock/teamMember.mock";
+import {getTeamMemberListRequest} from "../../api/teamApi";
+import GetTeamMemberResponse from "../../interface/response/team/getTeamMemberResponse";
 
 export default function TeamProject() {
     // navigate 함수
@@ -31,6 +33,9 @@ export default function TeamProject() {
 
     // global state: 팀 프로젝트의 상태
     const {projects, setProjects} = teamProjectStore();
+    // state : 팀 멤버 상태
+    const [teamMember, setTeamMember ]= useState<TeamMember[]>([]);
+
     // global state : 팀 등록번호 저장을 위한 상태
     const {setTeamNumber} = teamParamStore();
     // 쿠키 상태
@@ -38,7 +43,7 @@ export default function TeamProject() {
 
     const accessToken = cookies.accessToken_Main;
 
-    const { setIsModalOpen, setModalType} = modalStore();
+    const {setIsModalOpen, setModalType} = modalStore();
 
 
     // 전역 프로젝트 상태에서 path variable에 맞는 배열을 찾아서 반환해서 보여주기
@@ -49,6 +54,23 @@ export default function TeamProject() {
         return getTableData(list);
 
     }, [projects]);
+
+
+
+    //function: 팀원 목록 요청에 대한 응답처리 함수.
+    const getTeamMemberResponse = (responseBody : GetTeamMemberResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
+        const {code,message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+        const {data} = responseBody as GetTeamMemberResponse;
+        // 팀멤버를 가져오는 api호출 후 상태 세팅
+        setTeamMember(data.list);
+    }
 
     // function : 팀프로젝트 목록요청에 대한 응답함수
     const getTeamProjectListResponse = (responseBody: GetTeamProjectListResponse | ResponseDto | null) => {
@@ -85,8 +107,6 @@ export default function TeamProject() {
     }
 
 
-
-
     // 팀프로젝트 테이블 props
     type TeamTableProps = {
         data: ProjectTableData[]
@@ -106,7 +126,7 @@ export default function TeamProject() {
         const headers = ["ProjectName", "CreateDate", "Creator", "TeamName", "Stat", "Processed", "UnProcessed"]
 
         const onListClickEventHandler = (projectNum: number, creator: string) => {
-            const  encodedCreator  = btoa(creator);
+            const encodedCreator = btoa(creator);
             navigator(`${HOME_PATH()}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(encodedCreator, String(projectNum))}`)
         }
 
@@ -116,15 +136,15 @@ export default function TeamProject() {
                     <>
                         <Header>
                             <HeaderRow>
-                                {headers.map(header =>
-                                    <HeaderCell className={"common-table-header"} resize={resize}>{header}</HeaderCell>
+                                {headers.map((header, index) =>
+                                    <HeaderCell key={index} className={"common-table-header"} resize={resize}>{header}</HeaderCell>
                                 )}
                             </HeaderRow>
                         </Header>
 
                         <Body>
-                            {list.map(projectData =>
-                                <Row item={projectData}
+                            {list.map((projectData, index) =>
+                                <Row key={index} item={projectData}
                                      onClick={() => onListClickEventHandler(projectData.projectNum, projectData.creator)}>
                                     <Cell
                                         className={"common-table-body-cell draggable"}>{projectData.projectName}</Cell>
@@ -153,7 +173,7 @@ export default function TeamProject() {
         )
     }
 
-    // 마운트시 실행할 함수
+    // 마운트시 실행할 함수 : 프로젝트의 정보와 프로젝트의 리스트를 가져오는 api호출
     useEffect(() => {
         if (!accessToken || !regNum) return;
         const fetchTeamProjectData = async () => {
@@ -161,7 +181,16 @@ export default function TeamProject() {
             getTeamProjectListResponse(responseBody);
         }
         fetchTeamProjectData();
-    }, []);
+    }, [regNum]);// path variable 변경시 제호출 되어야 한다.
+
+    useEffect(() => {
+        if (!accessToken || !regNum) return;
+        const fetchTeamMember = async () => {
+            const responseBody = await getTeamMemberListRequest(regNum, accessToken);
+
+            getTeamMemberResponse(responseBody);
+        }
+    }, [regNum]);
 
     return (
         <div id={"team-project-wrapper"}>
@@ -211,7 +240,7 @@ export default function TeamProject() {
                             <div className={"team-project-member-items"}>
                                 {/*팀원이 10명 보다 많으면 슬라이스해서 10개만 보여줄 예정*/}
                                 {teamMemberMock.map((item, index) =>
-                                    <div className={"team-project-member-item circle"}></div>
+                                    <div key={index} className={"team-project-member-item circle"}></div>
                                 )}
                             </div>
                             {teamMemberMock.length < 10 ? null :

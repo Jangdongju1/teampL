@@ -4,6 +4,7 @@ import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.team.CreateTeamResponse;
 import com.persnal.teampl.dto.response.team.GetTeamListResponse;
+import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
 import com.persnal.teampl.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,16 @@ public class TeamController {
 
     @GetMapping("/team-list")
     public ResponseEntity<? super ApiResponse<GetTeamListResponse>> getTeamList(
-            @AuthenticationPrincipal String email
-    ){
-
+            @AuthenticationPrincipal String email) {
         return teamService.getTeamList(email);
     }
+
+
+    @GetMapping("/team-member")
+    public ResponseEntity<? super ApiResponse<GetTeamMemberResponse>> getTeamMemberList(
+            @AuthenticationPrincipal String email,
+            @RequestParam("regNum") Integer regNum){
+        return teamService.getTeamMemberList(email, regNum);
+    }
+
 }

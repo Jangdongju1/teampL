@@ -2,11 +2,13 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.CreatedTeamInfo;
+import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.team.CreateTeamResponse;
 import com.persnal.teampl.dto.response.team.GetTeamListResponse;
+import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
 import com.persnal.teampl.entities.TeamEntity;
 import com.persnal.teampl.entities.TeamMemberEntity;
 import com.persnal.teampl.repository.jpa.MemberRepository;
@@ -79,5 +81,24 @@ public class TeamServiceImpl implements TeamService {
             return ResponseDto.initialServerError();
         }
         return GetTeamListResponse.success(list);
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetTeamMemberResponse>> getTeamMemberList(String email, Integer regNum) {
+        List<TeamMemberObj> list = null;
+        try {
+            boolean isExistTeam = teamRepository.existsById(regNum);
+
+            if (!isExistTeam) return GetTeamMemberResponse.notExistTeam();
+
+            list = memberRepository.getTeamMemberList(email, regNum);
+
+            System.out.println(list.size());
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return null;
     }
 }

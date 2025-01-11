@@ -43,3 +43,4 @@ export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 // team
 export const CREATE_TEAM = () => "/create-team";
 export const GET_TEAM = () => "/team-list"
+export const GET_TEAM_MEMBER = (regNum:string)=> `/team-member?regNum=${regNum}`

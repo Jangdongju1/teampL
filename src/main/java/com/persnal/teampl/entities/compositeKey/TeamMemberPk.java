@@ -1,6 +1,7 @@
 package com.persnal.teampl.entities.compositeKey;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,11 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class TeamMemberPk implements Serializable {
     // 복합키 지정
     @Column(name = "email")
     private String email;
     @Column(name = "regNum")
-    private int regNum;
+    private Integer regNum;
 }
