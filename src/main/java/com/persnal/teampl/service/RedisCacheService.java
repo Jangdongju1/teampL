@@ -5,9 +5,9 @@ import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
 public interface RedisCacheService {
     void authCodeCache(String key, String value);
 
-    boolean isExistEmail(String email);
+    boolean isExistKey(String email, int database);
 
-    String findCodeByEmail(String email);
+    String findByKey(String key, int database);
 
     void invitationCache(String email, InvitationMemberRequest req);
 }

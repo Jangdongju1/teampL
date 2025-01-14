@@ -1,5 +1,6 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.common.Enum.redis.RedisDataBaseNum;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
             boolean isExistUser = userRepository.existsByEmail(email);
             if (isExistUser) return AuthCodeResponse.existUser();
 
-            boolean alreadySent = redisCacheService.isExistEmail(email);
+            boolean alreadySent = redisCacheService.isExistKey(email, RedisDataBaseNum.AUTH_CODE.getValue());
 
             if (alreadySent) return AuthCodeResponse.emailAlreadySent();
 
@@ -65,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<? super ApiResponse<AuthCodeConfirmResponse>> confirmCode(String email, String code) {
         try {
-            String cachedCode = redisCacheService.findCodeByEmail(email);
+            String cachedCode = redisCacheService.findByKey(email,RedisDataBaseNum.AUTH_CODE.getValue());
 
             if (cachedCode == null) return AuthCodeConfirmResponse.expiredCode();
 

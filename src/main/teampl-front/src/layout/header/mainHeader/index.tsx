@@ -32,7 +32,7 @@ export default function MainHeader() {
         useState<boolean>(false);
 
     // array : 개인메뉴의 목록
-    const individualMenuList : string[] = ["마이페이지", "초대알림"];
+    const individualMenuList : string[] = ["마이페이지", "팀 초대 정보"];
 
 
     // function : 개인메뉴 외의 외부 클릭시 실행할 함수

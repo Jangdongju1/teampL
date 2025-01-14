@@ -1,29 +1,26 @@
-package com.persnal.teampl.dto.response.user;
+package com.persnal.teampl.dto.response.team;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.response.ApiResponse;
+import com.persnal.teampl.dto.response.ResponseDto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 @Getter
 public class InvitationMemberResponse {
-    private final List<TeamMemberObj> invitedMember;
 
-    public InvitationMemberResponse(List<TeamMemberObj> invitedMember) {
-        this.invitedMember = invitedMember;
-    }
-
-    public ResponseEntity<ApiResponse<InvitationMemberResponse>> success(List<TeamMemberObj> list) {
+    public static ResponseEntity<ApiResponse<InvitationMemberResponse>> success() {
         ApiResponse<InvitationMemberResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new InvitationMemberResponse(list));
+                null);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDto> notExistTeam(){
+        return ResponseDto.notExistTeam();
     }
 }
