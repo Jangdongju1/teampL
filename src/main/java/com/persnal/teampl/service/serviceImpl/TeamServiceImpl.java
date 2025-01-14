@@ -4,11 +4,13 @@ import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.CreatedTeamInfo;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
+import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.dto.response.team.CreateTeamResponse;
 import com.persnal.teampl.dto.response.team.GetTeamListResponse;
 import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
+import com.persnal.teampl.dto.response.user.InvitationMemberResponse;
 import com.persnal.teampl.entities.TeamEntity;
 import com.persnal.teampl.entities.TeamMemberEntity;
 import com.persnal.teampl.repository.jpa.MemberRepository;
@@ -101,5 +103,17 @@ public class TeamServiceImpl implements TeamService {
             return ResponseDto.initialServerError();
         }
         return GetTeamMemberResponse.success(list);
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<InvitationMemberResponse>> invitationMember(String email, InvitationMemberRequest req) {
+        try {
+            //레디스 캐시
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return null;
     }
 }

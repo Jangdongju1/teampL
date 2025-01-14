@@ -1,10 +1,12 @@
 package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
+import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.team.CreateTeamResponse;
 import com.persnal.teampl.dto.response.team.GetTeamListResponse;
 import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
+import com.persnal.teampl.dto.response.user.InvitationMemberResponse;
 import com.persnal.teampl.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,13 @@ public class TeamController {
             @AuthenticationPrincipal String email,
             @RequestParam("regNum") Integer regNum){
         return teamService.getTeamMemberList(email, regNum);
+    }
+
+    @PostMapping()
+    public ResponseEntity<? super ApiResponse<InvitationMemberResponse>> invitationMember(
+            @AuthenticationPrincipal String email, @RequestBody InvitationMemberRequest req){
+
+        return null;
     }
 
 }

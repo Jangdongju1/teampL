@@ -1,5 +1,6 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
 import com.persnal.teampl.service.RedisCacheService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,5 +43,10 @@ public class RedisCacheServiceImpl implements RedisCacheService {
     @Override
     public String findCodeByEmail(String email) {
         return (String) valueOperations.get(email);
+    }
+
+    @Override
+    public void invitationCache(String email, InvitationMemberRequest req) {
+
     }
 }
