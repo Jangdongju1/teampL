@@ -1,0 +1,92 @@
+#invitation-info-wrapper{
+    width: 100%;
+    height: 100%;
+}
+.invitation-info-container{
+    width: inherit;
+    height: inherit;
+    display: flex;
+    flex-direction: column;
+}
+.invitation-info-top-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.invitation-info-bottom-container{
+    width: 100%;
+    height: 100%;
+}
+.invitation-title-box{
+    width: inherit;
+}
+.invitation-title{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 23px;
+}
+.invitation-input-box{
+    width: inherit;
+}
+.invitation-input-wrapper{
+    height: 100%;
+    width: 400px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.invitation-input-label{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+}
+.invitation-input-outline{
+    height: 32px;
+    width: 250px;
+}
+.invitation-info-bottom-container{
+    box-sizing: border-box;
+    padding: 10px;
+}
+.invitation-list-titles{
+    height: 32px;
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+.invitation-list-title{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    font-weight: 600;
+}
+.invitation-list-items{
+    width: 100%;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.invitation-item-wrapper{
+    width: 100%;
+    display: flex;
+    height: 80px;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+.invitation-list-item{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    gap: 8px;
+}
+.invitation-list-initial-image{
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+}

@@ -52,7 +52,7 @@ export default function ConfirmModal(props: ConfirmModalProps) {
                             border: "1px solid rgba(0,0,0,0.3)"
                         }
                     }
-                    onClick={() => console.log("확인")}/>
+                    onClick={confirm}/>
 
                 <CommonBtn
                     style={

@@ -21,6 +21,7 @@ import GetProjectListResponse from "./project/getProjectListResponse";
 import CreateTeamResponse from "./team/createTeamResponse";
 import GetTeamResponse from "./team/getTeamResponse";
 import GetSearchUserResponse from "./user/getSearchUserResponse";
+import GetInvitationListResponse from "./user/getInvitationListResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -44,5 +45,6 @@ export type {
     GetProjectListResponse,
     CreateTeamResponse,
     GetTeamResponse,
-    GetSearchUserResponse
+    GetSearchUserResponse,
+    GetInvitationListResponse
 }

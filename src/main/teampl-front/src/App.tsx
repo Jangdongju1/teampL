@@ -6,7 +6,7 @@ import {
     AUTH_PATH,
     AUTHENTICATION_CODE_CONFIRM_PATH,
     HOME_PATH,
-    PASSWORD_REGISTRATION_PATH,
+    PASSWORD_REGISTRATION_PATH, PERSONAL_PAGE_INVITATION, PERSONAL_PAGE_PATH,
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
     SIGN_IN_PATH, TEAM_MAIN_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH, TEAM_PROJECT_PATH
@@ -24,6 +24,7 @@ import {modalStore, userEmailStore} from "./store";
 import {isLoginUserRequest} from "./api/authApi";
 import TeamPage from "./view/team/teamPage";
 import TeamProject from "./view/teamProject/teamProject";
+import InvitationInfo from "./view/personalPage/teamInfo/invitationInfo";
 
 function App() {
     //navigator
@@ -82,6 +83,10 @@ function App() {
                             <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
                             <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
                             <Route path={TEAM_PROJECT_BOARD_PATH(":creator", ":projectNum")} element={<KanbanBoard/>}/>
+                        </Route>
+
+                        <Route path={PERSONAL_PAGE_PATH()}>
+                            <Route path={PERSONAL_PAGE_INVITATION(":email")} element={<InvitationInfo/>}/>
                         </Route>
 
                     </Route>

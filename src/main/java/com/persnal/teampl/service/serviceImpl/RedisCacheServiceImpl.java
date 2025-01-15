@@ -83,22 +83,20 @@ public class RedisCacheServiceImpl implements RedisCacheService {
 
     }
 
-
     private void updateSenderList(InvitationList currentList, InvitationMemberRequest req) {
         try {
             Map<Integer, InvitationInfo> list = currentList.getList();
 
-            // 프로젝트에서 초대했던 이력이 존재하지 않는 경우
             if (list != null) {
-                //list = new HashMap<>();
-
                 InvitationInfo currentReceiverInfo = currentList.getList().get(req.getRegNum());
 
                 if (currentReceiverInfo == null) {
+                    // 프로젝트에서 초대했던 이력이 존재하지 않는 경우
                     InvitationInfo receiverInfo = InvitationInfo.getReceiverInfo(req);
 
                     list.put(req.getRegNum(), receiverInfo);
                 } else {
+                    // 존재하는 경우 중복체크가 필요함.  >> 객치의 equals메서드를 오버라이드 함으로써 중복체크함
                     Set<InvitationInfo.MemberInfo> receivers = currentReceiverInfo.getMembers();
 
                     for (String receiver : req.getMembers()) {

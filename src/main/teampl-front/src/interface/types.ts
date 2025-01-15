@@ -109,3 +109,11 @@ export type TeamMember = {
     teamName : string
 }
 
+export type Invitation = {
+    regNum: number  // 팀 등록번호
+    email : string,
+    profileImg : string,
+    teamName: string,
+    invitationDate : string
+}
+

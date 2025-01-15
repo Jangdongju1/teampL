@@ -48,5 +48,7 @@ export const GET_TEAM = () => "/team-list";
 export const GET_TEAM_MEMBER = (regNum:string)=> `/team-member?regNum=${regNum}`;
 export const POST_INVITATION_TEAM_MEMBER = ()=>"/invitation-member";
 
+
 // user
 export const GET_SEARCH_USER =(word: string)=>`/search-user?word=${word}`;
+export const GET_INVITATION_LIST = (email: string)=> `invitation-list?email=${email}`;

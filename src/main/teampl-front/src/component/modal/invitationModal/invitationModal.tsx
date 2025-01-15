@@ -49,6 +49,12 @@ export default function InvitationModal() {
     const regex = new RegExp("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
 
+    // function: 모달 닫기
+    const closeModal = ()=>{
+        setModalType("");
+        setIsModalOpen(false);
+    }
+
     // function: 팀 멤버 초대요청에 대한 응답처리함수
     const inviteTeamMemberResponse = (responseBody: InvitationMemberResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -58,7 +64,8 @@ export default function InvitationModal() {
             alert(message);
             return;
         }
-        alert("초대 요청을 보냈습니다.")
+        alert("초대 요청을 보냈습니다.");
+        closeModal();
     }
     // function : 유저 검색에 대한 응답처리 함수.
     const getSearchUserResponse = (responseBody: GetSearchUserResponse | ResponseDto | null) => {
@@ -288,7 +295,7 @@ export default function InvitationModal() {
                     }}
                 comment={"선택하신 팀원을 초대합니다."}
                 detail={"선택하신 팀원을 초대하시겠습니까?"}
-                confirm={() => console.log("확인")}
+                confirm={onInvitationConfirmBtnClickEventHandler}
                 cancel={onCancelBtnClickEventHandler}
             />)}
 
