@@ -2,11 +2,9 @@ package com.persnal.teampl.service;
 
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
-import com.persnal.teampl.dto.response.team.CreateTeamResponse;
-import com.persnal.teampl.dto.response.team.GetTeamListResponse;
-import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
-import com.persnal.teampl.dto.response.team.InvitationMemberResponse;
+import com.persnal.teampl.dto.response.team.*;
 import org.springframework.http.ResponseEntity;
 
 public interface TeamService {
@@ -14,5 +12,5 @@ public interface TeamService {
     ResponseEntity<? super ApiResponse<GetTeamListResponse>> getTeamList(String email);
     ResponseEntity<? super ApiResponse<GetTeamMemberResponse>> getTeamMemberList(String email, Integer regNum);
     ResponseEntity<? super ApiResponse<InvitationMemberResponse>> invitationMember(String email , InvitationMemberRequest req);
-
+    ResponseEntity<? super ApiResponse<RegistrationMemberResponse>> registrationMember(String email, RegistrationMemberRequest req);
 }

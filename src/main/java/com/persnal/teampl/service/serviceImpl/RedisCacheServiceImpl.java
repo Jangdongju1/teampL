@@ -2,15 +2,16 @@ package com.persnal.teampl.service.serviceImpl;
 
 import com.google.gson.Gson;
 import com.persnal.teampl.common.Enum.redis.RedisDataBaseNum;
+import com.persnal.teampl.common.Enum.team.InvitationStatus;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.config.Redis.RedisConfig;
 import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
 import com.persnal.teampl.dto.obj.invitation.InvitationList;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
 import com.persnal.teampl.service.RedisCacheService;
 import com.persnal.teampl.util.Utils;
 import jakarta.annotation.PostConstruct;
-import jdk.jshell.execution.Util;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -63,18 +63,21 @@ public class RedisCacheServiceImpl implements RedisCacheService {
     }
 
     @Override
-    public void invitationCache(String email, InvitationMemberRequest req) {
+    public void invitationCache(InvitationInfo info, Set<String> members) {
         try {
-            String INVITATION_CACHE_PREFIX_SENT = "Sent:";
-            String INVITATION_CACHE_PREFIX_RECEIVE = "Receive:";
 
             RedisTemplate<String, Object> template = templates.get(RedisDataBaseNum.INVITATION_MEMBER.getValue());
 
-            handleInvitationRequest(template, INVITATION_CACHE_PREFIX_SENT, email, req, true, email);
+            String key = GlobalVariable.PREFIX_SENDER + info.getEmail();
 
 
-            for (String member : req.getMembers()) {
-                handleInvitationRequest(template, INVITATION_CACHE_PREFIX_RECEIVE, member, req, false, email);
+            // sender 저장
+            updateSenderList(key, members, template, info);
+
+            //  receiver 저장.
+            for (String member : members) {
+                key = GlobalVariable.PREFIX_RECEIVER + member;
+                updateReceiverList(key, info, template);
             }
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), Utils.getStackTrace(e));
@@ -83,114 +86,101 @@ public class RedisCacheServiceImpl implements RedisCacheService {
 
     }
 
-    private void updateSenderList(InvitationList currentList, InvitationMemberRequest req) {
+    private void updateSenderList(String key, Set<String> members, RedisTemplate<String, Object> template, InvitationInfo info) {
         try {
-            Map<Integer, InvitationInfo> list = currentList.getList();
+            String value = findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
 
-            if (list != null) {
-                InvitationInfo currentReceiverInfo = currentList.getList().get(req.getRegNum());
+            InvitationList list = value != null ? new Gson().fromJson(value, InvitationList.class) : new InvitationList();
+            Map<Integer, Set<InvitationInfo>> receives = value != null ? list.getList() : new HashMap<>();
+            Set<InvitationInfo> receivers = null;
 
-                if (currentReceiverInfo == null) {
-                    // 프로젝트에서 초대했던 이력이 존재하지 않는 경우
-                    InvitationInfo receiverInfo = InvitationInfo.getReceiverInfo(req);
+            receivers = receives.getOrDefault(info.getRegNum(), new HashSet<>());
 
-                    list.put(req.getRegNum(), receiverInfo);
-                } else {
-                    // 존재하는 경우 중복체크가 필요함.  >> 객치의 equals메서드를 오버라이드 함으로써 중복체크함
-                    Set<InvitationInfo.MemberInfo> receivers = currentReceiverInfo.getMembers();
+            for (String member : members) {
+                InvitationInfo newReceiverInfo = (InvitationInfo) info.clone();
+                newReceiverInfo.setEmail(member);
 
-                    for (String receiver : req.getMembers()) {
-                        InvitationInfo.MemberInfo ele = InvitationInfo.createMember(receiver, LocalDateTime.now().toString());
-                        receivers.add(ele);
+                receivers.add(newReceiverInfo);
+            }
+
+
+            receives.put(info.getRegNum(), receivers);
+
+            list.setList(receives);
+
+            String newValue = new Gson().toJson(list);
+
+            logger.info(GlobalVariable.LOG_PATTERN, this.getClass().getName(), newValue);
+
+            template.opsForValue().set(key, newValue);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+        }
+
+    }
+
+    private void updateReceiverList(String key, InvitationInfo info, RedisTemplate<String, Object> template) {
+        try {
+            String value = findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
+
+            InvitationList list = value != null ? new Gson().fromJson(value, InvitationList.class) : new InvitationList();
+            Map<Integer, Set<InvitationInfo>> invites = value != null ? list.getList() : new HashMap<>();
+            Set<InvitationInfo> inviters = null;
+
+
+            inviters = invites.getOrDefault(info.getRegNum(), new HashSet<>());
+
+            inviters.add(info);
+
+            invites.put(info.getRegNum(), inviters);
+
+            list.setList(invites);
+
+            String newValue = new Gson().toJson(list);
+
+
+            template.opsForValue().set(key, newValue);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+        }
+    }
+
+    @Override
+    public void registrationMemberCache(String email, RegistrationMemberRequest req) {
+        try {
+
+            RedisTemplate<String, Object> template = templates.get(RedisDataBaseNum.INVITATION_MEMBER.getValue());
+            String key = GlobalVariable.PREFIX_RECEIVER + email;  // 레디스 검색키
+            String value = findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
+
+            InvitationList list = null;
+            if (value != null) {
+                list = new Gson().fromJson(value, InvitationList.class);
+                Map<Integer, Set<InvitationInfo>> invites = list.getList();
+                Set<InvitationInfo> data = invites.get(req.getRegNum());
+
+                if (data != null) {
+                    for (InvitationInfo info : data) {
+                        // InvitationInfo 클래스의 equals가 오버라이딩 되어잇다.  따라서 아래의 조건을 만족하는 요소는 오롯이 1개 일 것이다.
+                        if (info.getEmail().equals(req.getCreator()) && info.getRegNum() == req.getRegNum()) {
+                            info.setIsConfirm(InvitationStatus.CONFIRM.getValue());
+                            break;
+                        }
+
                     }
                 }
-
-            } else {
-                list = new HashMap<>();
-
-                InvitationInfo newInfo = InvitationInfo.getReceiverInfo(req);
-
-                list.put(req.getRegNum(), newInfo);
-
-                currentList.setList(list);
-
             }
-        } catch (Exception e) {
-            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
-        }
 
-    }
-
-    private void updateReceiverList(InvitationList currentList, InvitationMemberRequest req, String email) {
-        try {
-            Map<Integer, InvitationInfo> list = currentList.getList();
-
-            InvitationInfo.MemberInfo inviter = InvitationInfo.createMember(email, LocalDateTime.now().toString());
-
-            if (list != null) {
-                InvitationInfo currentInvitorInfo = list.get(req.getRegNum());
-
-                if (currentInvitorInfo == null) {
-                    Set<InvitationInfo.MemberInfo> inviters = new HashSet<>();
+            String newValue = new Gson().toJson(list);
+            template.opsForValue().set(key, newValue);
 
 
-                    inviters.add(inviter);
-
-                    InvitationInfo inviterInfo = InvitationInfo.builder()
-                            .regNum(req.getRegNum())
-                            .members(inviters)
-                            .build();
-
-
-                    list.put(req.getRegNum(), inviterInfo);
-
-                } else {
-                    Set<InvitationInfo.MemberInfo> inviters = currentInvitorInfo.getMembers();
-                    inviters.add(inviter);
-                }
-            } else {
-                list = new HashMap<>();
-
-
-                Set<InvitationInfo.MemberInfo> inviters = new HashSet<>();
-
-                inviters.add(inviter);
-
-                InvitationInfo newInfo = InvitationInfo.builder()
-                        .regNum(req.getRegNum())
-                        .members(inviters)
-                        .build();
-
-                list.put(req.getRegNum(), newInfo);
-
-                currentList.setList(list);
-            }
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
         }
     }
-
-    private void handleInvitationRequest(RedisTemplate<String, Object> template, String prefix, String keyVal, InvitationMemberRequest req, boolean isSent, String inviter) {
-        try {
-            String key = prefix + keyVal;
-            String existData = findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
-
-            InvitationList currentList = (existData != null) ? new Gson().fromJson(existData, InvitationList.class) : new InvitationList();  // 기존의 이력이 없는경우에는 새로운 객체를 넘긴다.
-
-            if (isSent) {
-                updateSenderList(currentList, req);
-            } else {
-                updateReceiverList(currentList, req, inviter);
-            }
-
-            String value = new Gson().toJson(currentList);
-            template.opsForValue().set(key, value);
-
-        } catch (Exception e) {
-            logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), Utils.getStackTrace(e));
-        }
-
-    }
-
-
 }

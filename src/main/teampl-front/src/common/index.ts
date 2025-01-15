@@ -5,7 +5,7 @@ import ModalType from "./enum/modalType";
 import IssuePriority from "./enum/issuePriority";
 import IssueCategory from "./enum/issueCategory";
 import KanbanBoardName from "./enum/kanbanBoardName";
-
+import InvitationStatus from "./enum/InvitationStatus";
 export {
     ProjectType,
     ProjectStatus,
@@ -13,5 +13,6 @@ export {
     ModalType,
     IssuePriority,
     IssueCategory,
-    KanbanBoardName
+    KanbanBoardName,
+    InvitationStatus
 }

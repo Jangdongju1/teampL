@@ -1,65 +1,53 @@
 package com.persnal.teampl.dto.obj.invitation;
 
-import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
-@Builder
 @Getter
 @Setter
-public class InvitationInfo {
+@AllArgsConstructor
+@NoArgsConstructor
+public class InvitationInfo implements Cloneable {
     private Integer regNum;
-    private Set<MemberInfo> members;
+    private String teamName;
+    private String sequence;
+    private String email;
+    private String profileImg;
+    private String invitedDate;
+    private Integer isConfirm;
 
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class MemberInfo {
-        private String member;
-        private String invitedDate;
-
-
-        // 객체의 동등비교 1) 해시코드 2) equals로 비교를함
-        // 결과적으로 해시코드와 equals가 같아야 동일한 객체로 취급한다.
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MemberInfo that = (MemberInfo) o;
-            return Objects.equals(member, that.member);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(member);
-        }
+    // queryDsl적용을 위한 생성자
+    public InvitationInfo(Integer regNum, String teamName, String sequence, String email, String profileImg) {
+        this.regNum = regNum;
+        this.teamName = teamName;
+        this.sequence = sequence;
+        this.email = email;
+        this.profileImg = profileImg;
     }
 
 
-    public static MemberInfo createMember(String member, String invitedDate){
-        return new MemberInfo(member, invitedDate);
+    // 하기 두가지 요소가 같다면 같은 객체로 봄
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InvitationInfo that = (InvitationInfo) o;
+        return Objects.equals(regNum, that.regNum) && Objects.equals(email, that.email);
     }
 
-    public static  InvitationInfo getReceiverInfo(InvitationMemberRequest req){
-        Set<MemberInfo> receivers = new HashSet<>();
-
-        for (String id : req.getMembers()){
-            MemberInfo  info  = createMember(id, LocalDateTime.now().toString());
-            receivers.add(info);
-        }
-        return InvitationInfo.builder()
-                .regNum(req.getRegNum())
-                .members(receivers)
-                .build();
+    @Override
+    public int hashCode() {
+        return Objects.hash(regNum, email);
     }
 
+    @Override
+    public InvitationInfo clone() throws CloneNotSupportedException {
+        return (InvitationInfo) super.clone();
+    }
 }

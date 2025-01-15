@@ -17,6 +17,7 @@ import PatchIssueStatusDragRequest from "./issue/patchIssueStatusDragRequest";
 import CreateTeamRequest from "./team/createTeamRequest";
 import GetSearchUserRequest from "./user/getSearchUserRequest";
 import InvitationMemberRequest from "./team/invitationMemberRequest";
+import RegistrationMemberRequest from "./team/registrationMemberRequest";
 
 export type {
     AuthCodeRequest,
@@ -37,5 +38,6 @@ export type {
     PatchIssueStatusDragRequest,
     CreateTeamRequest,
     GetSearchUserRequest,
-    InvitationMemberRequest
+    InvitationMemberRequest,
+    RegistrationMemberRequest
 }

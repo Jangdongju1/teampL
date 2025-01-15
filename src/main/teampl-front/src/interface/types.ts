@@ -114,6 +114,8 @@ export type Invitation = {
     email : string,
     profileImg : string,
     teamName: string,
-    invitationDate : string
+    sequence: string,
+    invitedDate : string,
+    isConfirm : boolean
 }
 

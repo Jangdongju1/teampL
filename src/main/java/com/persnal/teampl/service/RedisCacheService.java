@@ -1,6 +1,10 @@
 package com.persnal.teampl.service;
 
+import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
+
+import java.util.Set;
 
 public interface RedisCacheService {
     void authCodeCache(String key, String value);
@@ -9,5 +13,7 @@ public interface RedisCacheService {
 
     String findByKey(String key, int database);
 
-    void invitationCache(String email, InvitationMemberRequest req);
+    void invitationCache(InvitationInfo info, Set<String> members);
+
+    void registrationMemberCache(String email, RegistrationMemberRequest req);
 }

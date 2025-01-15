@@ -1,6 +1,7 @@
 package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.response.ApiResponse;
+import com.persnal.teampl.dto.response.user.GetInvitationListResponse;
 import com.persnal.teampl.dto.response.user.GetSearchUserResponse;
 import com.persnal.teampl.dto.response.user.LoginUserResponse;
 import com.persnal.teampl.service.UserService;
@@ -27,8 +28,14 @@ public class UserController {
     @GetMapping("/search-user")
     public ResponseEntity<? super ApiResponse<GetSearchUserResponse>> searchUser(
             @AuthenticationPrincipal String email,
-            @RequestParam("word") String word){
+            @RequestParam("word") String word) {
 
-        return userService.userSearch(email,word);
+        return userService.userSearch(email, word);
+    }
+
+    @GetMapping("/invitation-list")
+    public ResponseEntity<? super ApiResponse<GetInvitationListResponse>> getInvitationList(
+            @AuthenticationPrincipal String email) {
+        return userService.getInvitationList(email);
     }
 }

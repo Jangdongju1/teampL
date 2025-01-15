@@ -29,7 +29,7 @@ public class AuthCodeResponse{
     }
 
     public static ResponseEntity<ResponseDto> emailAlreadySent(){
-        return ResponseDto.emailAlreadySent();
+        return ResponseDto.RequestAlreadySent();
     }
 
 }

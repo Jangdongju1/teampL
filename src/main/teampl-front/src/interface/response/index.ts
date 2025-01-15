@@ -22,6 +22,7 @@ import CreateTeamResponse from "./team/createTeamResponse";
 import GetTeamResponse from "./team/getTeamResponse";
 import GetSearchUserResponse from "./user/getSearchUserResponse";
 import GetInvitationListResponse from "./user/getInvitationListResponse";
+import RegistrationMemberResponse from "./team/registrationMemberResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -46,5 +47,6 @@ export type {
     CreateTeamResponse,
     GetTeamResponse,
     GetSearchUserResponse,
-    GetInvitationListResponse
+    GetInvitationListResponse,
+    RegistrationMemberResponse
 }

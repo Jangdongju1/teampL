@@ -55,7 +55,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.3);
 }
 .invitation-list-title{
-    flex: 1;
+    /*flex: 1;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,7 +76,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.3);
 }
 .invitation-list-item{
-    flex: 1;
+    /*flex: 1;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -84,9 +84,44 @@
     font-family: "Noto Sans KR Sans KR";
     font-size: 16px;
     gap: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .invitation-list-initial-image{
     display: flex;
     align-items: center;
     margin-top: 6px;
+}
+.invitation-item-wrapper .invitation-list-item:nth-child(1){
+    flex: 2;
+}
+.invitation-item-wrapper .invitation-list-item:nth-child(2){
+    flex: 2;
+}
+
+.invitation-item-wrapper .invitation-list-item:nth-child(3){
+    flex: 1;
+}
+.invitation-item-wrapper .invitation-list-item:nth-child(4){
+    flex: 1;
+}
+.invitation-item-wrapper .invitation-list-item:nth-child(5){
+    flex: 1;
+}
+
+.invitation-list-titles .invitation-list-title:nth-child(1){
+    flex: 2;
+}
+.invitation-list-titles .invitation-list-title:nth-child(2){
+    flex: 2;
+}
+.invitation-list-titles .invitation-list-title:nth-child(3){
+    flex: 1;
+}
+.invitation-list-titles .invitation-list-title:nth-child(4){
+    flex: 1;
+}
+.invitation-list-titles .invitation-list-title:nth-child(5){
+    flex: 1;
 }

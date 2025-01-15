@@ -10,7 +10,7 @@ public interface ResponseMessage {
     String INITIAL_SERVER_ERROR = "Initial Server Error.";
     String EXIST_USER = "User already exists.";
     String EXPIRE_AUTH_CODE ="AuthCode is expired." ;
-    String ALREADY_SENT = "Email Already Sent.";
+    String ALREADY_SENT = "Request Already Sent.";
     String LOGIN_USER = "Verified User";
     String NOT_EXIST_RESOURCE = "Resource does not exist.";
     String NOT_EXIST_PROJECT = "Project does not exist.";

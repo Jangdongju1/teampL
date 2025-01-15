@@ -85,7 +85,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                 )).from(project)
                 .innerJoin(user).on(project.userEntity.email.eq(user.email))
                 .leftJoin(team).on(project.teamEntity.regNum.eq(team.regNum)).fetchJoin()
-                .where(user.email.eq(email).and(team.regNum.eq(regNum)))
+                .where(team.regNum.eq(regNum))
                 .orderBy(project.createDate.desc())
                 .fetch();
 

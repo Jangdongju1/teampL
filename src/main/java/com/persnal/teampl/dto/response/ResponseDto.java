@@ -55,7 +55,7 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDto> emailAlreadySent() {
+    public static ResponseEntity<ResponseDto> RequestAlreadySent() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.ALREADY_SENT, ResponseMessage.ALREADY_SENT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(responseBody);
     }

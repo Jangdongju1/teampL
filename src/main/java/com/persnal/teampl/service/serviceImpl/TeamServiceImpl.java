@@ -1,16 +1,17 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.common.Enum.team.InvitationStatus;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.CreatedTeamInfo;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
+import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
+import com.persnal.teampl.dto.obj.temp.TeamInfo;
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.dto.response.team.CreateTeamResponse;
-import com.persnal.teampl.dto.response.team.GetTeamListResponse;
-import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
-import com.persnal.teampl.dto.response.team.InvitationMemberResponse;
+import com.persnal.teampl.dto.response.team.*;
 import com.persnal.teampl.entities.TeamEntity;
 import com.persnal.teampl.entities.TeamMemberEntity;
 import com.persnal.teampl.repository.jpa.MemberRepository;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +38,6 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final RedisCacheService redisCacheService;
-
 
     @Override
     public ResponseEntity<? super ApiResponse<CreateTeamResponse>> createTeam(String email, CreateTeamRequest req) {
@@ -115,8 +116,17 @@ public class TeamServiceImpl implements TeamService {
 
             if (!isExistTeam) return InvitationMemberResponse.notExistTeam();
 
+            // 초대를 보낸 사람에 대한 정보를 가져옴
+            InvitationInfo info  = userRepository.getInvitationInfo(email, req.getRegNum());
+            info.setSequence(info.getSequence().split("-")[1]);   //뒷자리 시퀀스만 세팅
+            info.setInvitedDate(LocalDateTime.now().toString());
+            info.setIsConfirm(InvitationStatus.ON_PROCESS.getValue());
 
-            redisCacheService.invitationCache(email, req);
+            // 1)초대자 2) 받는사람 두 부류를 처리해주어야함.
+            // 데이터 : 초대자의 초대정보  regNum , email, teamName , profileImg, invitationDate 등등.
+
+
+            redisCacheService.invitationCache(info, req.getMembers());
 
 
         } catch (Exception e) {
@@ -124,5 +134,36 @@ public class TeamServiceImpl implements TeamService {
             return ResponseDto.initialServerError();
         }
         return InvitationMemberResponse.success();
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<RegistrationMemberResponse>> registrationMember(String email, RegistrationMemberRequest req) {
+        TeamInfo teamInfo = null;
+        try {
+            TeamEntity team = teamRepository.findByRegNum(req.getRegNum());
+
+            if (team == null) return RegistrationMemberResponse.notExistTeam();
+
+            TeamMemberEntity member = TeamMemberEntity.fromRequest(email, req.getRegNum());
+
+            memberRepository.save(member);
+
+            // redis 정보 바꿔주기
+            redisCacheService.registrationMemberCache(email, req);
+
+
+             teamInfo = TeamInfo.builder()
+                    .teamName(team.getTeamName())
+                    .description(team.getDescription())
+                    .sequence(team.getSequence())
+                    .creator(team.getEmail())
+                    .build();
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return RegistrationMemberResponse.success(teamInfo);
     }
 }

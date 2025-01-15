@@ -1,14 +1,21 @@
 import "./style.css";
 import InitialsImg from "../../../component/InitialsImg";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {modalStore, userEmailStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
-import {HOME_PATH, PERSONAL_PROJECT_HOME_PATH, TEAM_MAIN_PATH} from "../../../constant/path";
+import {
+    HOME_PATH,
+    PERSONAL_PAGE_INVITATION,
+    PERSONAL_PAGE_PATH,
+    PERSONAL_PROJECT_HOME_PATH,
+    TEAM_MAIN_PATH
+} from "../../../constant/path";
 import ModalType from "../../../common/enum/modalType";
 import {useEffect, useState} from "react";
 
 export default function MainHeader() {
-
+    // path variable
+    const {email}= useParams();
     // navigate 함수 : 페이지 이동
     const navigator = useNavigate();
     // global State : 모달창에 대한 전역상태
@@ -31,9 +38,6 @@ export default function MainHeader() {
     const [individualMenuClick, setIndividualMenuClick] =
         useState<boolean>(false);
 
-    // array : 개인메뉴의 목록
-    const individualMenuList : string[] = ["마이페이지", "팀 초대 정보"];
-
 
     // function : 개인메뉴 외의 외부 클릭시 실행할 함수
     const handleClickOutside = (e:MouseEvent)=>{
@@ -44,6 +48,7 @@ export default function MainHeader() {
             setIndividualMenuClick(false);
         }
     }
+
 
 
 
@@ -89,7 +94,15 @@ export default function MainHeader() {
         setIsModalOpen(true);
     }
 
+    // eventHandler : 초대목록 클릭 이벤트 헨들러
+    const onInvitationListClickEventHandler = ()=>{
+        if (!email) return;
+        const path  = HOME_PATH() + "/" + PERSONAL_PAGE_PATH() + "/" +  PERSONAL_PAGE_INVITATION(email);
+        navigator(path);
+        setIndividualMenuClick(false);
+    }
 
+    // component : 팀 메뉴 컴포넌트
     const TeamDetailComp = () => {
         // eventHandler : 팀 생성 버튼 클릭 이벤트 헨들러
         const onTeamCreationBtnClickEventHandler = ()=>{
@@ -161,6 +174,7 @@ export default function MainHeader() {
             document.removeEventListener("mousedown",handleClickOutside);
         }
     }, []);
+
     return (
         <div id={"main-header-wrapper"}>
 
@@ -197,9 +211,11 @@ export default function MainHeader() {
                         <div className={"main-header-individual-content-box"}>
                             <InitialsImg name={"jdj881204@naver.com"} height={36} width={36} onClick={onIndividualIconClickEventHandler}/>
                             {individualMenuClick && (<div className={"main-header-individual-menu"}>
-                                {individualMenuList.map((item, index)=>
-                                    <div className={"main-header-individual-menu-element"}>{item}</div>
-                                )}
+                                <div className={"main-header-individual-menu-element"}>{'마이페이지'}</div>
+                                <div className={"main-header-individual-menu-element"}
+                                     onClick={onInvitationListClickEventHandler}>
+                                    {'초대목록'}
+                                </div>
                             </div>)}
 
                         </div>

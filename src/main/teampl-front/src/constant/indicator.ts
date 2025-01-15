@@ -18,7 +18,7 @@ export const CREATE_PERSONAL_PROJECT = () => "/create-project";
 export const CREATE_TEAM_PROJECT = () => "/create-team-project"
 export const GET_PROJECT_LIST = () => `/project-list`; //수정요망
 export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
-export const GET_TEAM_PROJECT_LIST = (regNum : string)=>`/team-project-list?regNum=${regNum}`;
+export const GET_TEAM_PROJECT_LIST = (regNum: string) => `/team-project-list?regNum=${regNum}`;
 
 
 // issue
@@ -45,10 +45,11 @@ export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
 // team
 export const CREATE_TEAM = () => "/create-team";
 export const GET_TEAM = () => "/team-list";
-export const GET_TEAM_MEMBER = (regNum:string)=> `/team-member?regNum=${regNum}`;
-export const POST_INVITATION_TEAM_MEMBER = ()=>"/invitation-member";
+export const GET_TEAM_MEMBER = (regNum: string) => `/team-member?regNum=${regNum}`;
+export const POST_INVITATION_TEAM_MEMBER = () => "/invitation-member";
+export const POST_REGISTRATION_MEMBER = () => "/registration-member";
 
 
 // user
-export const GET_SEARCH_USER =(word: string)=>`/search-user?word=${word}`;
-export const GET_INVITATION_LIST = (email: string)=> `invitation-list?email=${email}`;
+export const GET_SEARCH_USER = (word: string) => `/search-user?word=${word}`;
+export const GET_INVITATION_LIST = () => `/invitation-list`;

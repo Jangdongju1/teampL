@@ -2,11 +2,9 @@ package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
-import com.persnal.teampl.dto.response.team.CreateTeamResponse;
-import com.persnal.teampl.dto.response.team.GetTeamListResponse;
-import com.persnal.teampl.dto.response.team.GetTeamMemberResponse;
-import com.persnal.teampl.dto.response.team.InvitationMemberResponse;
+import com.persnal.teampl.dto.response.team.*;
 import com.persnal.teampl.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +45,14 @@ public class TeamController {
             @AuthenticationPrincipal String email, @RequestBody InvitationMemberRequest req){
 
         return teamService.invitationMember(email,req);
+    }
+
+    @PostMapping("/registration-member")
+    public ResponseEntity<? super ApiResponse<RegistrationMemberResponse>> registrationMember(
+            @AuthenticationPrincipal String email,
+            @RequestBody RegistrationMemberRequest req){
+
+        return teamService.registrationMember(email,req);
     }
 
 }

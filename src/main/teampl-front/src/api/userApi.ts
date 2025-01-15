@@ -37,10 +37,10 @@ export const getSearchUserRequest = async (word: string, accessToken: string) =>
 }
 
 
-export const getInvitationListRequest = async (email: string, accessToken: string) => {
+export const getInvitationListRequest = async (accessToken: string) => {
     try {
         const result =
-            await axios.get(apiEndPoint(GET_INVITATION_LIST(email)), Authorization(accessToken));
+            await axios.get(apiEndPoint(GET_INVITATION_LIST()), Authorization(accessToken));
 
         const responseBody : GetInvitationListResponse = result.data;
         return responseBody;

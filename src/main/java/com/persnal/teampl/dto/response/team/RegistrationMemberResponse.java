@@ -2,6 +2,7 @@ package com.persnal.teampl.dto.response.team;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
+import com.persnal.teampl.dto.obj.temp.TeamInfo;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import lombok.Getter;
@@ -9,13 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class InvitationMemberResponse {
+public class RegistrationMemberResponse {
+    private final TeamInfo info;
 
-    public static ResponseEntity<ApiResponse<InvitationMemberResponse>> success() {
-        ApiResponse<InvitationMemberResponse> responseBody = new ApiResponse<>(
+    public RegistrationMemberResponse(TeamInfo info) {
+        this.info = info;
+    }
+
+    public static ResponseEntity<ApiResponse<RegistrationMemberResponse>> success(TeamInfo info) {
+        ApiResponse<RegistrationMemberResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                null);
+                new RegistrationMemberResponse(info));
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
@@ -24,7 +30,5 @@ public class InvitationMemberResponse {
         return ResponseDto.notExistTeam();
     }
 
-    public static ResponseEntity<ResponseDto> alreadySent(){
-        return ResponseDto.RequestAlreadySent();
-    }
+
 }

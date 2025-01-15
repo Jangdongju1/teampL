@@ -1,7 +1,14 @@
-import {CREATE_TEAM, DOMAIN, GET_TEAM, GET_TEAM_MEMBER, POST_INVITATION_TEAM_MEMBER} from "../constant/indicator";
-import {CreateTeamRequest, InvitationMemberRequest} from "../interface/request";
+import {
+    CREATE_TEAM,
+    DOMAIN,
+    GET_TEAM,
+    GET_TEAM_MEMBER,
+    POST_INVITATION_TEAM_MEMBER,
+    POST_REGISTRATION_MEMBER
+} from "../constant/indicator";
+import {CreateTeamRequest, InvitationMemberRequest, RegistrationMemberRequest} from "../interface/request";
 import axios, {isAxiosError} from "axios";
-import {CreateTeamResponse, GetTeamResponse, ResponseDto} from "../interface/response";
+import {CreateTeamResponse, GetTeamResponse, RegistrationMemberResponse, ResponseDto} from "../interface/response";
 import GetTeamMemberResponse from "../interface/response/team/getTeamMemberResponse";
 import InvitationMemberResponse from "../interface/response/team/invitationMemberResponse";
 
@@ -62,7 +69,7 @@ export const getTeamMemberListRequest = async (regNum: string, accessToken: stri
         const result =
             await axios.get(apiEndPoint(GET_TEAM_MEMBER(regNum)), Authorization(accessToken));
 
-        const responseBody : GetTeamMemberResponse  = result.data;
+        const responseBody: GetTeamMemberResponse = result.data;
 
         return responseBody;
 
@@ -82,23 +89,46 @@ export const getTeamMemberListRequest = async (regNum: string, accessToken: stri
 }
 
 //팀원 초대 요청
-export const invitationTeamMemberRequest = async (requestBody : InvitationMemberRequest, accessToken : string)=>{
+export const invitationTeamMemberRequest = async (requestBody: InvitationMemberRequest, accessToken: string) => {
     try {
         const result =
-           await axios.post(apiEndPoint(POST_INVITATION_TEAM_MEMBER()), requestBody, Authorization(accessToken));
+            await axios.post(apiEndPoint(POST_INVITATION_TEAM_MEMBER()), requestBody, Authorization(accessToken));
 
-        const responseBody : InvitationMemberResponse = result.data;
+        const responseBody: InvitationMemberResponse = result.data;
         return responseBody;
 
-    }catch (error){
-        if (axios.isAxiosError(error)){
-            if (!error.response){
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
                 console.log("Unexpected Axios Error!!", error.message);
                 return null;
             }
-            const responseBody : ResponseDto = error.response.data;
+            const responseBody: ResponseDto = error.response.data;
             return responseBody;
-        }else {
+        } else {
+            console.error(error);
+            return null;
+        }
+    }
+}
+
+// 팀원 등록 요청 (초대수락)
+export const registrationMemberRequest = async (requestBody: RegistrationMemberRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.post(apiEndPoint(POST_REGISTRATION_MEMBER()), requestBody, Authorization(accessToken));
+
+        const responseBody: RegistrationMemberResponse = result.data;
+        return responseBody
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Unexpected Axios Error!!", error.message);
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
             console.error(error);
             return null;
         }
