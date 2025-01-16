@@ -1,9 +1,9 @@
 import ResponseDto from "../ResponseDto";
 import {Project} from "../../types";
 
-export default interface GetPrjListPaginationResponse extends ResponseDto{
+export default interface GetPrjListResponse extends ResponseDto{
     data : {
-        list : Project[]
+        list : Project[];
     }
 }
 

@@ -90,11 +90,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectList(String email) {
+    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(String email) {
         List<ProjectObj> list = null;
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
-            if (userEntity == null) return GetPrjListPaginationResponse.notExistUser();
+            if (userEntity == null) return GetPrjListResponse.notExistUser();
 
             list = projectRepository.getProjectList(email);
 
@@ -102,7 +102,25 @@ public class ProjectServiceImpl implements ProjectService {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPrjListPaginationResponse.success(list);
+        return GetPrjListResponse.success(list);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(String email) {
+        List<ProjectObj> list = null;
+        try {
+            boolean isExistUser  = userRepository.existsById(email);
+
+            if (!isExistUser) return GetPersonalPrjListResponse.notExistUser();
+
+            list = projectRepository.getPersonalProjectList(email);
+
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return GetPersonalPrjListResponse.success(list);
     }
 
     @Override

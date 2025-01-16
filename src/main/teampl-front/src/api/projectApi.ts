@@ -4,11 +4,11 @@ import {
     CREATE_PERSONAL_PROJECT,
     CREATE_TEAM_PROJECT,
     DOMAIN,
-    GET_PERSONAL_PROJECT_INFO,
+    GET_PERSONAL_PROJECT_INFO, GET_PERSONAL_PROJECT_LIST,
     GET_PROJECT_LIST, GET_TEAM_PROJECT_LIST
 } from "../constant/indicator";
 import CreateProjectResponse from "../interface/response/project/createProjectResponse";
-import {GetPrjListPaginationResponse, ResponseDto} from "../interface/response";
+import {GetPrjListResponse, ResponseDto} from "../interface/response";
 import GetPersonalPrjInfoResponse from "../interface/response/project/getPersonalPrjInfoResponse";
 import CreateTeamProjectRequest from "../interface/request/project/createTeamProjectRequest";
 import CreateTeamProjectResponse from "../interface/response/project/createTeamProjectResponse";
@@ -70,13 +70,36 @@ export const createTeamProjectRequest = async (requestBody: CreateTeamProjectReq
     }
 }
 
-// 서버단의 페이지네이션이 적용된 프로젝트 리스트 요청.
-export const getProjectListRequest = async (accessToken: string) => {
+// 서버단의 페이지네이션이 적용된 프로젝트 리스트 요청 (말그대로 전체임  개인 + 팀프로젝트)
+export const getPrjListRequest = async (accessToken: string) => {
     try {
         const result = await axios.get(apiEndPoint(GET_PROJECT_LIST()), Authorization(accessToken));
-        const responseBody: GetPrjListPaginationResponse = result.data;
+        const responseBody: GetPrjListResponse = result.data;
 
         return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log(error.message);
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.error(error)
+            return null;
+
+        }
+    }
+}
+
+export const getPersonalPrjListRequest = async (accessToken: string) => {
+    try {
+        const result =
+            await axios.get(apiEndPoint(GET_PERSONAL_PROJECT_LIST()), Authorization(accessToken));
+        const responseBody: GetPrjListResponse = result.data;
+
+        return responseBody
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (!error.response) {
@@ -114,7 +137,7 @@ export const getTeamProjectListRequest = async (regNum: string, accessToken: str
 }
 
 //* 특정 개인프로젝트의 정보를 가져오는 api호출
-export const getPersonalPrjInfoRequest = async (projectNum: string, accessToken: string) => {
+export const getPrjInfoRequest = async (projectNum: string, accessToken: string) => {
     try {
         const result =
             await axios.get(apiEndPoint(GET_PERSONAL_PROJECT_INFO(projectNum)), Authorization(accessToken));

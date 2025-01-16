@@ -1,7 +1,7 @@
 import {create} from "zustand/react";
 import {Team} from "../interface/types";
 
-// 모달 전달용 팀 정보 관련 global State
+// 팀정보를 담는 전역상태 (사용위치 : 팀페이지)
 interface TeamInfo {
     teams: Team[]
     setTeams: (newTeams: Team[]) => void;

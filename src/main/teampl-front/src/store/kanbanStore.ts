@@ -9,6 +9,7 @@ interface KanbanData {
     setKanbanData: (newValue: Record<string, Issue[]>) => void;
 }
 
+// 각 상태별 칸반보드의 데이터를 관리하는 전역상태
 const kanbanStore = create<KanbanData>(setState => ({
     isTeamKanban: false,
     setIsTeamKanban: newValue => setState(state => ({isTeamKanban: newValue})),

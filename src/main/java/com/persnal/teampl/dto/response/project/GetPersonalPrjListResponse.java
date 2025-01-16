@@ -12,18 +12,19 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
-public class GetPrjListPaginationResponse {
-    private final List<ProjectObj> list;
-    public GetPrjListPaginationResponse(List<ProjectObj> result) {
-        this.list = result;
+public class GetPersonalPrjListResponse {
 
+    private final List<ProjectObj> list;
+
+    public GetPersonalPrjListResponse(List<ProjectObj> result) {
+        this.list = result;
     }
 
-    public static ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> success(List<ProjectObj> list) {
-        ApiResponse<GetPrjListPaginationResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<GetPersonalPrjListResponse>> success(List<ProjectObj> result) {
+        ApiResponse<GetPersonalPrjListResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPrjListPaginationResponse(list));
+                new GetPersonalPrjListResponse(result));
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
@@ -31,6 +32,5 @@ public class GetPrjListPaginationResponse {
     public static ResponseEntity<ResponseDto> notExistUser() {
         return ResponseDto.notExistedUser();
     }
-
 
 }

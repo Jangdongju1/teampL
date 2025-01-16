@@ -7,8 +7,8 @@ interface PersonalPrj {
 }
 
 
-//* 개인 프로젝트의 상태  > 프로젝트 생성 모달창이 있기 때문에 컴포넌트간 데이터 공유를 위해서 생성함.
-const projectStore = create<PersonalPrj>(setState => ({
+//* 개인 프로젝트의 상태  > 프로젝트 생성 모달창이 있기 때문에 컴포넌트간 데이터 공유를 위해서 생성함. (사용위치 : 메인화면)
+const personalPrjStore = create<PersonalPrj>(setState => ({
     projects : {total : [], personal : [], team : []},
     setProjects : newProjects => setState(pre => ({
         ...pre,
@@ -18,6 +18,6 @@ const projectStore = create<PersonalPrj>(setState => ({
 
 }));
 
-export default projectStore;
+export default personalPrjStore;
 
 //() => ({})   객체의 암묵적 반환에 대한 문법임*/

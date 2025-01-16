@@ -1,7 +1,7 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
-import {modalStore, projectStore, teamProjectStore, teamStore, userEmailStore} from "../../../store";
+import {modalStore, personalPrjStore, teamProjectStore, teamStore, userEmailStore} from "../../../store";
 import {CreateProjectRequest, CreateTeamRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest, createTeamProjectRequest} from "../../../api/projectApi";

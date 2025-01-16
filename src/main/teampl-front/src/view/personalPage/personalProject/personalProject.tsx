@@ -1,18 +1,19 @@
 import "./style.css";
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {useCookies} from "react-cookie";
-import {projectStore, userEmailStore} from "../../store";
+import {personalPrjStore, userEmailStore} from "../../../store";
 import {useNavigate, useParams} from "react-router-dom";
-import {getProjectListRequest} from "../../api/projectApi";
-import {GetPrjListPaginationResponse, ResponseDto} from "../../interface/response";
-import ResponseCode from "../../common/enum/responseCode";
-import {Project, ProjectTableData} from "../../interface/types";
-import {ProjectType} from "../../common";
-import ProjectTable from "../../component/table/projectTable/projectTable";
-import ClientSidePagination from "../../component/pagination/client";
-import useCSPagination from "../../hook/pagination/client/pagination_client";
-import SearchBar from "../../component/searchBar/searchBar";
-import {getTableData} from "../../util";
+import {getPrjListRequest} from "../../../api/projectApi";
+import {GetPrjListResponse, ResponseDto} from "../../../interface/response";
+import ResponseCode from "../../../common/enum/responseCode";
+import {Project, ProjectTableData} from "../../../interface/types";
+import {ProjectType} from "../../../common";
+import ProjectTable from "../../../component/table/projectTable/projectTable";
+import ClientSidePagination from "../../../component/pagination/client";
+import useCSPagination from "../../../hook/pagination/client/pagination_client";
+import SearchBar from "../../../component/searchBar/searchBar";
+import {getTableData} from "../../../util";
+import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../../constant/path";
 
 
 export default function PersonalProject() {
@@ -34,7 +35,7 @@ export default function PersonalProject() {
     }>({clickStat: false, menuStat: "Personal"});
 
     // global state : 표에 표기할 프로젝트 데이터 관련상태.
-    const {projects, setProjects} = projectStore();
+    const {projects, setProjects} = personalPrjStore();
 
 
     //state : 하단 페이지네이션 상태값들 전체 리스트의 갯수 + 한페이지에 표기할 갯수로 현재 표기할 페이지네이션의 숫자를 계산해줌
@@ -89,7 +90,15 @@ export default function PersonalProject() {
     // eventHandler : 테이블 메뉴 선택시 이벤트 헨들러 >> 페이지 이동 처리.
     const onTableClickEventHandler = (projectNum: number, owner: string, regNum?: number) => {
         const encodedEmail = btoa(owner);
-        navigator(`${String(projectNum)}`);
+        let path = HOME_PATH();
+
+        if (menu.menuStat ==="Personal")
+            navigator(String(projectNum))
+
+        else {
+            path = `${path}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(String(regNum), encodedEmail, String(projectNum))}`
+            navigator(path);
+        }
     }
 
 
@@ -139,7 +148,7 @@ export default function PersonalProject() {
 
 
     // function : fetchData 에 대한 응답 처리 함수.
-    const getProjectListResponse = (responseBody: GetPrjListPaginationResponse | ResponseDto | null) => {
+    const getProjectListResponse = (responseBody: GetPrjListResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
 
@@ -148,7 +157,7 @@ export default function PersonalProject() {
             return;
         }
 
-        const {data} = responseBody as GetPrjListPaginationResponse;
+        const {data} = responseBody as GetPrjListResponse;
 
         updateProjectState(data.list);
 
@@ -160,7 +169,7 @@ export default function PersonalProject() {
                 alert("accessToken is expired!!")
                 return;
             }
-            const responseBody = await getProjectListRequest(accessToken);
+            const responseBody = await getPrjListRequest(accessToken);
 
             await getProjectListResponse(responseBody);
 

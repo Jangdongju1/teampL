@@ -86,14 +86,6 @@ export default function MainHeader() {
         const encodedEmail = btoa(loginUserEmail);
         navigator(HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(encodedEmail));
     }
-
-    // eventHandler : 프로젝트 목록 클릭 이벤트 헨들러
-    const onPrjBtnClickEventHandler = () => {
-        setPersonalPrjBtnClickState(false);
-        setModalType(ModalType.PROJECT_LIST);
-        setIsModalOpen(true);
-    }
-
     // eventHandler : 초대목록 클릭 이벤트 헨들러
     const onInvitationListClickEventHandler = ()=>{
         if (!email) return;
@@ -123,7 +115,6 @@ export default function MainHeader() {
                 <ul className={"team-detail-menu"}>
                     <li onClick={onMyTeamBtnClickEventHandler}><span className={"icon my-team-icon"}></span>{"나의 팀"}</li>
                     <li onClick={onTeamCreationBtnClickEventHandler}><span className={"icon group-add-icon"}></span>{"팀 생성"}</li>
-                    <li><span className={"icon add-icon"}></span>{"팀프로젝트 생성"}</li>
                     <li><span className={"icon search-icon"}></span>{"사용자 및 팀 검색"}</li>
                 </ul>
             </div>
@@ -156,9 +147,6 @@ export default function MainHeader() {
         return (
             <div id={"personal-detail-wrapper"}>
                 <ul className={"personal-detail-menu"}>
-                    <li onClick={onPrjBtnClickEventHandler}><span className={"icon more-list-icon"}></span>프로젝트
-                        목록
-                    </li>
                     <li onClick={onCreateProjectBtnClickEventHandler}><span className={"icon add-icon"}></span>프로젝트 생성
                     </li>
                     <li><span className={"icon personal-project-icon"}></span>프로젝트 이슈 관리</li>

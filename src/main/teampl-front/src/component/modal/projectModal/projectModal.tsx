@@ -1,42 +1,48 @@
 import "./style.css";
-import SearchBar from "../../searchBar/searchBar";
 import React, {ChangeEvent, useEffect, useState} from "react";
-import CommonBtn from "../../btn";
-import {modalStore} from "../../../store";
-import {getProjectListRequest} from "../../../api/projectApi";
-import {useCookies} from "react-cookie";
-import {GetProjectListResponse, ResponseDto} from "../../../interface/response";
-import ResponseCode from "../../../common/enum/responseCode";
+import {kanbanStore, modalStore} from "../../../store";
 import {Project} from "../../../interface/types";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {getProjectStatus, getProjectType} from "../../../constant/projectConstants";
 import InitialsImg from "../../InitialsImg";
-import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH} from "../../../constant/path";
+import {HOME_PATH, PERSONAL_PROJECT_BOARD_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../../constant/path";
+import prjListModalDataStore from "../../../store/prjListModalDataStore";
+import SearchBar from "../../searchBar/searchBar";
+import CommonBtn from "../../btn";
 
 
 export default function ProjectModal() {
     // navigate 함수
     const navigator = useNavigate();
-    // pathVariable
-    const {projectNum: pathId} = useParams();
 
-    //* state :  받아올 프로젝트리스트 데이터 상태
-    const [projects, setProjects] =
-        useState<{ projects: Project[], viewProjects: Project[] }>({projects: [], viewProjects: []});
+    // global State : 팀칸반인지 개인칸반인지 구분하기 위한 전역변수
+    const {isTeamKanban} = kanbanStore();
+    // pathVariable
+    const {projectNum: pathId, regNum} = useParams();
+
+    // //* state :  받아올 프로젝트리스트 데이터 상태
+    // const [projects, setProjects] =
+    //     useState<{ projects: Project[], viewProjects: Project[] }>({projects: [], viewProjects: []});
+
+    //* global State: 모달에 표기할 프로젝트의 전역상태
+    const {prjModalData} = prjListModalDataStore();
+
+
     //* state :  프로젝트 메뉴의 선택 상태
     const [menuItemSelectState, setMenuItemSelectState] =
         useState<{ projectNum: number, creator: string }>({projectNum: pathId ? parseInt(pathId, 10) : -1, creator: ""})
+
+
     //* state : 검색바 입력상태
     const [searchWord, setSearchWord] = useState<string>("");
     //* globalState: 모달상태
     const {setIsModalOpen, setModalType} = modalStore();
-    //* 쿠키상태
-    const [cookies, setCookies] = useCookies();
 
-    const accessToken = cookies.accessToken_Main;
+
+
 
     // 검색어를 포함하는 항목을 필터링해서 보여주기 위한 객체들
-    const filteredProjects = projects.viewProjects.filter((project) => {
+    const filteredProjects = prjModalData.filter((project) => {
         return (
             // 대소문자 구분을 업애기 위해서 영어는 모두 소문자로 변경해서
             project.projectName.toLowerCase().includes(searchWord.toLowerCase()) ||
@@ -65,33 +71,20 @@ export default function ProjectModal() {
         setModalType("");
         setIsModalOpen(false);
 
-
+        let path  = HOME_PATH();
         const encodedEmail = btoa(menuItemSelectState.creator);
-        navigator( HOME_PATH()+"/"+PERSONAL_PROJECT_BOARD_PATH(encodedEmail, String(menuItemSelectState.projectNum)));
-    }
 
-
-    // function : 프로젝트 리스트 데이터 처리함수
-    const fetchProjectDataResponse = (responseBody: GetProjectListResponse | ResponseDto | null) => {
-        if (!responseBody) return;
-
-        const {code, message} = responseBody as ResponseDto;
-
-        if (code !== ResponseCode.SUCCESS) {
-            alert(message);
-            return;
+        if (!isTeamKanban)
+            path = `${path}/${PERSONAL_PROJECT_BOARD_PATH(encodedEmail, String(menuItemSelectState.projectNum))}`;
+        else {
+            if(!regNum) return;
+            path = `${path}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(regNum,encodedEmail, String(menuItemSelectState.projectNum))}`
         }
-        const {data} = responseBody as GetProjectListResponse;
-
-
-
-
-        setProjects(prevState => ({
-            viewProjects: [...data.list],
-            projects: [...data.list]
-        }))
+        navigator(path);
 
     }
+
+
 
     type PrjListCompProps = {
         data: Project,
@@ -101,6 +94,8 @@ export default function ProjectModal() {
         isSelected: boolean;
     }
     // 프로젝트 리스트를 보여주는 자식 컴포넌트
+
+
     const PrjListComp = (props: PrjListCompProps) => {
         const {data, isSelected} = props;
 
@@ -145,22 +140,11 @@ export default function ProjectModal() {
         )
     }
 
-    // 마운트시 실행할 함수.
-    useEffect(() => {
-        if (!accessToken) return;
-        const fetchProjectData = async () => {
-            const responseBody = await getProjectListRequest(accessToken);
-
-            fetchProjectDataResponse(responseBody);
-
-        }
-
-        fetchProjectData()
-    }, []);
 
 
     return (
         <div className={"prj-modal-wrapper"}>
+
             <div className={"prj-modal-close-box"} onClick={onCloseBtnClickEventHandler}>
                 <div className={"icon prj-modal-close-icon close-icon"}></div>
             </div>

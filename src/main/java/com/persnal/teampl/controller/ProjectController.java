@@ -34,13 +34,19 @@ public class ProjectController {
     }
 
     @GetMapping("/project-list")
-    public ResponseEntity<? super ApiResponse<GetPrjListPaginationResponse>> getProjectList(
+    public ResponseEntity<? super ApiResponse<GetPrjListResponse>> getProjectList(
             @AuthenticationPrincipal String email) {
         return projectService.getProjectList(email);
     }
 
+    @GetMapping("/personal-project-list")
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>>getPersonalPrjList(
+            @AuthenticationPrincipal String email){
+        return projectService.getPersonalPrjList(email);
+    }
+
     @GetMapping("/team-project-list")
-    public ResponseEntity<? super ApiResponse<GetTeamPrjListResponse>> getTeamProjectList(
+    public ResponseEntity<? super ApiResponse<GetTeamPrjListResponse>> getTeamPrjList(
             @AuthenticationPrincipal String email,
             @RequestParam("regNum") Integer regNum){
 

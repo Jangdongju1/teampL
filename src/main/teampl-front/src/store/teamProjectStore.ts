@@ -2,7 +2,7 @@ import {Project} from "../interface/types";
 import {create} from "zustand/react";
 
 
-// 특정 팀에 대한 프로젝트의 전역상태
+// 특정 팀에 대한 프로젝트의 목록을 저장하는 전역상태.
 interface TeamProject {
     projects: Project[],
     setProjects: (newProjects: Project[]) => void;

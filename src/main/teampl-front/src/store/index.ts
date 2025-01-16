@@ -1,7 +1,7 @@
 import userEmailStore from "./userEmailStore";
 import modalStore from "./modalStore";
 import headerMenuStore from "./headerMenuStore";
-import projectStore from "./projectStore";
+import personalPrjStore from "./personalPrjStore";
 import issueStore from "./issueStore";
 import teamStore from "./teamStore";
 import kanbanStore from "./kanbanStore";
@@ -10,7 +10,7 @@ export {
     userEmailStore,
     modalStore,
     headerMenuStore,
-    projectStore,
+    personalPrjStore,
     issueStore,
     teamStore,
     kanbanStore,

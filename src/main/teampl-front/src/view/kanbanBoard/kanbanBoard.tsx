@@ -3,13 +3,13 @@ import KanbanTopComponent from "../../component/kanbanBoardTopComponent/kanbanTo
 import {useLocation, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
-import {getPersonalPrjInfoRequest} from "../../api/projectApi";
+import {getPersonalPrjListRequest, getPrjInfoRequest, getTeamProjectListRequest} from "../../api/projectApi";
 import GetPersonalPrjInfoResponse from "../../interface/response/project/getPersonalPrjInfoResponse";
-import {ResponseDto} from "../../interface/response";
+import {GetPrjListResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, Project} from "../../interface/types";
 import {IssueStatus, KanbanBoardName, ProjectStatus, ProjectType} from "../../common";
-import {createIssueRequest, getPersonalIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
+import {createIssueRequest, getIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
 import issueStatus from "../../common/enum/IssueStatus";
@@ -21,7 +21,9 @@ import PatchIssueStatusDragResponse from "../../interface/response/issue/patchIs
 import {getKanbanName} from "../../constant/issueConstants";
 import kanbanStore from "../../store/kanbanStore";
 import {HOME_PATH, TEAM_PATH} from "../../constant/path";
-
+import prjListModalDataStore from "../../store/prjListModalDataStore";
+import GetTeamProjectListResponse from "../../interface/response/project/getTeamProjectListResponse";
+import responseCode from "../../common/enum/responseCode";
 
 
 export default function KanbanBoard() {
@@ -30,14 +32,14 @@ export default function KanbanBoard() {
     //* 칸반보드 상단 메뉴 상태 1) main , 2) kanban  2가지가 있다.
     const [topMenu, setTopMenu] = useState<"kanban" | "main">("kanban");
 
-    const {projectNum} = useParams();
+    const {projectNum, regNum} = useParams();
     //* state: 쿠키상태
     const [cookies, setCookies] = useCookies();
     //* state: 프로젝트 상태
     const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
     //global state : 칸반 상태
-    const {isTeamKanban,setIsTeamKanban}=kanbanStore();
+    const {isTeamKanban, setIsTeamKanban} = kanbanStore();
 
     //* state : 칸반보드 패널의 추가버튼 렌더링 상태
     const [addBtnRenderState, setAddBtnRenderState] =
@@ -49,6 +51,9 @@ export default function KanbanBoard() {
         });
     //* global state : 각 칸반보드의 데이터 배열 상태
     const {kanbanData, setKanbanData} = kanbanStore();
+
+    //* global state : 프로젝트 리스트를 띄우는 모달의 데이터에 대한 전역상태
+    const {setPrjModalData} = prjListModalDataStore();
 
 
     // accessToken
@@ -99,10 +104,82 @@ export default function KanbanBoard() {
     }
 
 
+    //  프로젝트 이동을 위한 모달을 띄울 여정이므로, 개인 내지는 팀프로젝트에 대한 리스트를
+    //  불러오는 함수를 KanbanBoard Top 컴포넌트에 전달해야한다.
 
+    // function : 팀프로젝트 요청에 대한 응답처리함수
+
+    const getTeamProjectListResponse = (responseBody : GetTeamProjectListResponse | ResponseDto | null) =>{
+        if (!responseBody) return;
+
+        const {message, code} = responseBody as ResponseDto;
+
+        if (code !== responseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetTeamProjectListResponse;
+
+        const {info,list} = data;
+
+        setPrjModalData(list);
+    }
+
+    // function : 팀프로젝트의 정보를 불러오는 함수
+    const getTeamProjects = async ()=>{
+        if (!accessToken) {
+            alert("Access Token is Expired!!")
+            return;
+        }
+        if (!regNum) return;
+
+        const fetchTeamProjectData = async ()=>{
+            const responseBody = await getTeamProjectListRequest(regNum, accessToken);
+            getTeamProjectListResponse(responseBody)
+        }
+
+        fetchTeamProjectData()
+
+
+    }
+
+    // 개인프로젝트 리스트 요청에 대한응답 함수.
+    const getPersonalPrjListResponse = (responseBody : GetPrjListResponse | ResponseDto | null) =>{
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetPrjListResponse;
+
+        console.log(data);
+
+        setPrjModalData(data.list);
+    }
+
+
+    //  function : 개인프로젝트의 리스트를 불러오는 함수
+    const getPersonalProjects = async () => {
+        if (!accessToken) {
+            alert("Access Token is Expired!!")
+            return;
+        }
+
+        const fetchPersonalPrjData = async () => {
+            const responseBody = await getPersonalPrjListRequest(accessToken);
+
+            getPersonalPrjListResponse(responseBody);
+        }
+        fetchPersonalPrjData()
+
+    }
 
     //* function : 개인프로젝트 이슈 목록 api 응답처리 함수.
-    const getPersonalIssueResponse = (responseBody: GetPersonalIssueListResponse | ResponseDto | null) => {
+    const getIssueResponse = (responseBody: GetPersonalIssueListResponse | ResponseDto | null) => {
         const {code, message} = responseBody as ResponseDto;
 
         if (code !== ResponseCode.SUCCESS) {
@@ -118,16 +195,13 @@ export default function KanbanBoard() {
             return acc;
         }, {} as Record<string, Issue[]>); // 초기값은 빈 객체
 
-
-        // 상태 업데이트
-        // setEachKanbanIssues(updatedKanbanIssues);
         setKanbanData(updatedKanbanIssues);
 
     }
 
 
     //* function: 프로젝트 정보 api 응답 처리함수;
-    const getPersonalPrjInfoResponse = (responseBody: GetPersonalPrjInfoResponse | ResponseDto | null) => {
+    const getPrjInfoResponse = (responseBody: GetPersonalPrjInfoResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code, message} = responseBody as ResponseDto;
         if (code != ResponseCode.SUCCESS) {
@@ -140,7 +214,6 @@ export default function KanbanBoard() {
     }
 
 
-
     //function: 이슈 추가요청에 대한 응답처리함수.
     const createIssueResponse = async (responseBody: CreateIssueResponse | ResponseDto | null) => {
         if (!responseBody) return;
@@ -148,7 +221,6 @@ export default function KanbanBoard() {
         if (code !== ResponseCode.SUCCESS) alert(message);
 
         const {data} = responseBody as CreateIssueResponse;  // 이슈데이터를 받아옴
-        console.log(data.addedIssue)
         const addedKanbanName = getKanbanName(data.addedIssue.stat);
 
 
@@ -175,24 +247,12 @@ export default function KanbanBoard() {
             return;
         }
     }
+
     //function : 이슈카드 옮긴 후 상태 업데이트 함수
     const updateKanbanState = (sourceArr: Issue[], dstArr: Issue[] | null, srcBoardId: string, dstBoardId: string | null) => {
 
-        // if (dstArr && dstBoardId) {
-        //     setEachKanbanIssues(prevState => ({
-        //         ...prevState,
-        //         [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr,
-        //         [getKanbanName(parseInt(dstBoardId, 10))]: dstArr
-        //     }))
-        // } else {
-        //     setEachKanbanIssues(prevState => ({
-        //         ...prevState,
-        //         [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr
-        //     }))
-        // }
-
         if (dstArr && dstBoardId) {
-            const updatedData= {
+            const updatedData = {
                 ...kanbanData,
                 [getKanbanName(parseInt(srcBoardId, 10))]: sourceArr,
                 [getKanbanName(parseInt(dstBoardId, 10))]: dstArr
@@ -304,42 +364,42 @@ export default function KanbanBoard() {
 
         }
 
-
         const responseBody = await patchDragIssueStatusRequest(requestBody, accessToken);
 
         patchDragIssueResponse(responseBody);
     }
 
+    // 팀 칸반인지 아닌지 여부를 세팅함.
     useEffect(() => {
         const pathName = location.pathname;
-        const teamKanbanPath = HOME_PATH()+"/"+TEAM_PATH()
-        if (pathName.startsWith(teamKanbanPath))  setIsTeamKanban(true);
+        const teamKanbanPath = HOME_PATH() + "/" + TEAM_PATH()
+        if (pathName.startsWith(teamKanbanPath)) setIsTeamKanban(true);
         else setIsTeamKanban(false);
 
-
     }, [location]);
+
+
+    // 칸반의 프로젝트 정보를 가져오고
     useEffect(() => {
         const fetchProjectInfo = async () => {
             if (!accessToken || projectNum === undefined) return;
-
-            const responseBody = await getPersonalPrjInfoRequest(projectNum, accessToken);
-
-            getPersonalPrjInfoResponse(responseBody);
-
+            const responseBody = await getPrjInfoRequest(projectNum, accessToken);
+            getPrjInfoResponse(responseBody);
         }
         fetchProjectInfo();
     }, [location]);
 
 
+    // 칸반의 이슈 리스트를 가져오는 api호출
     useEffect(() => {
         if (!accessToken || projectNum === undefined) return;
-
         const fetchIssueList = async () => {
-            const responseBody = await getPersonalIssueListRequest(projectNum, accessToken);
-            getPersonalIssueResponse(responseBody);
+            const responseBody = await getIssueListRequest(projectNum, accessToken);
+            getIssueResponse(responseBody);
         }
         fetchIssueList();
     }, [location]);
+
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -351,7 +411,9 @@ export default function KanbanBoard() {
                                         projectType={projectInfo ? projectInfo.projectType : ProjectType.UNKNOWN}
                                         stat={projectInfo ? projectInfo.stat : ProjectStatus.UNKNOWN}
                                         topMenuStat={topMenu}
-                                        setTopMenuStat={setTopMenu}/>
+                                        setTopMenuStat={setTopMenu}
+                                        fetchData={isTeamKanban? getTeamProjects : getPersonalProjects}
+                    />
                 </div>
                 {topMenu === "kanban" ?
                     <div className={"kanban-board-bottom-container"}>

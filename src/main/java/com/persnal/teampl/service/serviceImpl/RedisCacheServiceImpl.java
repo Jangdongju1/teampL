@@ -110,8 +110,6 @@ public class RedisCacheServiceImpl implements RedisCacheService {
 
             String newValue = new Gson().toJson(list);
 
-            logger.info(GlobalVariable.LOG_PATTERN, this.getClass().getName(), newValue);
-
             template.opsForValue().set(key, newValue);
 
 

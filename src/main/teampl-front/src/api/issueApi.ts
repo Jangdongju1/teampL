@@ -79,7 +79,7 @@ export const createIssueRequest = async (requestBody: CreateIssueRequest, access
 }
 
 // 특정 프로젝트에 대한 이슈 리스트 가져오기
-export const getPersonalIssueListRequest = async (projectNum: string, accessToken: string) => {
+export const getIssueListRequest = async (projectNum: string, accessToken: string) => {
     try {
         const result =
             await axios.get(apiEndPoint(GET_PERSONAL_ISSUE_LIST(projectNum)), Authorization(accessToken));

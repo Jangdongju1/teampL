@@ -89,10 +89,10 @@
 }
 
 .main-header-menu-detail1 {
-    margin-top: 255px;
+    margin-top: 215px;
     margin-left: 220px;
     width: 320px;
-    height: 210px;
+    height: 175px;
     position: absolute;
     box-sizing: border-box;
     padding: 8px;
@@ -114,10 +114,10 @@
     border-radius: 5px;
 }
 .main-header-menu-detail3{
-    margin-top: 225px;
+    margin-top: 170px;
     margin-left: 335px;
     width: 320px;
-    height: 180px;
+    height: 125px;
     position: absolute;
     box-sizing: border-box;
     padding: 8px;

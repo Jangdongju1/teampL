@@ -1,26 +1,26 @@
 import "./style.css"
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
-import SearchBar from "../../component/searchBar/searchBar";
-import {kanbanStore, modalStore, teamProjectStore} from "../../store";
+import SearchBar from "../../../component/searchBar/searchBar";
+import {kanbanStore, modalStore, teamProjectStore} from "../../../store";
 import {useNavigate, useParams} from "react-router-dom";
-import {ProjectTableData, TeamInfo, TeamMember} from "../../interface/types";
+import {ProjectTableData, TeamInfo, TeamMember} from "../../../interface/types";
 import {useTheme} from "@table-library/react-table-library/theme";
 import {getTheme} from "@table-library/react-table-library/baseline";
 import {Body, Cell, Header, HeaderCell, HeaderRow, Row, Table} from "@table-library/react-table-library";
-import CommonBtn from "../../component/btn";
-import {ModalType} from "../../common";
-import teamParamStore from "../../store/teamParamStore";
+import CommonBtn from "../../../component/btn";
+import {ModalType} from "../../../common";
+import teamParamStore from "../../../store/teamParamStore";
 import {useCookies} from "react-cookie";
-import {getTeamProjectListRequest} from "../../api/projectApi";
-import GetTeamProjectListResponse from "../../interface/response/project/getTeamProjectListResponse";
-import {ResponseDto} from "../../interface/response";
-import ResponseCode from "../../common/enum/responseCode";
-import {getFormattedDate, getTableData} from "../../util";
-import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../constant/path";
-import teamMemberMock from "../../mock/teamMember.mock";
-import {getTeamMemberListRequest} from "../../api/teamApi";
-import GetTeamMemberResponse from "../../interface/response/team/getTeamMemberResponse";
-import InitialsImg from "../../component/InitialsImg";
+import {getTeamProjectListRequest} from "../../../api/projectApi";
+import GetTeamProjectListResponse from "../../../interface/response/project/getTeamProjectListResponse";
+import {ResponseDto} from "../../../interface/response";
+import ResponseCode from "../../../common/enum/responseCode";
+import {getFormattedDate, getTableData} from "../../../util";
+import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH, TEAM_PROJECT_PATH} from "../../../constant/path";
+import teamMemberMock from "../../../mock/teamMember.mock";
+import {getTeamMemberListRequest} from "../../../api/teamApi";
+import GetTeamMemberResponse from "../../../interface/response/team/getTeamMemberResponse";
+import InitialsImg from "../../../component/InitialsImg";
 
 export default function TeamProject() {
     // navigate 함수
@@ -131,7 +131,9 @@ export default function TeamProject() {
 
         const onListClickEventHandler = (projectNum: number, creator: string) => {
             const encodedCreator = btoa(creator);
-            navigator(`${HOME_PATH()}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(encodedCreator, String(projectNum))}`)
+            if (!regNum) return;
+            const path  = `${HOME_PATH()}/${TEAM_PATH()}/${TEAM_PROJECT_BOARD_PATH(regNum, encodedCreator, String(projectNum))}`
+            navigator(path)
         }
 
         return (
@@ -187,6 +189,7 @@ export default function TeamProject() {
         fetchTeamProjectData();
     }, [regNum]);// path variable 변경시 제호출 되어야 한다.
 
+
     useEffect(() => {
         if (!accessToken || !regNum) return;
         const fetchTeamMember = async () => {
@@ -210,7 +213,7 @@ export default function TeamProject() {
 
             <div className={"team-project-top-container"}>
                 <div className={"team-project-title-box"}>
-                    <div className={"team-project-title"}>{`팀명: ${info?.teamName}`}</div>
+                    <div className={"team-project-title"}>{`팀명: ${info? info.teamName : ""}`}</div>
                     <div className={"team-project-search-bar"}>
                         <SearchBar value={searchWord}
                                    onChange={onSearchWordChangeEventHandler}

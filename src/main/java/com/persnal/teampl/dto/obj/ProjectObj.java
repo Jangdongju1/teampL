@@ -23,4 +23,15 @@ public class ProjectObj {
     private Long processed;
     //private Integer id;   // react table 전용 필드  == projectNum
 
+
+    public ProjectObj(Integer projectNum, Integer regNum, String projectName, String description, String createDate, String creator, Integer stat, Integer projectType) {
+        this.projectNum = projectNum;
+        this.regNum = regNum;
+        this.projectName = projectName;
+        this.description = description;
+        this.createDate = createDate;
+        this.creator = creator;
+        this.stat = stat;
+        this.projectType = projectType;
+    }
 }

@@ -15,7 +15,7 @@ import Authentication from "./view/authentication";
 import PasswordRegistration from "./view/authentication/passwordRegistration";
 import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm";
 import MainContainer from "./layout/container/mainContainer";
-import PersonalProject from "./view/personalProject/personalProject";
+import PersonalProject from "./view/personalPage/personalProject/personalProject";
 import KanbanBoard from "./view/kanbanBoard/kanbanBoard";
 import {useCookies} from "react-cookie";
 import {LoginUserResponse, ResponseDto} from "./interface/response";
@@ -23,7 +23,7 @@ import ResponseCode from "./common/enum/responseCode";
 import {modalStore, userEmailStore} from "./store";
 import {isLoginUserRequest} from "./api/authApi";
 import TeamPage from "./view/team/teamPage";
-import TeamProject from "./view/teamProject/teamProject";
+import TeamProject from "./view/team/teamProject/teamProject";
 import InvitationInfo from "./view/personalPage/teamInfo/invitationInfo";
 
 function App() {
@@ -82,7 +82,7 @@ function App() {
                         <Route path={TEAM_PATH()}>
                             <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
                             <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
-                            <Route path={TEAM_PROJECT_BOARD_PATH(":creator", ":projectNum")} element={<KanbanBoard/>}/>
+                            <Route path={TEAM_PROJECT_BOARD_PATH(":regNum", ":creator", ":projectNum")} element={<KanbanBoard/>}/>
                         </Route>
 
                         <Route path={PERSONAL_PAGE_PATH()}>

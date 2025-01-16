@@ -4,11 +4,11 @@ import {create} from "zustand/react";
 interface Modal {
     modalType : string,
     isModalOpen : boolean,
-
     setIsModalOpen: (modalState:boolean) => void,
     setModalType:(type:string) => void,
 }
 
+// 각각의 모달들의 오픈상태 등등을 관리한는 전역상태
 const modalStore = create<Modal>(setState => ({
     modalType : "",
     isModalOpen: false,

@@ -1,8 +1,6 @@
 package com.persnal.teampl.repository.jpa;
 
-import com.persnal.teampl.dto.obj.ProjectInfoObj;
 import com.persnal.teampl.dto.obj.ProjectObj;
-import com.persnal.teampl.dto.response.project.GetPrjListPaginationResponse;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.repository.queryDSL.ProjectCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +21,7 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>
 
     @Override
     List<ProjectObj> getTeamProjectList(String email, Integer regNum);
+
+    @Override
+    List<ProjectObj> getPersonalProjectList(String email);
 }

@@ -4,7 +4,7 @@ import AuthCodeConfirmResponse from "./auth/authCodeConfirmResponse";
 import SignUpResponse from "./auth/SignUpResponse";
 import LoginUserResponse from "./user/loginUserResponse";
 import SignInResponse from "./auth/signInResponse";
-import GetPrjListPaginationResponse from "./project/getPrjListPaginationResponse";
+import GetPrjListResponse from "./project/getPrjListResponse";
 import PatchIssueTitleResponse from "./issue/patchIssueTitleResponse";
 import GetPersonalIssueByNumResponse from "./issue/getPersonalIssueByNumResponse";
 import PatchIssuePriorityResponse from "./issue/patchIssuePriorityResponse";
@@ -17,7 +17,6 @@ import PostIssueCommentResponse from "./issue/postIssueCommentResponse";
 import GetIssueCommentResponse from "./issue/getIssueCommentResponse";
 import PatchIssueCommentResponse from "./issue/patchIssueCommentResponse";
 import GetCommentCountResponse from "./issue/getCommentCountResponse";
-import GetProjectListResponse from "./project/getProjectListResponse";
 import CreateTeamResponse from "./team/createTeamResponse";
 import GetTeamResponse from "./team/getTeamResponse";
 import GetSearchUserResponse from "./user/getSearchUserResponse";
@@ -30,7 +29,7 @@ export type {
     SignUpResponse,
     LoginUserResponse,
     SignInResponse,
-    GetPrjListPaginationResponse,
+    GetPrjListResponse,
     PatchIssueTitleResponse,
     GetPersonalIssueByNumResponse,
     PatchIssuePriorityResponse,
@@ -43,7 +42,6 @@ export type {
     GetIssueCommentResponse,
     PatchIssueCommentResponse,
     GetCommentCountResponse,
-    GetProjectListResponse,
     CreateTeamResponse,
     GetTeamResponse,
     GetSearchUserResponse,

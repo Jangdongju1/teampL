@@ -16,7 +16,8 @@ export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
 //project
 export const CREATE_PERSONAL_PROJECT = () => "/create-project";
 export const CREATE_TEAM_PROJECT = () => "/create-team-project"
-export const GET_PROJECT_LIST = () => `/project-list`; //수정요망
+export const GET_PROJECT_LIST = () => `/project-list`;
+export const GET_PERSONAL_PROJECT_LIST = ()=> "/personal-project-list "
 export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
 export const GET_TEAM_PROJECT_LIST = (regNum: string) => `/team-project-list?regNum=${regNum}`;
 

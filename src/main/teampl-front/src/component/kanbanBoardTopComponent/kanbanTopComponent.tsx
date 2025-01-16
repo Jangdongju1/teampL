@@ -12,15 +12,15 @@ type KanbanTopCompProps = {
     // 상단 메뉴상태
     topMenuStat: string,
     setTopMenuStat: Dispatch<SetStateAction<"kanban" | "main">>
+    fetchData: () => void;
 }
 export default function KanbanTopComponent(props: KanbanTopCompProps) {
     //* 칸반보드 관련 데이터 prop
-    const {projectName, isTeamPage, projectType, stat} = props;
+    const {projectName, isTeamPage, projectType, stat, fetchData} = props;
     //* 칸반보드 상단 메뉴 상태 prop
     const {topMenuStat, setTopMenuStat} = props;
     //* global state : 모달 상태
-    const {setIsModalOpen,setModalType} = modalStore();
-
+    const {setIsModalOpen, setModalType} = modalStore();
 
 
     //* object: 프로젝트에 대한 타입 객체 정의
@@ -62,17 +62,21 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
     }
 
     // eventHandler : 상단 home 메뉴 버튼 클릭 헨들러
-    const onTopMenuBtnClickEventHandler= (e:React.MouseEvent<HTMLLIElement>)=>{
+    const onTopMenuBtnClickEventHandler = (e: React.MouseEvent<HTMLLIElement>) => {
         const menuStat = e.currentTarget.dataset.value;
         if (menuStat === undefined) return;
-        if (menuStat ==="kanban" || menuStat == "main"){
+        if (menuStat === "kanban" || menuStat == "main") {
             setTopMenuStat(menuStat);
         }
     }
 
-    const onPrjDropdownBtnClickEventHandler = ()=>{
-        setModalType(ModalType.PROJECT_LIST);
-        setIsModalOpen(true);
+    const onPrjDropdownBtnClickEventHandler = async () => {
+        fetchData();
+
+        setTimeout(() => {
+            setModalType(ModalType.PROJECT_LIST);
+            setIsModalOpen(true);
+        }, 200); // 300ms (0.3초) 후에 실행
     }
 
     return (
@@ -89,11 +93,13 @@ export default function KanbanTopComponent(props: KanbanTopCompProps) {
             <div className={"kanban-board-mode-btn-container"}>
                 <div className={"kanban-board-mode-btn-box"}>
                     <ul className={"kanban-board-mode-btn"}>
-                        <li data-value={"main"} style={topMenuStat === "home" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
+                        <li data-value={"main"}
+                            style={topMenuStat === "home" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
                             onClick={onTopMenuBtnClickEventHandler}>
                             <span className={"icon kanban-home-icon home-icon"}></span>{"Main Table"}
                         </li>
-                        <li data-value={"kanban"} style={topMenuStat === "kanban" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
+                        <li data-value={"kanban"}
+                            style={topMenuStat === "kanban" ? {backgroundColor: `rgba(0, 0, 0, 0.09)`} : {}}
                             onClick={onTopMenuBtnClickEventHandler}>
 
                             {"Kanban"}

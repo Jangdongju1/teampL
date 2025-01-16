@@ -7,4 +7,5 @@ import java.util.List;
 public interface ProjectCustomRepository {
     List<ProjectObj> getProjectList(String email);
     List<ProjectObj> getTeamProjectList(String email, Integer regNum);
+    List<ProjectObj> getPersonalProjectList(String email);
 }
