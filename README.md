@@ -4,17 +4,17 @@
 ##### 📺 개발환경
 * <img src="https://img.shields.io/badge/Language-%23121011?style=plastic"/>
     
-     * FrontEnd   
-               <div>
-                   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=float-square&logo=JavaScript&logoColor=white">
-                   <img src="https://img.shields.io/badge/ES6-515151?style=float-square">,
-                   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=float-square&logo=TypeScript&logoColor=white">
-               </div>
+    * FrontEnd
+          <div>
+              <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=float-square&logo=JavaScript&logoColor=white">
+              <img src="https://img.shields.io/badge/ES6-515151?style=float-square">,
+              <img src="https://img.shields.io/badge/TypeScript-3178C6?style=float-square&logo=TypeScript&logoColor=white">
+          </div>
 
      * BackEnd
-               <div>
-                   <img src="https://img.shields.io/badge/java-%23ED8B00?style=float-square&logo=openjdk&logoColor=white"><img src="https://img.shields.io/badge/17-515151?style=float-square">
-               </div>
+           <div>
+               <img src="https://img.shields.io/badge/java-%23ED8B00?style=float-square&logo=openjdk&logoColor=white"><img src="https://img.shields.io/badge/17-515151?style=float-square">
+           </div>
     
 
 * <img src="https://img.shields.io/badge/Library%20&%20Framwork-%23121011?style=plastic"/>
