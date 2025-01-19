@@ -50,5 +50,5 @@
                  <div>
                     <img src="https://img.shields.io/badge/Gradle-02303A?style=float-square&logo=Gradle&logoColor=white"><img src="https://img.shields.io/badge/8.10.2-515151?style=float-square">
                  </div>
--------------
+---
 
