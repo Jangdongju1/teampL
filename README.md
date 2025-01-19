@@ -1,5 +1,6 @@
 
-# teamPL is coorporation tool in IT 
+# TeamPL은 IT 업무에 많이 사용되는 칸반보드를 구현한 프로젝트입니다.
+
 ##### 📺 개발환경
 * <img src="https://img.shields.io/badge/Language-%23121011?style=plastic"/>
     
