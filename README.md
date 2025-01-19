@@ -43,5 +43,5 @@
 * <img src="https://img.shields.io/badge/ORM-%23121011?style=plastic"/>
                 <div>
                     <img src="https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=float-square&logo=Spring&logoColor=white"/><img src="https://img.shields.io/badge/3.2.5-515151?style=float-square">
-                    <img src="https://img.shields.io/badge/QueryDsl-6DB33F?style=float-square"/><img src="https://img.shields.io/badge/3.2.5-515151?style=float-square">
+                    <img src="https://img.shields.io/badge/QueryDsl-6DB33F?style=float-square"/><img src="https://img.shields.io/badge/5.0.0-515151?style=float-square">
                 </div>
