@@ -50,5 +50,8 @@
                  <div>
                     <img src="https://img.shields.io/badge/Gradle-02303A?style=float-square&logo=Gradle&logoColor=white"><img src="https://img.shields.io/badge/8.10.2-515151?style=float-square">
                  </div>
----
+------------------
+
+
+![main_logo](https://github.com/user-attachments/assets/c00638bf-e3b3-439b-906c-c32de9081d93)
 
