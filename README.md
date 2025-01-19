@@ -23,7 +23,7 @@
                   <img src="https://img.shields.io/badge/React.js-61DAFB?style=float-square&logo=React&logoColor=white"/><img src="https://img.shields.io/badge/18-515151?style=float-square">,
                   <img src="https://img.shields.io/badge/Axios-5A29E4?style=float-square&logo=Axios&logoColor=white"/><img src="https://img.shields.io/badge/1.6.8-515151?style=float-square">,
                   <img src="https://img.shields.io/badge/Zustand 4.5.2-515151?style=float-square">
-                  <img src="https://img.shields.io/badge/react-beautiful-dnd 13.1.1-515151?style=float-square">
+                  <img src="https://img.shields.io/badge/react 13.1.1-515151?style=float-square">
               </div>
 
     * BackEnd
