@@ -32,11 +32,11 @@
               </div>
 
 * <img src="https://img.shields.io/badge/Web-%23121011?style=plastic"/>
-     <div>
-          <img src="https://img.shields.io/badge/HTML5-E34F26?style=float-square&logo=HTML5&logoColor=white"/>, <img src ="https://img.shields.io/badge/CSS3-1572B6?style=float-square&logo=CSS3&logoColor=white"/>
-     </div>
+              <div>
+                  <img src="https://img.shields.io/badge/HTML5-E34F26?style=float-square&logo=HTML5&logoColor=white"/>, <img src ="https://img.shields.io/badge/CSS3-1572B6?style=float-square&logo=CSS3&logoColor=white"/>
+              </div>
 
 * <img src="https://img.shields.io/badge/Database%20&%20ORM-%23121011?style=plastic"/>
-    <div>
-        <img src="https://img.shields.io/badge/MySQL-4479A1?style=float-square&logo=MySql&logoColor=white"><img src="https://img.shields.io/badge/8.0-515151?style=float-square">
-    </div>
+                <div>
+                    <img src="https://img.shields.io/badge/MySQL-4479A1?style=float-square&logo=MySql&logoColor=white"><img src="https://img.shields.io/badge/8.0-515151?style=float-square">
+                </div>
