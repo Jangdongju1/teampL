@@ -11,7 +11,7 @@
               <img src="https://img.shields.io/badge/TypeScript-3178C6?style=float-square&logo=TypeScript&logoColor=white">
           </div>
 
-     * BackEnd
+    * BackEnd
            <div>
                <img src="https://img.shields.io/badge/java-%23ED8B00?style=float-square&logo=openjdk&logoColor=white"><img src="https://img.shields.io/badge/17-515151?style=float-square">
            </div>
