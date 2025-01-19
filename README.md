@@ -7,7 +7,7 @@
     
      * FrontEnd   
                <div>
-                   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=float-square&logo=JavaScript&logoColor=white">,
+                   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=float-square&logo=JavaScript&logoColor=white">
                    <img src="https://img.shields.io/badge/ES6-515151?style=float-square">,
                </div>
 
