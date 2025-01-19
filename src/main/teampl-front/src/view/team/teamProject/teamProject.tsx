@@ -261,6 +261,7 @@ export default function TeamProject() {
                                             <div key={index} className={"team-project-member-item circle"}
                                                  style={{backgroundImage : `url(${item.profileImg})`}}></div> :
                                             <InitialsImg name={item.email} width={40} height={40}/>
+                                    /*이니셜 이미지랑  닉네임이랑 같이 보여줄 필요가 있음*/
                                     })}
                             </div>
                             {teamMember.length < 10 ? null :

@@ -3,8 +3,8 @@ package com.persnal.teampl.service.serviceImpl;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
 import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
-import com.persnal.teampl.dto.obj.temp.IssueCommentFetchData;
 import com.persnal.teampl.dto.obj.temp.PatchIssueTitleRepObj;
+import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
@@ -13,16 +13,11 @@ import com.persnal.teampl.entities.IssueCommentEntity;
 import com.persnal.teampl.entities.IssueEntity;
 import com.persnal.teampl.entities.ProjectEntity;
 import com.persnal.teampl.entities.UserEntity;
-import com.persnal.teampl.repository.jpa.CommentRepository;
-import com.persnal.teampl.repository.jpa.IssueRepository;
-import com.persnal.teampl.repository.jpa.ProjectRepository;
-import com.persnal.teampl.repository.jpa.UserRepository;
+import com.persnal.teampl.repository.jpa.*;
 import com.persnal.teampl.service.IssueSequenceService;
 import com.persnal.teampl.service.IssueService;
 import com.persnal.teampl.util.Utils;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.exec.spi.JdbcCallRefCursorExtractor;
-import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForArraysOfBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +35,7 @@ public class IssueServiceImpl implements IssueService {
     private final ProjectRepository projectRepository;
     private final CommentRepository commentRepository;
     private final IssueSequenceService issueSequenceService;
+    private final TeamRepository teamRepository;
 
 
     @Override
@@ -106,7 +102,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(String email, int projectNum) {
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(String email, Integer projectNum) {
         List<IssueEntity> entities = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
@@ -126,7 +122,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(String email, int projectNum, int status) {
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(String email, Integer projectNum, Integer status) {
         List<IssueEntity> entities = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
@@ -454,44 +450,46 @@ public class IssueServiceImpl implements IssueService {
         return PatchIssueDetailResponse.success();
     }
 
+    // 수정해야함 팀이름까지 같이 가져와야함.
     @Override
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(String email, int issueNum) {
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueInfoResponse>> getPersonalIssueInfo(String email, Integer issueNum) {
         IssueEntity issueEntity = null;
         try {
             boolean isExistUser = userRepository.existsByEmail(email);
 
-            if (!isExistUser) return GetPersonalIssueByNumResponse.notExistUser();
+            if (!isExistUser) return GetPersonalIssueInfoResponse.notExistUser();
 
             issueEntity = issueRepository.findByIssueNum(issueNum);
 
-            if (issueEntity == null) return GetPersonalIssueByNumResponse.notExistIssue();
+            if (issueEntity == null) return GetPersonalIssueInfoResponse.notExistIssue();
 
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return GetPersonalIssueByNumResponse.success(issueEntity);
+        return GetPersonalIssueInfoResponse.success(issueEntity);
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<IssueDateTest>> getIssueTest(String email, Integer issueNum) {
+    public ResponseEntity<? super ApiResponse<GetTeamIssueInfoResponse>> getTeamIssueInfo(String email, Integer issueNum, Integer regNum) {
+        TeamIssueInfoFetchData data = null;
         try {
-//            IssueEntity issueEntity = issueRepository.findByIssueNum(issueNum);
-//            List<IssueCommentEntity> cEntity = issueEntity.getIssueCommentEntities();
+            boolean isExistProject = teamRepository.existsById(regNum);
 
-            List<com.persnal.teampl.entities.IssueCommentEntity> issueCommentEntities = issueRepository.queryDSLSelectIssueData(issueNum);
-            System.out.println(issueCommentEntities.size());
+            if (!isExistProject) return GetTeamIssueInfoResponse.notExistTeam();
 
+            boolean isExistIssue = issueRepository.existsById(issueNum);
 
-            System.out.println("종료");
+            if (!isExistIssue) return GetTeamIssueInfoResponse.notExistIssue();
 
+            data = issueRepository.getTeamIssueInfo(issueNum, regNum);
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return null;
+        return GetTeamIssueInfoResponse.success(data);
     }
 
     @Override
@@ -600,5 +598,23 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return GetCommentCountResponse.success(count);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchIssueInChargeResponse>> patchIssueInCharge(PatchIssueInChargeRequest req) {
+        try {
+            IssueEntity currentIssue = issueRepository.findByIssueNum(req.getIssueNum());
+
+            if (currentIssue == null) return PatchIssueInChargeResponse.notExistIssue();
+
+            currentIssue.setInCharge(req.getInCharge());
+
+            issueRepository.save(currentIssue);
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchIssueInChargeResponse.success();
     }
 }

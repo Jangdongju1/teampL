@@ -26,26 +26,34 @@ public class IssueController {
     @GetMapping("/issue-list/{projectNum}")
     public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(
             @AuthenticationPrincipal String email,
-            @PathVariable("projectNum") int projectNum) {
+            @PathVariable("projectNum") Integer projectNum) {
 
         return issueService.getPersonalIssueList(email, projectNum);
     }
 
     @GetMapping("/{issueNum}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueInfoResponse>> getPersonalIssueInfo(
             @AuthenticationPrincipal String email,
-            @PathVariable("issueNum") int issueNum) {
+            @PathVariable("issueNum") Integer issueNum) {
 
-        return issueService.getPersonalIssue(email, issueNum);
+        return issueService.getPersonalIssueInfo(email, issueNum);
     }
 
+    @GetMapping("/team-issue-detail")
+    public ResponseEntity<? super ApiResponse<GetTeamIssueInfoResponse>> getTeamIssueInfo(
+            @AuthenticationPrincipal String email,
+            @RequestParam("issueNum") Integer issueNum,
+            @RequestParam("regNum") Integer regNum) {
+
+        return issueService.getTeamIssueInfo(email, issueNum, regNum);
+    }
 
     // 사용하지 않는 api EndPoint
     @GetMapping("/issue-list/{projectNum}/{status}")
     public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(
             @AuthenticationPrincipal String email,
-            @PathVariable("projectNum") int projectNum,
-            @PathVariable("status") int status) {
+            @PathVariable("projectNum") Integer projectNum,
+            @PathVariable("status") Integer status) {
 
         return issueService.getPersonalIssueListByStatus(email, projectNum, status);
     }
@@ -106,13 +114,6 @@ public class IssueController {
         return issueService.postIssueComment(email, req);
     }
 
-    @GetMapping("/test/{issueNum}")
-    public ResponseEntity<? super ApiResponse<IssueDateTest>> issueDataTest(
-            @AuthenticationPrincipal String email,
-            @PathVariable("issueNum") int issueNum) {
-
-        return issueService.getIssueTest(email, issueNum);
-    }
 
     @GetMapping("/comment-list/{issueNum}")
     public ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(
@@ -139,11 +140,18 @@ public class IssueController {
 
         return issueService.getCommentCount(email, issueNum);
     }
+
     @PatchMapping("/drag/modification/issue-status")
     public ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(
             @AuthenticationPrincipal String email,
-            @RequestBody PatchIssueStatusDragRequest req){
+            @RequestBody PatchIssueStatusDragRequest req) {
 
-        return issueService.patchIssueStatusDrag(email,req);
+        return issueService.patchIssueStatusDrag(email, req);
+    }
+
+    @PatchMapping("/modification/in-charge")
+    public ResponseEntity<? super ApiResponse<PatchIssueInChargeResponse>> patchIssueInCharge(
+            @RequestBody PatchIssueInChargeRequest req){
+        return issueService.patchIssueInCharge(req);
     }
 }

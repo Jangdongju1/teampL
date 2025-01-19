@@ -17,7 +17,7 @@ export const LOGIN_USER_URL = () => "/api/v1/user/login-user";
 export const CREATE_PERSONAL_PROJECT = () => "/create-project";
 export const CREATE_TEAM_PROJECT = () => "/create-team-project"
 export const GET_PROJECT_LIST = () => `/project-list`;
-export const GET_PERSONAL_PROJECT_LIST = ()=> "/personal-project-list "
+export const GET_PERSONAL_PROJECT_LIST = () => "/personal-project-list "
 export const GET_PERSONAL_PROJECT_INFO = (projectNum: string) => `/personal-project-info/${projectNum}`;
 export const GET_TEAM_PROJECT_LIST = (regNum: string) => `/team-project-list?regNum=${regNum}`;
 
@@ -27,7 +27,8 @@ export const CREATE_PERSONAL_ISSUE = () => "/create-issue";
 export const GET_PERSONAL_ISSUE_LIST = (projectNum: string) => `/issue-list/${projectNum}`;
 export const GET_PERSONAL_ISSUE_BY_STATUS =
     (projectNum: string, status: number) => `/issue-list/${projectNum}/${status}`;
-export const GET_PERSONAL_ISSUE_BY_NUMBER = (issueNum: number) => `/${issueNum}`;
+export const GET_PERSONAL_ISSUE_INFO = (issueNum: number) => `/${issueNum}`;
+export const GET_TEAM_ISSUE_ISSUE_INFO = (issueNum: string, regNum: string) => `/team-issue-detail?issueNum=${issueNum}&regNum=${regNum}`;
 export const PATCH_ISSUE_TITLE = () => "/modification/issue-title";
 export const PATCH_ISSUE_PRIORITY = () => "/modification/issue-priority";
 export const PATCH_ISSUE_STATUS = () => "/modification/issue-status";
@@ -41,6 +42,7 @@ export const PATCH_ISSUE_COMMENT = () => "/modification/issue-comment";
 export const GET_TOTAL_COMMENT_COUNT =
     (issueNum: number) => `/total-comments-count/${issueNum}`;
 export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/modification/issue-status";
+export const PATCH_ISSUE_IN_CHARGE = ()=>"/modification/in-charge";
 
 
 // team

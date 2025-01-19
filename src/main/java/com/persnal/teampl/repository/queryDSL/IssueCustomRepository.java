@@ -1,11 +1,12 @@
 package com.persnal.teampl.repository.queryDSL;
 
+import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.entities.IssueCommentEntity;
 
 import java.util.List;
 
 public interface IssueCustomRepository {
-    List<IssueCommentEntity> queryDSLSelectIssueData(Integer issueNum);
+    TeamIssueInfoFetchData getTeamIssueInfo(Integer issueNum , Integer regNum);
     List<IssueCommentEntity> getIssueCommentList(Integer issueNum, Integer page, Integer perPage);
 
 }

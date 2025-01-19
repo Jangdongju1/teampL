@@ -15,7 +15,7 @@ import {useParams} from "react-router-dom";
 import {InvitationMemberRequest} from "../../../interface/request";
 import {invitationTeamMemberRequest} from "../../../api/teamApi";
 import InvitationMemberResponse from "../../../interface/response/team/invitationMemberResponse";
-import ConfirmModal from "../ confim/confirmModal";
+import ConfirmModal from "../confirm/confirmModal";
 
 
 export default function InvitationModal() {

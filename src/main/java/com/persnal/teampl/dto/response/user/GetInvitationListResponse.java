@@ -2,7 +2,7 @@ package com.persnal.teampl.dto.response.user;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
+import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.dto.response.ApiResponse;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

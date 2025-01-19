@@ -11,19 +11,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class GetPersonalIssueByNumResponse {
+public class GetPersonalIssueInfoResponse {
     IssueObj issue;
 
-    public GetPersonalIssueByNumResponse(IssueEntity entity){
+    public GetPersonalIssueInfoResponse(IssueEntity entity){
         this.issue = IssueEntity.getIssue(entity);
     }
 
 
-    public static ResponseEntity<ApiResponse<GetPersonalIssueByNumResponse>> success(IssueEntity entity){
-        ApiResponse<GetPersonalIssueByNumResponse> responseBody = new ApiResponse<>(
+    public static ResponseEntity<ApiResponse<GetPersonalIssueInfoResponse>> success(IssueEntity entity){
+        ApiResponse<GetPersonalIssueInfoResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,
-                new GetPersonalIssueByNumResponse(entity)
+                new GetPersonalIssueInfoResponse(entity)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);

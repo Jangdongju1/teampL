@@ -14,6 +14,4 @@ public interface IssueRepository extends JpaRepository<IssueEntity, Integer>, Is
     IssueEntity findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(int projectNum, int stat);
     IssueEntity findByProjectEntityProjectNumAndStatAndNextNodeIsNull(int projectNum, int stat);
     IssueEntity findByProjectEntityProjectNumAndStatAndIssueSequence(int projectNum, int stat, String nextNode);
-    @Override
-    List<IssueCommentEntity> queryDSLSelectIssueData(Integer issueNum);
 }

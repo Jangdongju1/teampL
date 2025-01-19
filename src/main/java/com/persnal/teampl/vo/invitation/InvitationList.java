@@ -1,4 +1,4 @@
-package com.persnal.teampl.dto.obj.invitation;
+package com.persnal.teampl.vo.invitation;
 
 import lombok.Getter;
 import lombok.Setter;

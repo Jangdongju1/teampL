@@ -1,7 +1,7 @@
 package com.persnal.teampl.repository.queryDSL.impl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
+import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.entities.QTeamEntity;
 import com.persnal.teampl.entities.QUserEntity;
 import com.persnal.teampl.repository.queryDSL.UserCustomRepository;

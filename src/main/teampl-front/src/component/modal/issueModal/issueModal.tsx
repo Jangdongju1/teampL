@@ -1,5 +1,5 @@
 import "./style.css"
-import React, {KeyboardEvent, useEffect, useState} from "react";
+import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
@@ -13,7 +13,8 @@ import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {
     getIssueCommentListRequest,
-    getPersonalIssueByIssueNum,
+    getPersonalIssueInfo,
+    getTeamIssueInfo,
     getTotalCommentCountRequest,
     patchExpireDateRequest,
     patchIssueDetailRequest,
@@ -23,7 +24,7 @@ import {
 import {
     GetCommentCountResponse,
     GetIssueCommentResponse,
-    GetPersonalIssueByNumResponse,
+    GetPersonalIssueInfoResponse,
     PatchIssueExpireDateResponse,
     PatchIssueTitleResponse,
     PostIssueCommentResponse,
@@ -38,24 +39,27 @@ import {
 } from "../../../interface/request";
 import {getFormattedDate, getFormattedDateToString} from "../../../util";
 import PatchIssueDetailResponse from "../../../interface/response/issue/patchIssueDetailResponse";
-import {Issue, IssueComment} from "../../../interface/types";
+import {Issue, IssueComment, TeamMember} from "../../../interface/types";
 import usePagination from "../../../hook/pagination/server/pagination";
 import GetIssueCommentListRequest from "../../../interface/request/issue/GetIssueCommentListRequest";
+import {useParams} from "react-router-dom";
+import GetTeamIssueInfoResponse from "../../../interface/response/issue/getTeamIssueInfoResponse";
 
 
 // 이슈에 대한 데이터를 받아올 예정.
 type IssueModalProps = {
     isTeamModal: boolean,
     eachKanbanIssues: Record<string, Issue[]>,
-    // setEachKanbanIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
-    setEachKanbanIssues: (newValue : Record<string, Issue[]>) => void;
+    setEachKanbanIssues: (newValue: Record<string, Issue[]>) => void;
 }
 
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
 
-    const {isTeamModal, eachKanbanIssues, setEachKanbanIssues} = props
+    // path variable : 팀칸반일대 존재하는 regNum
+    const {regNum} = useParams();
 
+    const {isTeamModal, eachKanbanIssues, setEachKanbanIssues} = props
     //state: 프로젝트 번호 상태
     const [projectNum, setProjectNum] = useState<number | undefined>(undefined);
     // global state : 세팅된 전역상태
@@ -75,12 +79,13 @@ export default function IssueModal(props: IssueModalProps) {
     // state : 담당자 클릭 상태
     const [inChargeClickSate, setInChargeClickSate] = useState<boolean>(false);
 
-    // state : 참여자 상태
-    const [participants, setParticipants] = useState<string[]>(["jdj88", "siedj22"]);
-    // state : 참여자 클릭상태
-    const [participantsClickState, setParticipantsClickState] = useState<boolean>(false);
     // state: 팀모달이 아닌 경우에 inCharge대신 작성자를 담당자로 전달함.
     const [writer, setWriter] = useState<string>("");
+    // state: 팀이름 상태
+    const [teamName, setTeamName] = useState<string>("");
+    // state: 팀 멤버 상태
+    const [teamMembers , setTeamMembers] = useState<TeamMember[]>([]);
+
 
     // state : category 상태
     const [category, setCategory] = useState<number>(IssueCategory.BUG_FIX);
@@ -140,6 +145,7 @@ export default function IssueModal(props: IssueModalProps) {
     // 사용자가 임의로 악성 스크립트를 삽입할 수 있기 때문이다.
     // DOMPurify와 같은 라이브러리로  입력값에 대한 보안검사를 할 수 있다.
     const protectedDetailViewValue = DOMPurify.sanitize(issueDetailView);
+
 
 
     // function : detail 변경 api 결과 처리 함수.
@@ -306,6 +312,8 @@ export default function IssueModal(props: IssueModalProps) {
             alert(message);
             return;
         }
+
+        // 댓글 게시후 상태업데이트가 필요함
     }
 
     // function : 이슈 마감기한 수정 호출에 대한 응답처리함수.
@@ -318,8 +326,10 @@ export default function IssueModal(props: IssueModalProps) {
             return;
         }
     }
-    // function : 이슈 데이터 api호출에 대한 응답처리
-    const getPersonalIssueResponse = (responseBody: GetPersonalIssueByNumResponse | ResponseDto | null) => {
+
+    const getTeamIssueInfoResponse = (responseBody : GetTeamIssueInfoResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
         const {code, message} = responseBody as ResponseDto;
 
         if (code !== ResponseCode.SUCCESS) {
@@ -327,7 +337,55 @@ export default function IssueModal(props: IssueModalProps) {
             return;
         }
 
-        const {data} = responseBody as GetPersonalIssueByNumResponse;
+        const {data} = responseBody as GetTeamIssueInfoResponse;
+
+        const {issue,members} = data;
+
+        setTeamMembers(members);
+
+        const {
+            projectNum,
+            title,
+            stat,
+            priority,
+            inCharge,
+            email,
+            category,
+            content,
+            expireDate,
+            writeDate,
+            teamName
+
+        } = issue;
+
+
+        setProjectNum(projectNum);
+        setTitle(title);
+        setTitleView(title);
+        setStatus(stat);
+        setPriority(priority);
+        setInCharge(inCharge);
+        setWriter(email);
+        setCategory(category);
+        setIssueDetail(content);
+        setIssueDetailView(content); // 뷰영역 또한 세팅
+        setExpireDate(expireDate ? new Date(expireDate) : null);
+        setWriteDate(writeDate);
+        setTeamName(teamName);
+
+    }
+
+
+    // function : 이슈 데이터 api호출에 대한 응답처리
+    const getPersonalIssueInfoResponse = (responseBody: GetPersonalIssueInfoResponse | ResponseDto | null) => {
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as GetPersonalIssueInfoResponse;
 
 
         const {
@@ -379,17 +437,31 @@ export default function IssueModal(props: IssueModalProps) {
 
     //  마운트시 : 이슈에 대한 데이터를 불러옴.
     useEffect(() => {
-
         // 특정 issue에 해당하는 데이터를 불러오는 api호출
-        if (!accessToken || !issueNum) return;
+        if (isTeamModal) {
+            if (!accessToken || !issueNum || !regNum) return
 
-        const fetchIssueData = async () => {
-            const responseBody = await getPersonalIssueByIssueNum(issueNum, accessToken);
+            // 팀칸반 : 팀이슈
+            const fetchTeamIssueData = async () => {
+                const responseBody = await getTeamIssueInfo(String(issueNum), regNum, accessToken);
+                getTeamIssueInfoResponse(responseBody);
+            }
 
-            getPersonalIssueResponse(responseBody);
+            fetchTeamIssueData()
+
+
+        } else {
+            if (!accessToken || !issueNum) return
+
+            // 개인칸반 : 개인이슈
+            const fetchPersonalIssueData = async () => {
+                const responseBody = await getPersonalIssueInfo(issueNum, accessToken);
+
+                getPersonalIssueInfoResponse(responseBody);
+            }
+            fetchPersonalIssueData();
         }
 
-        fetchIssueData();
     }, [issueNum]);
 
 
@@ -459,38 +531,30 @@ export default function IssueModal(props: IssueModalProps) {
                                                clickState: inChargeClickSate,
                                                setClickState: setInChargeClickSate
                                            }}
+                                           popUpData={teamMembers}
                                            compType={"inCharge"}/>
+                        {/**/}
 
                         {!isTeamModal ?
                             null :
                             <div className={"issue-modal-team-info-container"}>
                                 <ModalCompNormal labelName={"팀이름"}
                                                  labelIcon={"issue-modal-team-icon"}
-                                                 viewData={"efe"}
+                                                 viewData={teamName}
                                 />
 
-
-                                <ModalCompBtnStyle labelName={"참여자"}
-                                                   labelIcon={"issue-modal-participants-icon"}
-                                                   hooks={{
-                                                       value: participants,
-                                                       setValue: setParticipants,
-                                                       clickState: participantsClickState,
-                                                       setClickState: setParticipantsClickState
-
-                                                   }}
-                                                   compType={"participants"}/>
                             </div>
                         }
 
-                        <ModalCompBtnStyle labelName={"우선순위"} labelIcon={""}
+                        <ModalCompBtnStyle labelName={"우선순위"}
+                                           labelIcon={"priority-icon"}
                                            hooks={{
                                                value: priority,
                                                setValue: setPriority,
                                                clickState: priorityClickState,
                                                setClickState: setPriorityClickState,
                                                eachKanbanIssues: eachKanbanIssues,
-                                               setEachKanbanIssues : setEachKanbanIssues
+                                               setEachKanbanIssues: setEachKanbanIssues
 
                                            }}
                                            compType={"priority"}/>
@@ -503,13 +567,13 @@ export default function IssueModal(props: IssueModalProps) {
                                                clickState: statusBtnClickState,
                                                setClickState: setStateBtnClickState,
                                                eachKanbanIssues: eachKanbanIssues,
-                                               setEachKanbanIssues : setEachKanbanIssues
+                                               setEachKanbanIssues: setEachKanbanIssues
 
                                            }}
                                            compType={"status"}/>
 
                         <ModalCompBtnStyle labelName={"카테고리"}
-                                           labelIcon={""}
+                                           labelIcon={"category-icon"}
                                            hooks={{
                                                value: category,
                                                setValue: setCategory,
@@ -519,7 +583,8 @@ export default function IssueModal(props: IssueModalProps) {
                                            }}
                                            compType={"category"}/>
 
-                        <ModalCompBtnStyle labelName={"마감일자"} labelIcon={""}
+                        <ModalCompBtnStyle labelName={"마감일자"}
+                                           labelIcon={"expire-date-icon"}
                                            compType={"expireTime"}
                                            onChange={onDateChangeEventHandler}
                                            hooks={{
@@ -531,7 +596,7 @@ export default function IssueModal(props: IssueModalProps) {
                                            }}/>
 
                         <ModalCompNormal labelName={"작성일자"}
-                                         labelIcon={"issue-modal-team-icon"}
+                                         labelIcon={"write-date-icon"}
                                          viewData={getFormattedDate(writeDate)}/>
 
 

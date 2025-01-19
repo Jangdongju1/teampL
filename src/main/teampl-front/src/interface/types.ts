@@ -32,7 +32,8 @@ export type Issue = {
     category: number,
     issueSequence: string,
     previousNode: string | null,
-    nextNode: string | null,
+    nextNode:  string | null,
+    teamName : string,
 }
 
 // 이슈에 대한 코멘트 정의

@@ -181,7 +181,18 @@
 .warning-icon{
     background-image: url("asset/warning_icon.png");
 }
-
+.priority-icon{
+    background-image: url("asset/priority_icon.png");
+}
+.category-icon{
+    background-image: url("asset/category_icon.png");
+}
+.write-date-icon{
+    background-image: url("asset/write_date_icon.png");
+}
+.expire-date-icon{
+    background-image: url("asset/expire_date_icon.png");
+}
 .divider {
     height: 0;
     border: 1px solid rgba(0, 0, 0, 0.3);

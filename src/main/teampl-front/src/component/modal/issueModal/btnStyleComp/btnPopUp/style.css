@@ -18,6 +18,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+
 }
 .btn-popup-option{
     width: 144px;
@@ -32,6 +33,46 @@
     border-radius: 5px;
 }
 .btn-popup-option:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.05);
+}
+.btn-popup-inCharge-wrapper{
+    width: 200px;
+    height: 200px;
+    overflow-y: auto;
+    background-color: rgba(255,255,255,1);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 16px 24px;
+    position: fixed;
+    z-index: 1011;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.btn-popup-inCharge-container{
+    height: 100%;
+    overflow-y: auto;
+}
+.btn-popup-inCharge-option-box{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-popup-inCharge-option{
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+.btn-popup-inCharge-title{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px;
+    color: rgba(0,0,0,0.7);
+}
+.btn-popup-inCharge-option-box:hover{
     cursor: pointer;
     background-color: rgba(0,0,0,0.05);
 }

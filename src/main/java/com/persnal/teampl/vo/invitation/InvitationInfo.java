@@ -1,4 +1,4 @@
-package com.persnal.teampl.dto.obj.invitation;
+package com.persnal.teampl.vo.invitation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,8 +31,7 @@ public class InvitationInfo implements Cloneable {
     }
 
 
-    // 하기 두가지 요소가 같다면 같은 객체로 봄
-
+    // 하기 두가지 요소가 같다면 같은 객체임 1) regNum  2) email
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

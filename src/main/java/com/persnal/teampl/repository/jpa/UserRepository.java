@@ -1,6 +1,6 @@
 package com.persnal.teampl.repository.jpa;
 
-import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
+import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.repository.queryDSL.UserCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;

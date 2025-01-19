@@ -1,7 +1,6 @@
 package com.persnal.teampl.service;
 
-import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
-import com.persnal.teampl.dto.request.team.InvitationMemberRequest;
+import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.dto.request.team.RegistrationMemberRequest;
 
 import java.util.Set;

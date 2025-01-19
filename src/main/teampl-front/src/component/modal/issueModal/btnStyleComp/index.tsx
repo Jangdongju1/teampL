@@ -1,12 +1,12 @@
 import "./style.css"
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {IssueCategory, IssuePriority, IssueStatus} from "../../../../common";
 import {IssueCategories, IssuePriorities, IssueStats} from "../../../../constant/issueConstants";
 import CommonDatePicker from "../../../datePicker";
 import {getFormattedDateToString} from "../../../../util";
 import BtnPopUp from "./btnPopUp";
 import InitialsImg from "../../../InitialsImg";
-import {Issue} from "../../../../interface/types";
+import {Issue, TeamMember} from "../../../../interface/types";
 
 type ModalCompBtnStyleProps<T> = {
     labelName: string,
@@ -18,18 +18,17 @@ type ModalCompBtnStyleProps<T> = {
         value: T,
         setValue: React.Dispatch<React.SetStateAction<T>>,
         eachKanbanIssues? : Record<string, Issue[]>,
-        //setEachKanbanIssues? : React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
         setEachKanbanIssues? : (newValue : Record<string, Issue[]>) => void;
-
     },
     onChange?: (date: Date | null) => void,
+    popUpData? : TeamMember[],
     compType: "status" | "priority" | "category" | "participants" | "expireTime" | "inCharge" | "default"
 }
 
 
 export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
 
-    const {labelName, btnName, labelIcon} = props;
+    const {labelName, btnName, labelIcon, popUpData} = props;
     // 옵션타입
     const {compType, hooks, onChange} = props;
 
@@ -121,7 +120,6 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
         setClickState(!clickState)
     }
 
-
     return (
 
         <div className={"issue-modal-btn-style-comp-wrapper"}>
@@ -167,7 +165,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                            }}
                            hooks={{
                                value : value as number,
-                               setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                               setValue : setValue as React.Dispatch<React.SetStateAction<number | string>>,
                                setPopUpClickState : setClickState,
                            }}
                 />)}
@@ -179,7 +177,7 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                           }}
                           hooks={{
                               value : value as number,
-                              setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                              setValue : setValue as React.Dispatch<React.SetStateAction<number | string>>,
                               setPopUpClickState : setClickState,
                               eachKanbanIssues : eachKanbanIssues,
                               setEachKanbanIssues : setEachKanbanIssues
@@ -195,7 +193,24 @@ export default function ModalCompBtnStyle<T>(props: ModalCompBtnStyleProps<T>) {
                           }}
                           hooks={{
                               value : value as number,
-                              setValue : setValue as React.Dispatch<React.SetStateAction<number>>,
+                              setValue : setValue as React.Dispatch<React.SetStateAction<number | string>>,
+                              setPopUpClickState : setClickState,
+                              eachKanbanIssues : eachKanbanIssues,
+                              setEachKanbanIssues : setEachKanbanIssues
+                          }}
+                />
+            )}
+
+            {compType === "inCharge" && clickState &&  (
+                <BtnPopUp menu={popUpData? popUpData : []}
+                          popupType={compType}
+                          cssOption={{
+                              offset: {right: 175,bottom: 245},
+                              size : {width : 300}
+                          }}
+                          hooks={{
+                              value : value as string,
+                              setValue : setValue as React.Dispatch<React.SetStateAction<number | string>>,
                               setPopUpClickState : setClickState,
                               eachKanbanIssues : eachKanbanIssues,
                               setEachKanbanIssues : setEachKanbanIssues

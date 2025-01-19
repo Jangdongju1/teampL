@@ -3,18 +3,21 @@ package com.persnal.teampl.service;
 import com.persnal.teampl.dto.request.issue.*;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.issue.*;
+import io.github.classgraph.MappableInfoList;
 import org.springframework.http.ResponseEntity;
 
 public interface IssueService {
     ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(CreateIssueRequest req, String email);
 
-    ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(String email, int projectNum);
+    ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(String email, Integer projectNum);
 
-    ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(String email, int projectNum, int status);
+    ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(String email, Integer projectNum, Integer status);
 
     ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchIssueTitle(String Email, PatchIssueTitleRequest req);
 
-    ResponseEntity<? super ApiResponse<GetPersonalIssueByNumResponse>> getPersonalIssue(String email, int issueNum);
+    ResponseEntity<? super ApiResponse<GetPersonalIssueInfoResponse>> getPersonalIssueInfo(String email, Integer issueNum);
+
+    ResponseEntity<? super ApiResponse<GetTeamIssueInfoResponse>> getTeamIssueInfo(String email, Integer issueNum, Integer regNum);
 
     ResponseEntity<? super ApiResponse<PatchIssuePriorityResponse>> patchIssuePriority(String email, PatchIssuePriorityRequest req);
 
@@ -28,8 +31,6 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<PostIssueCommentResponse>> postIssueComment(String email, PostIssueCommentRequest req);
 
-    ResponseEntity<? super ApiResponse<IssueDateTest>> getIssueTest(String email, Integer issueNum);
-
     ResponseEntity<? super ApiResponse<GetIssueCommentListResponse>> getCommentList(String email, Integer issueNum, Integer page, Integer perPage);
 
     ResponseEntity<? super ApiResponse<PatchIssueCommentResponse>> patchComment(String email, PatchIssueCommentRequest req);
@@ -37,6 +38,8 @@ public interface IssueService {
     ResponseEntity<? super ApiResponse<GetCommentCountResponse>> getCommentCount(String email, Integer issueNum);
 
     ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(String email, PatchIssueStatusDragRequest req);
+
+    ResponseEntity<? super ApiResponse<PatchIssueInChargeResponse>> patchIssueInCharge(PatchIssueInChargeRequest req);
 
 
 

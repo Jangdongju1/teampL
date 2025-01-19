@@ -4,7 +4,7 @@ import com.persnal.teampl.common.Enum.team.InvitationStatus;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.CreatedTeamInfo;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
-import com.persnal.teampl.dto.obj.invitation.InvitationInfo;
+import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.dto.obj.temp.TeamInfo;
 import com.persnal.teampl.dto.request.team.CreateTeamRequest;
 import com.persnal.teampl.dto.request.team.InvitationMemberRequest;

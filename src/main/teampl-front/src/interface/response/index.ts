@@ -6,7 +6,7 @@ import LoginUserResponse from "./user/loginUserResponse";
 import SignInResponse from "./auth/signInResponse";
 import GetPrjListResponse from "./project/getPrjListResponse";
 import PatchIssueTitleResponse from "./issue/patchIssueTitleResponse";
-import GetPersonalIssueByNumResponse from "./issue/getPersonalIssueByNumResponse";
+import GetPersonalIssueInfoResponse from "./issue/getPersonalIssueInfoResponse";
 import PatchIssuePriorityResponse from "./issue/patchIssuePriorityResponse";
 import GetPersonalIssueListResponse from "./issue/getPersonalIssueListResponse";
 import CreateIssueResponse from "./issue/createIssueResponse";
@@ -22,6 +22,7 @@ import GetTeamResponse from "./team/getTeamResponse";
 import GetSearchUserResponse from "./user/getSearchUserResponse";
 import GetInvitationListResponse from "./user/getInvitationListResponse";
 import RegistrationMemberResponse from "./team/registrationMemberResponse";
+import PatchIssueInChargeResponse from "./issue/patchIssueInChargeResponse";
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -31,7 +32,7 @@ export type {
     SignInResponse,
     GetPrjListResponse,
     PatchIssueTitleResponse,
-    GetPersonalIssueByNumResponse,
+    GetPersonalIssueInfoResponse,
     PatchIssuePriorityResponse,
     PatchIssueStatusResponse,
     PatchIssueCategoryResponse,
@@ -46,5 +47,6 @@ export type {
     GetTeamResponse,
     GetSearchUserResponse,
     GetInvitationListResponse,
-    RegistrationMemberResponse
+    RegistrationMemberResponse,
+    PatchIssueInChargeResponse
 }

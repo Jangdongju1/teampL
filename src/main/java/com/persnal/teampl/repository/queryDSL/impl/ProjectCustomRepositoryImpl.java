@@ -43,7 +43,6 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                     queryFactory.select(teamMember.teamMemberPk.regNum)
                             .from(teamMember)
                             .where(teamMember.teamMemberPk.email.eq(email))
-
             ));
 
 
