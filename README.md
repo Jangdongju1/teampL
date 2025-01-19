@@ -41,4 +41,4 @@
                     <img src="https://img.shields.io/badge/MySQL-4479A1?style=float-square&logo=MySql&logoColor=white"><img src="https://img.shields.io/badge/8.0-515151?style=float-square">
                      <img src="https://img.shields.io/badge/Redis-FF4438?style=float-square&logo=Redis&logoColor=white"><img src="https://img.shields.io/badge/7.4.1-515151?style=float-square">
                 </div>
-* * <img src="https://img.shields.io/badge/ORM-%23121011?style=plastic"/>
+* <img src="https://img.shields.io/badge/ORM-%23121011?style=plastic"/>
