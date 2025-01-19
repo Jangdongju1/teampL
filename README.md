@@ -41,3 +41,7 @@
                      <img src="https://img.shields.io/badge/Redis-FF4438?style=float-square&logo=Redis&logoColor=white"><img src="https://img.shields.io/badge/7.4.1-515151?style=float-square">
                 </div>
 * <img src="https://img.shields.io/badge/ORM-%23121011?style=plastic"/>
+                <div>
+                    <img src="https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=float-square&logo=Spring&logoColor=white"/><img src="https://img.shields.io/badge/3.2.5-515151?style=float-square">
+                    <img src="https://img.shields.io/badge/QueryDsl-6DB33F?style=float-square"/><img src="https://img.shields.io/badge/3.2.5-515151?style=float-square">
+                </div>
