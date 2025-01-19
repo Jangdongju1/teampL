@@ -68,6 +68,8 @@
 
       FrontEnd 와 BackEnd에 대한 상세한 내용은 아래의 링크로 연결된 Notion페이지에서 확인하실 수 잇습니다.
 
+      * FrontEnd Detail 
+      * BakEnd Detail
 
 
 * 기능 및 화면소개
