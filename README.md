@@ -53,5 +53,5 @@
 ------------------
 
 
-![main_logo](https://github.com/user-attachments/assets/c00638bf-e3b3-439b-906c-c32de9081d93)
+<img src="https://github.com/user-attachments/assets/c00638bf-e3b3-439b-906c-c32de9081d93" width=300 height=300/>
 
