@@ -88,6 +88,7 @@
         <div>
             ![main](https://github.com/user-attachments/assets/598965d3-9161-4435-b5e1-9ad2562a58b9)
             ![persnalKanban](https://github.com/user-attachments/assets/422b0e08-c6da-4e5e-9703-294bf9b460f6)
+            ![IssueModal](https://github.com/user-attachments/assets/f10850be-037f-4f03-b532-0e0f67ec0a2a)
         </div>
 
 
