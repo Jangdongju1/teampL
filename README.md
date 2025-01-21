@@ -70,7 +70,7 @@
 
       BackEnd에 대한 상세한 내용은 아래의 링크로 연결된 Notion페이지에서 확인하실 수 있습니다.
 
-      * <a src="https://plum-bayberry-866.notion.site/TeamPL-BackEnd-Detail-10d498f4568880db9366d64b3a00a492">BackEnd Detail 바로가기</a>
+      * [BackEnd Detail 바로가기]("https://plum-bayberry-866.notion.site/TeamPL-BackEnd-Detail-10d498f4568880db9366d64b3a00a492")
      
 
 
