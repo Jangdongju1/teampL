@@ -85,9 +85,13 @@
         </div>
       
   * 개인프로젝트 전용 칸반보드
-       <div>
-           ![main](https://github.com/user-attachments/assets/ba167a03-0dd0-42c0-a531-e0c81c3a83fa)
-       </div>
+        <div>
+            ![main](https://github.com/user-attachments/assets/598965d3-9161-4435-b5e1-9ad2562a58b9)
+            ![persnalKanban](https://github.com/user-attachments/assets/422b0e08-c6da-4e5e-9703-294bf9b460f6)
+        </div>
+
+
+
 
         
   * 팀 생성 및 팀원 초대를 통한 팀원간의 공유가 가능한 칸반보드
