@@ -91,11 +91,13 @@
             ![IssueModal](https://github.com/user-attachments/assets/f10850be-037f-4f03-b532-0e0f67ec0a2a)
         </div>
 
-
-
-
         
   * 팀 생성 및 팀원 초대를 통한 팀원간의 공유가 가능한 칸반보드
+        <div>
+            ![createTeam](https://github.com/user-attachments/assets/1d4b4ac8-d840-476c-94d5-e7ad2f515672)
+            ![invitationMember](https://github.com/user-attachments/assets/9408c392-60bd-45a4-8e87-d7962208ea50)
+            ![confimInvitation](https://github.com/user-attachments/assets/48d73116-1e04-43d1-9830-86c626ca97a9)
+        </div>
 
       
   
