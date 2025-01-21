@@ -97,6 +97,7 @@
             ![createTeam](https://github.com/user-attachments/assets/1d4b4ac8-d840-476c-94d5-e7ad2f515672)
             ![invitationMember](https://github.com/user-attachments/assets/9408c392-60bd-45a4-8e87-d7962208ea50)
             ![confimInvitation](https://github.com/user-attachments/assets/48d73116-1e04-43d1-9830-86c626ca97a9)
+            ![teamKanbanModal](https://github.com/user-attachments/assets/849789ad-d393-4270-9afe-e9cbe107c0c0)
         </div>
 
       
