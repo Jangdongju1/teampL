@@ -73,8 +73,6 @@
       * [BackEnd Detail 바로가기](https://plum-bayberry-866.notion.site/TeamPL-BackEnd-Detail-10d498f4568880db9366d64b3a00a492)
      
 
-* 개발하면서 어려웠던 점
-
 
 
 
