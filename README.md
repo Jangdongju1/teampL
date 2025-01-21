@@ -84,8 +84,7 @@
             ![auth](https://github.com/user-attachments/assets/861d8604-64da-4d94-b0f0-d79fafadbf8f)
         </div>
       
-  * 개인프로젝트 전용 칸반보드
-        * 개인프로젝트 생성 및 프로젝트의 진생상태관리
+  * 개인프로젝트 전용 칸반보드 - 개인프로젝트 생성 및  프로젝트 진행 상태 관리
         <div>
             ![main](https://github.com/user-attachments/assets/598965d3-9161-4435-b5e1-9ad2562a58b9)
             ![persnalKanban](https://github.com/user-attachments/assets/422b0e08-c6da-4e5e-9703-294bf9b460f6)
