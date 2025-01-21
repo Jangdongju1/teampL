@@ -79,6 +79,9 @@
 ## 기능 및 화면소개
 
   * SMTP프로토콜을 활용한 Eamil을 이용한 간편한 회원가입
+        <div>
+            <img src="https://github.com/user-attachments/assets/1bb56360-fe1d-44b8-86a5-8cbd3d9e98d6" width=300 height=300/>
+        </div>
       
   * 개인프로젝트 전용 칸반보드
         
