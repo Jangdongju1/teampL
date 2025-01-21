@@ -86,8 +86,7 @@
       
   * 개인프로젝트 전용 칸반보드
        <div>
-           ![main](https://github.com/user-attachments/assets/cd75c19b-f7ef-4abd-a9ae-3261ad5f09b7)
-           ![persnalKanban](https://github.com/user-attachments/assets/31c706ba-331b-4a3e-92b0-d70593e77051)
+           ![main](https://github.com/user-attachments/assets/ba167a03-0dd0-42c0-a531-e0c81c3a83fa)
        </div>
 
         
