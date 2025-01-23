@@ -65,13 +65,13 @@
  
       TeamPL은 IT 계열의 회사에서 '협업'을 위해 사용되는 Tool의 한 종류료 흔히 말하는 '칸반보드'를 구현한 프로젝트입니다.
       솔루션 회사에서 '기술지원'팀으로 근무 할 당시에 개발부서와 협업하며 Jira라는 협업 페이지를 사용하였던 기억을 떠올려
-      프로젝트이 주제를 정하게 되었으며, 실제로 Jira를 포함 약 2개의 사이트를 참고해서 제작하게 되었습니다.
+      프로젝트이 주제를 정하게 되었으며, 실제로 Jira를 포함 약 2개의 사이트를 참고해 제작하게 되었습니다.
+
 
       BackEnd에 대한 상세한 내용은 아래의 링크로 연결된 Notion페이지에서 확인하실 수 있습니다.
 
-      * BackEnd Detail 보러가기
+      * [BackEnd Detail 바로가기](https://plum-bayberry-866.notion.site/TeamPL-BackEnd-Detail-10d498f4568880db9366d64b3a00a492)
      
-
 
 
 
@@ -79,10 +79,26 @@
 ## 기능 및 화면소개
 
   * SMTP프로토콜을 활용한 Eamil을 이용한 간편한 회원가입
+        <div>
+            ![sign_up](https://github.com/user-attachments/assets/925a0b3c-fe8f-4fda-b3df-2c409013977f)
+            ![auth](https://github.com/user-attachments/assets/861d8604-64da-4d94-b0f0-d79fafadbf8f)
+        </div>
       
-  * 개인프로젝트 전용 칸반보드
+  * 개인프로젝트 전용 칸반보드 - 개인프로젝트 생성 및  프로젝트 진행 상태 관리
+        <div>
+            ![main](https://github.com/user-attachments/assets/598965d3-9161-4435-b5e1-9ad2562a58b9)
+            ![persnalKanban](https://github.com/user-attachments/assets/422b0e08-c6da-4e5e-9703-294bf9b460f6)
+            ![IssueModal](https://github.com/user-attachments/assets/f10850be-037f-4f03-b532-0e0f67ec0a2a)
+        </div>
+
         
   * 팀 생성 및 팀원 초대를 통한 팀원간의 공유가 가능한 칸반보드
+        <div>
+            ![createTeam](https://github.com/user-attachments/assets/1d4b4ac8-d840-476c-94d5-e7ad2f515672)
+            ![invitationMember](https://github.com/user-attachments/assets/9408c392-60bd-45a4-8e87-d7962208ea50)
+            ![confimInvitation](https://github.com/user-attachments/assets/48d73116-1e04-43d1-9830-86c626ca97a9)
+            ![teamKanbanModal](https://github.com/user-attachments/assets/849789ad-d393-4270-9afe-e9cbe107c0c0)
+        </div>
 
       
   
