@@ -34,6 +34,7 @@ export type Issue = {
     previousNode: string | null,
     nextNode:  string | null,
     teamName : string,
+    commentCnt: number  // 댓글의 갯수
 }
 
 // 이슈에 대한 코멘트 정의

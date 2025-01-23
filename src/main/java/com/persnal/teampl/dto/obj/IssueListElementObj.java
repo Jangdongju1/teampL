@@ -1,14 +1,14 @@
 package com.persnal.teampl.dto.obj;
 
-import jakarta.persistence.Transient;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-@Builder
-public class IssueObj {
+@Setter
+@AllArgsConstructor
+public class IssueListElementObj {
+    // 프로젝트 칸반의 이슈리스트를 담는 객체.
     private Integer issueNum;
     private Integer projectNum;
     private String email;
@@ -23,8 +23,5 @@ public class IssueObj {
     private String issueSequence;
     private String previousNode;
     private String nextNode;
-    // 새로 추가된 필드
-    private String teamName; // 팀 의 이슈정보에 teamName이 존재함.
-    @Transient
-    private Integer commentCnt;  //이슈 카드 뿌릴때 댓글 수
+    private Long commentCnt;
 }

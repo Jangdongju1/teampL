@@ -2,7 +2,7 @@ package com.persnal.teampl.dto.response.issue;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.IssueObj;
+import com.persnal.teampl.dto.obj.IssueInfoObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import com.persnal.teampl.entities.IssueEntity;
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 public class GetPersonalIssueInfoResponse {
-    IssueObj issue;
+    IssueInfoObj issue;
 
     public GetPersonalIssueInfoResponse(IssueEntity entity){
         this.issue = IssueEntity.getIssue(entity);

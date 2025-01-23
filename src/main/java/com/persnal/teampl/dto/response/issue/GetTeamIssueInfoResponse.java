@@ -2,7 +2,7 @@ package com.persnal.teampl.dto.response.issue;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.IssueObj;
+import com.persnal.teampl.dto.obj.IssueInfoObj;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Getter
 public class GetTeamIssueInfoResponse {
-    private final IssueObj issue;
+    private final IssueInfoObj issue;
     private final List<TeamMemberObj> members;
 
-    public GetTeamIssueInfoResponse(IssueObj issue, List<TeamMemberObj> members) {
+    public GetTeamIssueInfoResponse(IssueInfoObj issue, List<TeamMemberObj> members) {
         this.issue = issue;
         this.members = members;
     }

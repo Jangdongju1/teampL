@@ -14,8 +14,6 @@ import {getKanbanName} from "../../constant/issueConstants";
 
 type IssueCardProps = {
     data: Issue
-    subIssueCnt: number,
-    commentCnt: number,
     isTeamKanban: boolean,
     eachKanbanState : Record<string, Issue[]>,
     // setEachKanbanState: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>
@@ -27,7 +25,6 @@ export default function IssueCard(props: IssueCardProps) {
     // props
     const {data} = props
     const {isTeamKanban} = props;
-    const {commentCnt, subIssueCnt} = props;
     // 상태 변경의 반영을 위한 칸반보드 데이터
     const {eachKanbanState, setEachKanbanState} = props;
 
@@ -179,11 +176,11 @@ export default function IssueCard(props: IssueCardProps) {
                             <div className={"issue-card-bottom-sequence"}>{data.issueSequence}</div>
                             <div className={"issue-card-bottom-etc-box"}>
                                 <div className={"issue-card-bottom-icon-box"}>
-                                    <span className={"icon issue-card-icon comment-icon"}></span> {commentCnt}
+                                    <span className={"icon issue-card-icon comment-icon"}></span> {data.commentCnt}
                                 </div>
 
                                 <div className={"issue-card-bottom-icon-box"}>
-                                    <span className={"icon issue-card-icon connect-icon"}></span> {subIssueCnt}
+                                    <span className={"icon issue-card-icon connect-icon"}></span> {0}
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,8 @@
 package com.persnal.teampl.repository.queryDSL.impl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
-import com.persnal.teampl.dto.obj.IssueObj;
+import com.persnal.teampl.dto.obj.IssueInfoObj;
+import com.persnal.teampl.dto.obj.IssueListElementObj;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.entities.*;
@@ -78,7 +79,7 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
                     .where(issue.issueNum.eq(issueNum))
                     .fetch();
 
-            IssueObj issueData = IssueObj.builder()
+            IssueInfoObj issueData = IssueInfoObj.builder()
                     .issueNum(issueResult.get(0).get(issue.issueNum))
                     .projectNum(issueResult.get(0).get(issue.projectEntity.projectNum))
                     .email(issueResult.get(0).get(issue.userEntity.email))
@@ -124,5 +125,45 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
         }
         return data;
+    }
+
+
+    @Override
+    public List<IssueListElementObj> getIssueList(Integer projectNum) {
+        List<IssueListElementObj> list = null;
+        try {
+            QIssueEntity issues = QIssueEntity.issueEntity;
+            QIssueCommentEntity comments = QIssueCommentEntity.issueCommentEntity;
+
+            list = query.select(Projections.constructor(IssueListElementObj.class,
+                            issues.issueNum,
+                            issues.projectEntity.projectNum,
+                            issues.userEntity.email,
+                            issues.title,
+                            issues.content,
+                            issues.inCharge,
+                            issues.priority,
+                            issues.writeDate,
+                            issues.expireDate,
+                            issues.stat,
+                            issues.category,
+                            issues.issueSequence,
+                            issues.previousNode,
+                            issues.nextNode,
+                            comments.commentNum.count().as("commentCnt")
+                    ))
+                    .from(issues)
+                    .leftJoin(comments).on(issues.issueNum.eq(comments.issueEntity.issueNum))
+                    .fetchJoin()
+                    .where(issues.projectEntity.projectNum.eq(projectNum))
+                    .groupBy(issues.issueNum)
+                    .fetch();
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+
+        }
+        return list;
     }
 }

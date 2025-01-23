@@ -459,8 +459,6 @@ export default function KanbanBoard() {
                                                             <IssueCard
                                                                 key={item.issueSequence}
                                                                 data={item}
-                                                                subIssueCnt={0}
-                                                                commentCnt={0}
                                                                 isTeamKanban={isTeamKanban}
                                                                 eachKanbanState={kanbanData}
                                                                 setEachKanbanState={setKanbanData}

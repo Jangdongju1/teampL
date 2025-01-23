@@ -24,11 +24,10 @@ public class IssueController {
     }
 
     @GetMapping("/issue-list/{projectNum}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getIssueList(
+    public ResponseEntity<? super ApiResponse<GetIssueListResponse>> getIssueList(
             @AuthenticationPrincipal String email,
             @PathVariable("projectNum") Integer projectNum) {
-
-        return issueService.getPersonalIssueList(email, projectNum);
+        return issueService.getIssueList(email, projectNum);
     }
 
     @GetMapping("/{issueNum}")
