@@ -162,7 +162,7 @@ public class RedisCacheServiceImpl implements RedisCacheService {
 
                 if (data != null) {
                     for (InvitationInfo info : data) {
-                        // InvitationInfo 클래스의 equals가 오버라이딩 되어잇다.  따라서 아래의 조건을 만족하는 요소는 오롯이 1개 일 것이다.
+                        // InvitationInfo 클래스의 equals는 오버라이딩 되어잇다.  따라서 아래의 조건을 만족하는 요소는 오롯이 1개 일 것이다.
                         if (info.getEmail().equals(req.getCreator()) && info.getRegNum() == req.getRegNum()) {
                             info.setIsConfirm(InvitationStatus.CONFIRM.getValue());
                             break;

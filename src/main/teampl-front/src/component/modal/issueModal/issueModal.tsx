@@ -498,6 +498,7 @@ export default function IssueModal(props: IssueModalProps) {
             {/*클로즈 박스*/}
 
             <div className={"issue-modal-close-box"}>
+                <div className={"icon more-btn more-btn-icon"}></div>
                 <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>
             </div>
             <div className={"issue-modal-container"}>
@@ -603,6 +604,7 @@ export default function IssueModal(props: IssueModalProps) {
                     </div>
                 </div>
 
+
                 <div className={"issue-modal-right-container"}>
 
                     {/*오른쪽 상단 디테일 입력 박스 */}
@@ -701,14 +703,24 @@ export default function IssueModal(props: IssueModalProps) {
 
                     </div>
 
+                    {/*<div className={"issue-modal-right-delete-btn-box"}>*/}
+                    {/*    <CommonBtn*/}
+                    {/*        style={*/}
+                    {/*            {*/}
+                    {/*                size: {width: 300, height: 50},*/}
+                    {/*                btnName: "Delete Issue",*/}
+                    {/*                backgroundColor: "#0C66E4",*/}
+                    {/*                hoverColor: "#0052CC",*/}
+                    {/*                hoverStyle: "background",*/}
+                    {/*                fontSize: 16,*/}
+                    {/*                fontColor: "rgba(255,255,255,1)"*/}
+                    {/*            }*/}
+                    {/*        }*/}
+                    {/*        onClick={() => console.log("이슈삭제")}/>*/}
+                    {/*</div>*/}
+
                 </div>
-
             </div>
-            {/*<div className={"issue-modal-close-box"}>*/}
-            {/*    <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>*/}
-            {/*</div>*/}
-
-
         </div>
     )
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class IssueController {
     private final IssueService issueService;
 
-    @PostMapping("/create-issue")
+    @PostMapping("")
     public ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(
             @RequestBody CreateIssueRequest req,
             @AuthenticationPrincipal String email) {
@@ -24,7 +24,7 @@ public class IssueController {
     }
 
     @GetMapping("/issue-list/{projectNum}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueList(
+    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getIssueList(
             @AuthenticationPrincipal String email,
             @PathVariable("projectNum") Integer projectNum) {
 
@@ -48,18 +48,18 @@ public class IssueController {
         return issueService.getTeamIssueInfo(email, issueNum, regNum);
     }
 
-    // 사용하지 않는 api EndPoint
-    @GetMapping("/issue-list/{projectNum}/{status}")
-    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(
-            @AuthenticationPrincipal String email,
-            @PathVariable("projectNum") Integer projectNum,
-            @PathVariable("status") Integer status) {
+//    // 사용하지 않는 api EndPoint
+//    @GetMapping("/issue-list/{projectNum}/{status}")
+//    public ResponseEntity<? super ApiResponse<GetPersonalIssueListResponse>> getPersonalIssueListByStatus(
+//            @AuthenticationPrincipal String email,
+//            @PathVariable("projectNum") Integer projectNum,
+//            @PathVariable("status") Integer status) {
+//
+//        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
+//    }
 
-        return issueService.getPersonalIssueListByStatus(email, projectNum, status);
-    }
 
-
-    @PatchMapping("/modification/issue-title")
+    @PatchMapping("/issue-title")
     public ResponseEntity<? super ApiResponse<PatchIssueTitleResponse>> patchTitle(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueTitleRequest req) {
@@ -67,7 +67,7 @@ public class IssueController {
         return issueService.patchIssueTitle(email, req);
     }
 
-    @PatchMapping("/modification/issue-priority")
+    @PatchMapping("/issue-priority")
     public ResponseEntity<? super ApiResponse<PatchIssuePriorityResponse>> patchPriority(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssuePriorityRequest req) {
@@ -76,21 +76,21 @@ public class IssueController {
         return issueService.patchIssuePriority(email, req);
     }
 
-    @PatchMapping("/modification/issue-status")
+    @PatchMapping("/issue-status")
     public ResponseEntity<? super ApiResponse<PatchIssueStatusResponse>> patchStatus(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueStatusRequest req) {
         return issueService.patchIssueStatus(email, req);
     }
 
-    @PatchMapping("/modification/issue-category")
+    @PatchMapping("/issue-category")
     public ResponseEntity<? super ApiResponse<PatchIssueCategoryResponse>> patchCategory(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueCategoryRequest req) {
         return issueService.patchIssueCategory(email, req);
     }
 
-    @PatchMapping("/modification/issue-expire-date")
+    @PatchMapping("/issue-expire-date")
     public ResponseEntity<? super ApiResponse<PatchIssueExpireDateResponse>> patchExpireDate(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueExpireDateRequest req) {
@@ -98,7 +98,7 @@ public class IssueController {
         return issueService.patchIssueExpireDate(email, req);
     }
 
-    @PatchMapping("/modification/issue-detail")
+    @PatchMapping("/issue-detail")
     public ResponseEntity<? super ApiResponse<PatchIssueDetailResponse>> patchDetail(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueDetailRequest req) {
@@ -106,7 +106,7 @@ public class IssueController {
         return issueService.patchIssueDetail(email, req);
     }
 
-    @PostMapping("/create/issue-comment")
+    @PostMapping("/issue-comment")
     public ResponseEntity<? super ApiResponse<PostIssueCommentResponse>> postComment(
             @AuthenticationPrincipal String email,
             @RequestBody PostIssueCommentRequest req) {
@@ -125,7 +125,7 @@ public class IssueController {
         return issueService.getCommentList(email, issueNum, page, perPage);
     }
 
-    @PatchMapping("/modification/issue-comment")
+    @PatchMapping("/issue-comment")
     public ResponseEntity<? super ApiResponse<PatchIssueCommentResponse>> patchComment(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueCommentRequest req) {
@@ -141,7 +141,7 @@ public class IssueController {
         return issueService.getCommentCount(email, issueNum);
     }
 
-    @PatchMapping("/drag/modification/issue-status")
+    @PatchMapping("/drag/issue-status")
     public ResponseEntity<? super ApiResponse<PatchIssueStatusDragResponse>> patchIssueStatusDrag(
             @AuthenticationPrincipal String email,
             @RequestBody PatchIssueStatusDragRequest req) {
@@ -149,7 +149,7 @@ public class IssueController {
         return issueService.patchIssueStatusDrag(email, req);
     }
 
-    @PatchMapping("/modification/in-charge")
+    @PatchMapping("/in-charge")
     public ResponseEntity<? super ApiResponse<PatchIssueInChargeResponse>> patchIssueInCharge(
             @RequestBody PatchIssueInChargeRequest req){
         return issueService.patchIssueInCharge(req);

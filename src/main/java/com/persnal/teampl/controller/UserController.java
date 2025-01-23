@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping("/search-user")
     public ResponseEntity<? super ApiResponse<GetSearchUserResponse>> searchUser(
             @AuthenticationPrincipal String email,
-            @RequestParam("word") String word) {
+            @RequestParam(value = "word", required = true) String word) {
 
         return userService.userSearch(email, word);
     }

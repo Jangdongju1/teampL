@@ -35,12 +35,21 @@
     display: flex;
     justify-content: right;
     z-index: 1012;
+    gap: 8px;
 }
 
 .close-btn {
     width: 26px;
     height: 26px;
     margin-right: 80px;
+}
+.more-btn{
+    width: 26px;
+    height: 26px;
+}
+.more-btn:hover{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .close-btn:hover {
@@ -256,12 +265,9 @@
     display: flex;
     justify-content: center;
 }
-
-.test112 {
+.issue-modal-right-delete-btn-box{
+    margin-top: 20px;
     width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    gap: 10px;
+    justify-content: center;
 }

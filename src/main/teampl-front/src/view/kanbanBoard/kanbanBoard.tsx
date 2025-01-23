@@ -3,7 +3,12 @@ import KanbanTopComponent from "../../component/kanbanBoardTopComponent/kanbanTo
 import {useLocation, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
-import {getPersonalPrjListRequest, getPrjInfoRequest, getTeamProjectListRequest} from "../../api/projectApi";
+import {
+    getPersonalPrjListRequest,
+    getPrjInfoRequest,
+    getPrjListRequest,
+    getTeamProjectListRequest
+} from "../../api/projectApi";
 import GetPersonalPrjInfoResponse from "../../interface/response/project/getPersonalPrjInfoResponse";
 import {GetPrjListResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
@@ -170,7 +175,6 @@ export default function KanbanBoard() {
 
         const fetchPersonalPrjData = async () => {
             const responseBody = await getPersonalPrjListRequest(accessToken);
-
             getPersonalPrjListResponse(responseBody);
         }
         fetchPersonalPrjData()

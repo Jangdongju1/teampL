@@ -34,6 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ResponseEntity<? super ApiResponse<CreatePrjResponse>> createPersonalPrj(String email, CreatePrjRequest request) {
+        ProjectObj info = null;
         try {
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity == null) return CreatePrjResponse.notExistUser();
@@ -44,11 +45,27 @@ public class ProjectServiceImpl implements ProjectService {
 
             projectRepository.save(entity);
 
+            info = ProjectObj.builder()
+                    .projectNum(entity.getProjectNum())
+                    .projectName(entity.getProjectName())
+                    .description(entity.getDescription())
+                    .createDate(entity.getCreateDate())
+                    .creator(entity.getUserEntity().getEmail())
+                    .stat(entity.getStat())
+                    .projectType(entity.getProjectType())
+                    .regNum(null)
+                    .teamName(null)
+                    .processed(0L)
+                    .totalIssueCnt(0L)
+                    .build();
+
+
+
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return CreatePrjResponse.success();
+        return CreatePrjResponse.success(info);
     }
 
     @Override
@@ -162,7 +179,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             projectInfo = projectRepository.findByProjectNum(projectNum);
 
-            if (projectInfo == null) return GetPersonalPrjInfoResponse.resourceNotFound();
+            if (projectInfo == null) return GetPersonalPrjInfoResponse.notExistProject();
 
 
         } catch (Exception e) {

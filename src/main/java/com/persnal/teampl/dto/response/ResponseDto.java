@@ -52,7 +52,7 @@ public class ResponseDto {
 
     public static ResponseEntity<ResponseDto> existedUser() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.EXIST_USER, ResponseMessage.EXIST_USER);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDto> RequestAlreadySent() {

@@ -193,6 +193,9 @@
 .expire-date-icon{
     background-image: url("asset/expire_date_icon.png");
 }
+.more-btn-icon{
+    background-image: url("asset/more-btn.png");
+}
 .divider {
     height: 0;
     border: 1px solid rgba(0, 0, 0, 0.3);

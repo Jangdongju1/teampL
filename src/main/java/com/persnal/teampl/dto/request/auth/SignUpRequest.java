@@ -13,5 +13,5 @@ import lombok.Setter;
 public class SignUpRequest {
     @NotNull @NotBlank @Size(min = 10, max = 30)  // VF
     private String password;
-    private String nickname;  // 설정 안해도됨
+    private String nickname;
 }

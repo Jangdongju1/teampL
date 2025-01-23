@@ -16,5 +16,6 @@ public interface ResponseMessage {
     String NOT_EXIST_PROJECT = "Project does not exist.";
     String NOT_EXIST_ISSUE = "Issue does not exist.";
     String NOT_EXIST_TEAM = "This Team does not exist.";
+    String NOT_VALID_ARGUMENT ="Argument is not valid.";
 
 }

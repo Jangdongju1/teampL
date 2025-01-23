@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
             mailAuthService.sendAuthentication(email);
             token = webTokenProvider.createTemporaryWebToken(email, authCodeTokenExpireTime);
-
+            String authCode = redisCacheService.findByKey(email, RedisDataBaseNum.AUTH_CODE.getValue());  // 이거 반환해주면됨.
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, getClass().getName(), Utils.getStackTrace(e));

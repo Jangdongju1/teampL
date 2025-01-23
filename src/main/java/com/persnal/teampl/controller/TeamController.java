@@ -9,6 +9,7 @@ import com.persnal.teampl.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,10 +19,10 @@ public class TeamController {
     private final TeamService teamService;  // 스프링 컨테이너에서 자동 주입
 
 
-    @PostMapping("/create-team")
+    @PostMapping("")
     public ResponseEntity<? super ApiResponse<CreateTeamResponse>> createTeam(
             @AuthenticationPrincipal String email,
-            @RequestBody CreateTeamRequest req) {
+            @RequestBody @Validated CreateTeamRequest req) {
 
         return teamService.createTeam(email, req);
     }

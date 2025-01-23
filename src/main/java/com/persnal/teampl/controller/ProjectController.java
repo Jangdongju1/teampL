@@ -17,7 +17,8 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PostMapping("/create-project")
+    // 프로젝트 생성후 프로젝트 정보를 리턴해 주어야함. (수정사항)
+    @PostMapping("")
     public ResponseEntity<? super ApiResponse<CreatePrjResponse>> createProject(
             @AuthenticationPrincipal String email,
             @RequestBody CreatePrjRequest req) {
@@ -25,7 +26,7 @@ public class ProjectController {
         return projectService.createPersonalPrj(email, req);
     }
 
-    @PostMapping("/create-team-project")
+    @PostMapping("/team-project")
     public ResponseEntity<? super ApiResponse<CreateTeamPrjResponse>> createTeamProject(
             @RequestBody CreateTeamPrjRequest req,
             @AuthenticationPrincipal String email){
@@ -53,8 +54,8 @@ public class ProjectController {
         return projectService.getTeamPrjList(email, regNum);
     }
 
-    @GetMapping("/personal-project-info/{projectNum}")
-    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPersonalPrjInfo(
+    @GetMapping("/project-info/{projectNum}")
+    public ResponseEntity<? super ApiResponse<GetPersonalPrjInfoResponse>> getPrjInfo(
             @AuthenticationPrincipal String email,
             @PathVariable("projectNum") int projectNum) {
 

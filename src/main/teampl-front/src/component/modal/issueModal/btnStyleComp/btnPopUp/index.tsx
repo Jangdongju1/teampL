@@ -321,7 +321,14 @@ export default function BtnPopUp(props: BtnPopUpProps) {
             // patch incharge request..
         }
         setPopUpClickState(false);
-        setValue(newValue as number | string);
+
+        if(popupType =="inCharge"){
+            const value = newValue as TeamMember;
+            setValue(value.email as string)
+        }else {
+            setValue(newValue as number);
+        }
+
     }
     // useEffect : 마운트시 실행할 함수
     useEffect(() => {
@@ -380,8 +387,8 @@ export default function BtnPopUp(props: BtnPopUpProps) {
                                     <div className={"btn-popup-inCharge-option-box"}
                                          onClick={() => onOptionClickEventHandler(member as TeamMember)}>
 
-                                        <InitialsImg name={member.nickname ? member.nickname : ""} width={26} height={26}/>
-                                        <div className={"btn-popup-inCharge-option"}>{member.nickname}</div>
+                                        <InitialsImg name={member.email ? member.email : ""} width={26} height={26}/>
+                                        <div className={"btn-popup-inCharge-option"}>{member.email}</div>
                                     </div>)
                             }
                         )}

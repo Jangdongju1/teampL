@@ -34,6 +34,6 @@ public class GetPersonalIssueInfoResponse {
     }
 
     public static ResponseEntity<ResponseDto> notExistIssue(){
-        return ResponseDto.resourceNotFound();
+        return ResponseDto.notExistIssue();
     }
 }

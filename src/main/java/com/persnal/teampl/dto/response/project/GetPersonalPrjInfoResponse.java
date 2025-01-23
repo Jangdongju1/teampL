@@ -1,7 +1,6 @@
 package com.persnal.teampl.dto.response.project;
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
@@ -9,8 +8,6 @@ import com.persnal.teampl.entities.ProjectEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Getter
 public class GetPersonalPrjInfoResponse {
@@ -37,8 +34,8 @@ public class GetPersonalPrjInfoResponse {
     public static ResponseEntity<ResponseDto> notExistUser(){
         return ResponseDto.notExistedUser();
     }
-    public static ResponseEntity<ResponseDto> resourceNotFound(){
-        return ResponseDto.resourceNotFound();
+    public static ResponseEntity<ResponseDto> notExistProject(){
+        return ResponseDto.notExistProject();
     }
 
 }

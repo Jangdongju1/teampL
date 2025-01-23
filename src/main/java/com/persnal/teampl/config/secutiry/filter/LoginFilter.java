@@ -76,7 +76,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
         }
 
-        //필터 >> Authentication Manager 에게 유저의 정보를 전달해 인증을 진행하는데 여기서 그냥 던지면 안되공,바구니(UsernamePassword Authentication Token)에 담에서 던져야 한다.
+        //필터 >> Authentication Manager 에게 유저의 정보를 전달해 인증을 진행하는데 여기서 그냥 던지면 안되고,바구니(UsernamePassword Authentication Token)에 담에서 던져야 한다.
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
 
