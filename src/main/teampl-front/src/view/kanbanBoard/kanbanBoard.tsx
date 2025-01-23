@@ -160,8 +160,6 @@ export default function KanbanBoard() {
         }
 
         const {data} = responseBody as GetPrjListResponse;
-
-
         setPrjModalData(data.list);
     }
 

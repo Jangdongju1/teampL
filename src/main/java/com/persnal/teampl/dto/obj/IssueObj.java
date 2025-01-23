@@ -1,13 +1,15 @@
 package com.persnal.teampl.dto.obj;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class IssueListElementObj {
+@Builder
+public class IssueObj {
     // 프로젝트 칸반의 이슈리스트를 담는 객체.
     private Integer issueNum;
     private Integer projectNum;
@@ -23,5 +25,6 @@ public class IssueListElementObj {
     private String issueSequence;
     private String previousNode;
     private String nextNode;
+    private Boolean isDeleted;
     private Long commentCnt;
 }

@@ -1,7 +1,7 @@
 import "./style.css";
 import InitialsImg from "../InitialsImg";
 import {IssueStatus, ModalType} from "../../common";
-import React, {useState, KeyboardEvent, useEffect} from "react";
+import React, {KeyboardEvent, useState} from "react";
 import {Issue} from "../../interface/types";
 import {useCookies} from "react-cookie";
 import {PatchIssueTitleResponse, ResponseDto} from "../../interface/response";
@@ -30,11 +30,11 @@ export default function IssueCard(props: IssueCardProps) {
 
 
     // global state: 이슈 넘버 세팅.
-    const {issueNum, setIssueNum} = issueStore();
+    const {setIssueNum} = issueStore();
     // global state: 모달 상태
     const {setIsModalOpen,setModalType} = modalStore();
     // state:쿠키 상태
-    const [cookies, setCookies] = useCookies();
+    const [cookies] = useCookies();
     // state: 이슈카드 제목 변경이벤트상태
     const [titleChange, setTitleChange] = useState<boolean>(false);
     // state : 칸반보드 이슈카드 제목 상태

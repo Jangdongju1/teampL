@@ -2,7 +2,7 @@ package com.persnal.teampl.dto.response.issue;
 
 import com.persnal.teampl.common.ResponseCode;
 import com.persnal.teampl.common.ResponseMessage;
-import com.persnal.teampl.dto.obj.IssueListElementObj;
+import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
 import lombok.Getter;
@@ -13,13 +13,13 @@ import java.util.List;
 
 @Getter
 public class GetIssueListResponse {
-    private final List<IssueListElementObj> list;
+    private final List<IssueObj> list;
 
-    public GetIssueListResponse(List<IssueListElementObj> list) {
+    public GetIssueListResponse(List<IssueObj> list) {
         this.list = list;
     }
 
-    public static ResponseEntity<ApiResponse<GetIssueListResponse>> success(List<IssueListElementObj> list) {
+    public static ResponseEntity<ApiResponse<GetIssueListResponse>> success(List<IssueObj> list) {
         ApiResponse<GetIssueListResponse> responseBody = new ApiResponse<>(
                 ResponseCode.SUCCESS,
                 ResponseMessage.SUCCESS,

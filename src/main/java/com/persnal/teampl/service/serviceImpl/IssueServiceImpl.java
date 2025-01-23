@@ -1,8 +1,10 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.common.Enum.issue.IssueCategory;
+import com.persnal.teampl.common.Enum.issue.IssuePriority;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
-import com.persnal.teampl.dto.obj.IssueListElementObj;
+import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
 import com.persnal.teampl.dto.obj.temp.PatchIssueTitleRepObj;
 import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
@@ -25,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,7 +45,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     @Transactional
     public ResponseEntity<? super ApiResponse<CreateIssueResponse>> createIssue(CreateIssueRequest req, String email) {
-        IssueEntity issueEntity = null;
+        IssueObj addedIssue = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
             if (!isExistUser) return CreateIssueResponse.notExistUser();
@@ -90,21 +93,40 @@ public class IssueServiceImpl implements IssueService {
                             .build();
 
 
-            issueEntity = IssueEntity.fromRequest(dto);
+            IssueEntity issueEntity = IssueEntity.fromRequest(dto);
 
-            issueRepository.save(issueEntity);
+            issueRepository.save(issueEntity);  // 이슈를 등록.
+
+            addedIssue = IssueObj.builder()
+                    .issueNum(issueEntity.getIssueNum())
+                    .title("제목을 지정해 주세요.")  // 기본 값
+                    .content("")
+                    .inCharge("") //
+                    .stat(req.getStat())
+                    .priority(IssuePriority.NORMAL.getValue())
+                    .category(IssueCategory.ETC.getValue())
+                    .email(email)
+                    .projectNum(req.getProjectNum())
+                    .writeDate(Utils.getNowTime(LocalDateTime.now()))
+                    .expireDate(null)
+                    .isDeleted(false)
+                    .issueSequence(sequence)
+                    .nextNode(nextNode)
+                    .previousNode(null)
+                    .commentCnt(0L)
+                    .build();
 
 
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return CreateIssueResponse.success(issueEntity);
+        return CreateIssueResponse.success(addedIssue);
     }
 
     @Override
     public ResponseEntity<? super ApiResponse<GetIssueListResponse>> getIssueList(String email, Integer projectNum) {
-        List<IssueListElementObj> list = null;
+        List<IssueObj> list = null;
         try {
             boolean isExistUser = userRepository.existsById(email);
             boolean isExistProject = projectRepository.existsById(projectNum);
@@ -113,7 +135,6 @@ public class IssueServiceImpl implements IssueService {
             if (!isExistProject) return GetIssueListResponse.notExistProject();
 
             list = issueRepository.getIssueList(projectNum);
-
 
 
         } catch (Exception e) {

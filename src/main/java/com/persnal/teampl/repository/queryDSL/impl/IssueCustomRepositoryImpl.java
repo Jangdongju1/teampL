@@ -2,7 +2,7 @@ package com.persnal.teampl.repository.queryDSL.impl;
 
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueInfoObj;
-import com.persnal.teampl.dto.obj.IssueListElementObj;
+import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.obj.TeamMemberObj;
 import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.entities.*;
@@ -129,13 +129,13 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
 
 
     @Override
-    public List<IssueListElementObj> getIssueList(Integer projectNum) {
-        List<IssueListElementObj> list = null;
+    public List<IssueObj> getIssueList(Integer projectNum) {
+        List<IssueObj> list = null;
         try {
             QIssueEntity issues = QIssueEntity.issueEntity;
             QIssueCommentEntity comments = QIssueCommentEntity.issueCommentEntity;
 
-            list = query.select(Projections.constructor(IssueListElementObj.class,
+            list = query.select(Projections.constructor(IssueObj.class,
                             issues.issueNum,
                             issues.projectEntity.projectNum,
                             issues.userEntity.email,
@@ -150,6 +150,7 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
                             issues.issueSequence,
                             issues.previousNode,
                             issues.nextNode,
+                            issues.isDeleted,
                             comments.commentNum.count().as("commentCnt")
                     ))
                     .from(issues)
