@@ -67,10 +67,9 @@ export default function PersonalProject() {
 
 
     //menuStat 별 데이터
-    const dataByMenu = ()=>{
-        return menu.menuStat ==="Personal"? projectTableData.personal : projectTableData.team;
+    const dataByMenu = () => {
+        return menu.menuStat === "Personal" ? projectTableData.personal : projectTableData.team;
     }
-
 
 
     // eventHandler : 드롭다운 메뉴 클릭 이벤트 헨들러
@@ -92,7 +91,7 @@ export default function PersonalProject() {
         const encodedEmail = btoa(owner);
         let path = HOME_PATH();
 
-        if (menu.menuStat ==="Personal")
+        if (menu.menuStat === "Personal")
             navigator(String(projectNum))
 
         else {
@@ -171,7 +170,7 @@ export default function PersonalProject() {
             }
             const responseBody = await getPrjListRequest(accessToken);
 
-            await getProjectListResponse(responseBody);
+            getProjectListResponse(responseBody);
 
         }
         fetchProjectData();
@@ -180,7 +179,7 @@ export default function PersonalProject() {
 
 
     useEffect(() => {
-        setTotalList(menu.menuStat === "Team"? projectTableData.team : projectTableData.personal);
+        setTotalList(menu.menuStat === "Team" ? projectTableData.team : projectTableData.personal);
     }, [projectTableData, menu.menuStat]);
 
     // 검색필터의 상태가 바뀔때마다 재차 세팅 해줌
@@ -193,7 +192,7 @@ export default function PersonalProject() {
 
     // path variable과 로그인한 유저의 이메일을 비교함.
     if (!email) return null;
-    if (btoa(loginUserEmail) !==  email) return null;
+    if (btoa(loginUserEmail) !== email) return null;
 
     return (
         <div id={"personal-project-wrapper"}>
@@ -220,8 +219,9 @@ export default function PersonalProject() {
                         <div className={"home-prj-bottom-title"}>{
                             menu.menuStat === "Personal" ? "개인 프로젝트 목록" : "팀 프로젝트 목록"
                         }</div>
-                        {(projects.team.length === 0 && projects.personal.length ===0)? null :
-                            <SearchBar value={searchWord} onChange={onSearchbarChangeEventHandler} placeHolder={"프로젝트 명"}/>
+                        {(projects.team.length === 0 && projects.personal.length === 0) ? null :
+                            <SearchBar value={searchWord} onChange={onSearchbarChangeEventHandler}
+                                       placeHolder={"프로젝트 명"}/>
                         }
 
                     </div>

@@ -6,6 +6,7 @@ import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.IssueCommentReq;
 import com.persnal.teampl.dto.obj.IssueObj;
 import com.persnal.teampl.dto.obj.temp.CreateIssueTempDto;
+import com.persnal.teampl.dto.obj.temp.DeleteIssueResponseObj;
 import com.persnal.teampl.dto.obj.temp.PatchIssueTitleRepObj;
 import com.persnal.teampl.dto.obj.temp.TeamIssueInfoFetchData;
 import com.persnal.teampl.dto.request.issue.*;
@@ -67,7 +68,8 @@ public class IssueServiceImpl implements IssueService {
 
 
             String nextNode = null;
-            // state별 가장 마지막 이슈 찾기.
+
+
             currentIssueEntity =
                     issueRepository.findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(req.getProjectNum(), req.getStat());
 
@@ -618,5 +620,81 @@ public class IssueServiceImpl implements IssueService {
             return ResponseDto.initialServerError();
         }
         return PatchIssueInChargeResponse.success();
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<DeleteIssueResponse>> deleteIssue(String email, Integer issueNum, Integer projectNum) {
+        DeleteIssueResponseObj response = null;
+        try {
+            boolean isExistUser = userRepository.existsByEmail(email);
+
+            if (!isExistUser) return DeleteIssueResponse.notExistUser();
+
+            IssueEntity entityToDelete = issueRepository.findByIssueNum(issueNum);
+
+            if (entityToDelete == null) return DeleteIssueResponse.notExistIssue();
+
+
+            // 삭제 후 이전 및 이후노드 세팅.
+            String preNode = entityToDelete.getPreviousNode();
+            String nextNode = entityToDelete.getNextNode();
+
+            IssueEntity nextIssue = null;
+            IssueEntity prevIssue = null;
+
+
+            if (preNode == null) {
+                if (nextNode != null) {
+                    nextIssue = issueRepository.findByProjectEntityProjectNumAndIssueSequence(projectNum, nextNode);
+                    if (nextIssue == null) return DeleteIssueResponse.notExistIssue();
+
+                    nextIssue.setPreviousNode(null);
+                }
+            } else {
+                prevIssue = issueRepository.findByProjectEntityProjectNumAndIssueSequence(projectNum, preNode);
+                if (prevIssue == null) return DeleteIssueResponse.notExistIssue();
+
+                if (nextNode != null) {
+
+                    nextIssue = issueRepository.findByProjectEntityProjectNumAndIssueSequence(projectNum, nextNode);
+                    if (nextIssue == null) return DeleteIssueResponse.notExistIssue();
+
+                    nextIssue.setPreviousNode(prevIssue.getIssueSequence());
+                    prevIssue.setNextNode(nextIssue.getIssueSequence());
+
+                } else {
+
+                    prevIssue.setNextNode(null);
+
+                }
+            }
+
+
+            response = DeleteIssueResponseObj.builder()
+                    .issueNum(entityToDelete.getIssueNum())
+                    .stat(entityToDelete.getStat())
+                    .build();
+
+
+
+            entityToDelete.setIsDeleted(true);
+            // 맷 첫노드 마지막노드의 기준값이 null 이기 때문에 사실상 지워진 노드에 대해서 구분되는 값을 next, prev 지정해줄
+            // 필요가 있다.
+            entityToDelete.setPreviousNode(GlobalVariable.DELETED_ISSUE_LINKED_NODE_VALUE);
+            entityToDelete.setNextNode(GlobalVariable.DELETED_ISSUE_LINKED_NODE_VALUE);
+
+
+            issueRepository.save(entityToDelete);
+            if (nextIssue != null) issueRepository.save(nextIssue);
+            if (prevIssue != null) issueRepository.save(prevIssue);
+
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return DeleteIssueResponse.success(response);
     }
 }

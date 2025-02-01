@@ -156,7 +156,8 @@ public class IssueCustomRepositoryImpl implements IssueCustomRepository {
                     .from(issues)
                     .leftJoin(comments).on(issues.issueNum.eq(comments.issueEntity.issueNum))
                     .fetchJoin()
-                    .where(issues.projectEntity.projectNum.eq(projectNum))
+                    .where(issues.projectEntity.projectNum.eq(projectNum).and(issues.isDeleted.eq(false)))
+
                     .groupBy(issues.issueNum)
                     .fetch();
 

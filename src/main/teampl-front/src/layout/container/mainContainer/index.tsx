@@ -12,6 +12,7 @@ import IssueModal from "../../../component/modal/issueModal/issueModal";
 import ProjectModal from "../../../component/modal/projectModal/projectModal";
 import KanbanStore from "../../../store/kanbanStore";
 import InvitationModal from "../../../component/modal/invitationModal/invitationModal";
+import {useModal} from "../../../hook/modal";
 
 
 export default function MainContainer() {
@@ -24,8 +25,8 @@ export default function MainContainer() {
     // const : 로딩상태
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // global State: 모달에 관련된 전역상태
-    const {isModalOpen, modalType} = modalStore();
+    // 커스텀 모달 훅;
+    const {isModalOpen,modalType} = useModal();
     // global State : 메뉴 오픈에 관한 전역상태
     const {
         teamBtnClickState,

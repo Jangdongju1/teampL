@@ -31,6 +31,4 @@ public class GetPrjListResponse {
     public static ResponseEntity<ResponseDto> notExistUser() {
         return ResponseDto.notExistedUser();
     }
-
-
 }

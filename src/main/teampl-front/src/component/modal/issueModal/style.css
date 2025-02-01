@@ -37,6 +37,28 @@
     z-index: 1012;
     gap: 8px;
 }
+.issue-modal-more-menu-box{
+    position: absolute;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 5px;
+    z-index: 1015;
+    width: 100px;
+    right: 100px;
+    top: 45px;
+
+    display: flex;
+    justify-content: center;
+
+    background-color: rgba(255,255,255,1);
+}
+.issue-modal-menu-item{
+    font-family: "Noto Sans KR Sans KR";
+    font-size: 16px ;
+}
+.issue-modal-more-menu-box:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.06);
+}
 
 .close-btn {
     width: 26px;
@@ -46,6 +68,7 @@
 .more-btn{
     width: 26px;
     height: 26px;
+    position: relative;
 }
 .more-btn:hover{
     cursor: pointer;

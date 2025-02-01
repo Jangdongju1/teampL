@@ -153,4 +153,13 @@ public class IssueController {
             @RequestBody PatchIssueInChargeRequest req){
         return issueService.patchIssueInCharge(req);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<? super ApiResponse<DeleteIssueResponse>> deleteIssue(
+            @AuthenticationPrincipal String email,
+            @RequestParam("issueNum") Integer issueNum,
+            @RequestParam("projectNum") Integer projectNum){
+
+        return issueService.deleteIssue(email, issueNum, projectNum);
+    }
 }

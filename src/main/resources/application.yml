@@ -6,7 +6,13 @@ secret:
 
 
 spring:
-#Mysql Config
+  # Http Method Delete,Put Setting
+  mvc:
+    hidden method:
+      filter:
+        enabled: true
+
+  #Mysql Config
   datasource:
     url: jdbc:mysql://localhost:3306/teampl
     username: teamPLDeveloper

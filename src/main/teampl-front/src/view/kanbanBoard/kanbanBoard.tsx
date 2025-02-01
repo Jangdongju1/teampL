@@ -1,7 +1,7 @@
 import "./style.css";
 import KanbanTopComponent from "../../component/kanbanBoardTopComponent/kanbanTopComponent";
 import {useLocation, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import {
     getPersonalPrjListRequest,
@@ -13,7 +13,7 @@ import GetPersonalPrjInfoResponse from "../../interface/response/project/getPers
 import {GetPrjListResponse, ResponseDto} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {Issue, Project} from "../../interface/types";
-import {IssueStatus, KanbanBoardName, ProjectStatus, ProjectType} from "../../common";
+import {IssueStatus, KanbanBoardName, ModalType, ProjectStatus, ProjectType} from "../../common";
 import {createIssueRequest, getIssueListRequest, patchDragIssueStatusRequest} from "../../api/issueApi";
 import GetPersonalIssueListResponse from "../../interface/response/issue/getPersonalIssueListResponse";
 import {DragDropContext, Draggable, DraggableLocation, Droppable, DropResult} from "react-beautiful-dnd";
@@ -29,6 +29,8 @@ import {HOME_PATH, TEAM_PATH} from "../../constant/path";
 import prjListModalDataStore from "../../store/prjListModalDataStore";
 import GetTeamProjectListResponse from "../../interface/response/project/getTeamProjectListResponse";
 import responseCode from "../../common/enum/responseCode";
+import ProjectModal from "../../component/modal/projectModal/projectModal";
+import {modalStore} from "../../store";
 
 
 export default function KanbanBoard() {
@@ -45,6 +47,8 @@ export default function KanbanBoard() {
 
     //global state : 칸반 상태
     const {isTeamKanban, setIsTeamKanban} = kanbanStore();
+
+    const {modalType, isModalOpen} = modalStore();
 
     //* state : 칸반보드 패널의 추가버튼 렌더링 상태
     const [addBtnRenderState, setAddBtnRenderState] =

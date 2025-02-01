@@ -38,6 +38,8 @@ public interface IssueService {
 
     ResponseEntity<? super ApiResponse<PatchIssueInChargeResponse>> patchIssueInCharge(PatchIssueInChargeRequest req);
 
+    ResponseEntity<? super ApiResponse<DeleteIssueResponse>> deleteIssue(String email, Integer issueNum, Integer projectNum);
+
 
 
 }

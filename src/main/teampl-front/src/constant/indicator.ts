@@ -43,6 +43,8 @@ export const GET_TOTAL_COMMENT_COUNT =
     (issueNum: number) => `/total-comments-count/${issueNum}`;
 export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/issue-status";
 export const PATCH_ISSUE_IN_CHARGE = ()=>"/in-charge";
+export const DELETE_ISSUE = (issueNum :string, projectNum : string)=> `?issueNum=${issueNum}&projectNum=${projectNum}`;
+
 
 
 // team

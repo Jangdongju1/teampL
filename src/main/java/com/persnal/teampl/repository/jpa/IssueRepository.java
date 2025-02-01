@@ -6,12 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IssueRepository extends JpaRepository<IssueEntity, Integer>, IssueCustomRepository {
-    IssueEntity findTopByProjectEntityProjectNumAndStatOrderByIssueNumDesc(int projectNum, int stat);
     IssueEntity findTopByProjectEntityProjectNumOrderByIssueNumDesc(int projectNum);
-    List<IssueEntity> findAllByProjectEntityProjectNum(int projectNum);
-    List<IssueEntity> findAllByProjectEntityProjectNumAndStat(int projectNum, int stat);
     IssueEntity findByIssueNum(int issueNum);
     IssueEntity findByProjectEntityProjectNumAndStatAndPreviousNodeIsNull(int projectNum, int stat);
-    IssueEntity findByProjectEntityProjectNumAndStatAndNextNodeIsNull(int projectNum, int stat);
     IssueEntity findByProjectEntityProjectNumAndStatAndIssueSequence(int projectNum, int stat, String nextNode);
+    IssueEntity findByProjectEntityProjectNumAndIssueSequence(Integer projectNum, String nextNode);
+
 }

@@ -1,21 +1,23 @@
 import axios from "axios";
 import {
     CREATE_PERSONAL_ISSUE,
+    DELETE_ISSUE,
     DOMAIN,
     GET_ISSUE_COMMENT_LIST,
     GET_PERSONAL_ISSUE_INFO,
-    GET_PERSONAL_ISSUE_BY_STATUS,
     GET_PERSONAL_ISSUE_LIST,
+    GET_TEAM_ISSUE_ISSUE_INFO,
     GET_TOTAL_COMMENT_COUNT,
     PATCH_DRAG_ISSUE_STATUS,
     PATCH_ISSUE_CATEGORY,
     PATCH_ISSUE_COMMENT,
     PATCH_ISSUE_DETAIL,
     PATCH_ISSUE_EXPIRE_DATE,
+    PATCH_ISSUE_IN_CHARGE,
     PATCH_ISSUE_PRIORITY,
     PATCH_ISSUE_STATUS,
     PATCH_ISSUE_TITLE,
-    POST_ISSUE_COMMENT, GET_TEAM_ISSUE_ISSUE_INFO, PATCH_ISSUE_IN_CHARGE
+    POST_ISSUE_COMMENT
 } from "../constant/indicator";
 import {
     CreateIssueResponse,
@@ -24,7 +26,8 @@ import {
     GetPersonalIssueListResponse,
     PatchIssueCategoryResponse,
     PatchIssueCommentResponse,
-    PatchIssueExpireDateResponse, PatchIssueInChargeResponse,
+    PatchIssueExpireDateResponse,
+    PatchIssueInChargeResponse,
     PatchIssuePriorityResponse,
     PatchIssueStatusResponse,
     PatchIssueTitleResponse,
@@ -36,7 +39,8 @@ import {
     PatchIssueCategoryRequest,
     PatchIssueCommentRequest,
     PatchIssueDetailRequest,
-    PatchIssueExpireDateRequest, PatchIssueInChargeRequest,
+    PatchIssueExpireDateRequest,
+    PatchIssueInChargeRequest,
     PatchIssueStatusDragRequest,
     PatchIssueStatusRequest,
     PatchIssueTitleRequest,
@@ -47,6 +51,7 @@ import PatchIssueDetailResponse from "../interface/response/issue/patchIssueDeta
 import GetIssueCommentListRequest from "../interface/request/issue/GetIssueCommentListRequest";
 import PatchIssueStatusDragResponse from "../interface/response/issue/patchIssueStatusDragResponse";
 import GetTeamIssueInfoResponse from "../interface/response/issue/getTeamIssueInfoResponse";
+import DeleteIssueResponse from "../interface/response/issue/deleteIssueResponse";
 
 
 const BASE_URL = "/api/v1/issue";
@@ -55,7 +60,6 @@ const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
 const Authorization = (token: string) => {
     return {headers: {Authorization: `Bearer ${token}`}};
 };
-
 
 
 export const createIssueRequest = async (requestBody: CreateIssueRequest, accessToken: string) => {
@@ -399,7 +403,32 @@ export const patchIssueInChargeRequest = async (requestBody: PatchIssueInChargeR
         if (axios.isAxiosError(error)) {
             if (!error.response) {
                 console.log("Request", error.message);
-                console.error("Error is occurred!", error.message);
+                console.log("Error is occurred!", error.message);
+                return null;
+            }
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.error("Unexpected Error!!", error);
+            return null;
+        }
+    }
+}
+
+// 이슈 삭제 요청
+
+export const deleteIssueRequest = async (issueNum: string, projectNum: string, accessToken: string) => {
+    try {
+        const result = await axios.delete(apiEndPoint(DELETE_ISSUE(issueNum, projectNum)), Authorization(accessToken));
+
+        const responseBody: DeleteIssueResponse = result.data;
+        return responseBody;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Request", error.message);
+                console.log("Error is occurred!", error.message);
                 return null;
             }
             const responseBody: ResponseDto = error.response.data;

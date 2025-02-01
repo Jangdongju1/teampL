@@ -1,5 +1,5 @@
 import "./style.css"
-import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
+import React, {KeyboardEvent, useEffect, useState} from "react";
 import CommonInputComponent from "../../inputCmponent/common";
 import ModalCompNormal from "./normalStyleComp";
 import ModalCompBtnStyle from "./btnStyleComp";
@@ -12,6 +12,7 @@ import Pagination from "../../pagination/server";
 import {issueStore, modalStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {
+    deleteIssueRequest,
     getIssueCommentListRequest,
     getPersonalIssueInfo,
     getTeamIssueInfo,
@@ -44,6 +45,8 @@ import usePagination from "../../../hook/pagination/server/pagination";
 import GetIssueCommentListRequest from "../../../interface/request/issue/GetIssueCommentListRequest";
 import {useParams} from "react-router-dom";
 import GetTeamIssueInfoResponse from "../../../interface/response/issue/getTeamIssueInfoResponse";
+import DeleteIssueResponse from "../../../interface/response/issue/deleteIssueResponse";
+import {useModal} from "../../../hook/modal";
 
 
 // 이슈에 대한 데이터를 받아올 예정.
@@ -56,8 +59,8 @@ type IssueModalProps = {
 //modalType : isu
 export default function IssueModal(props: IssueModalProps) {
 
-    // path variable : 팀칸반일대 존재하는 regNum
-    const {regNum} = useParams();
+    // path variable : 팀칸반 일때 path variable 에 regNum이 존재함.
+    const {regNum, projectNum: projectId} = useParams();
 
     const {isTeamModal, eachKanbanIssues, setEachKanbanIssues} = props
     //state: 프로젝트 번호 상태
@@ -65,7 +68,7 @@ export default function IssueModal(props: IssueModalProps) {
     // global state : 세팅된 전역상태
     const {issueNum, setIssueNum} = issueStore();
     // 쿠키 상태
-    const [cookies, setCookies] = useCookies();
+    const [cookies] = useCookies();
 
     // state:  제목 변경상태
     const [isTitleChange, setIsTitleChange] = useState<boolean>(false);
@@ -84,7 +87,7 @@ export default function IssueModal(props: IssueModalProps) {
     // state: 팀이름 상태
     const [teamName, setTeamName] = useState<string>("");
     // state: 팀 멤버 상태
-    const [teamMembers , setTeamMembers] = useState<TeamMember[]>([]);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
 
     // state : category 상태
@@ -123,7 +126,14 @@ export default function IssueModal(props: IssueModalProps) {
     // 댓글 데이터 상태
     const [issueComments, setIssueComments] = useState<IssueComment[]>([]);
     // global state: 모달 상태
-    const {setIsModalOpen} = modalStore();
+    //const {setIsModalOpen, setModalType} = modalStore();
+
+    const {closeModal} =useModal();
+
+    // state : 더보기 메뉴 선택 상태
+    const [moreMenuClickSate, setMoreMenuClickState] = useState<boolean>(false);
+
+
 
     // 페이지당 댓글 출력 갯수.
     const PER_PAGE: number = 5;
@@ -185,7 +195,8 @@ export default function IssueModal(props: IssueModalProps) {
 
     //eventHandler: 모달 닫기버튼 클릭 이벤트 헨들러
     const onIssueModalCloseBtnClickEventHandler = () => {
-        setIsModalOpen(false);
+        //setIsModalOpen(false);
+        closeModal();
     }
 
     //eventHandler: 제목 부분 클릭 이벤트 헨들러
@@ -327,7 +338,7 @@ export default function IssueModal(props: IssueModalProps) {
         }
     }
 
-    const getTeamIssueInfoResponse = (responseBody : GetTeamIssueInfoResponse | ResponseDto | null)=>{
+    const getTeamIssueInfoResponse = (responseBody: GetTeamIssueInfoResponse | ResponseDto | null) => {
         if (!responseBody) return;
 
         const {code, message} = responseBody as ResponseDto;
@@ -339,7 +350,7 @@ export default function IssueModal(props: IssueModalProps) {
 
         const {data} = responseBody as GetTeamIssueInfoResponse;
 
-        const {issue,members} = data;
+        const {issue, members} = data;
 
         setTeamMembers(members);
 
@@ -435,6 +446,50 @@ export default function IssueModal(props: IssueModalProps) {
         setIssueComments(data.commentList);
     }
 
+    // function : 이슈 삭제 요청에 대한 응답처리 함수.
+    const deleteIssueResponse = (responseBody: DeleteIssueResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as DeleteIssueResponse;
+
+        const {deletedIssueId, stat} = data;
+
+
+        // 상태 업데이트
+        const deletedState = eachKanbanIssues[kanbanName(stat)].filter(issue => issue.issueNum !== deletedIssueId);
+
+        const updatedKanbanState = {
+            ...eachKanbanIssues,
+            [kanbanName(stat)]: deletedState
+        }
+
+
+        setEachKanbanIssues(updatedKanbanState);
+
+        // 모달 닫아주기( 추후에 진행하는 프로젝트에서는 아예 공통함수로 만들어쓸 필요가 잇음)
+        closeModal();
+
+    }
+
+    // eventHandler : 삭제버튼 클릭 이벤트 함수.
+    const onDeleteIssueBtnClickEventHandler = async () => {
+        setMoreMenuClickState(false);
+        if (!accessToken || !issueNum || !projectId) return;
+
+        //const requestBody : DeleteIssueRequest = {issueNum : String(issueNum),  projectNum : projectId};
+
+        const responseBody = await deleteIssueRequest(String(issueNum), projectId, accessToken);
+
+        deleteIssueResponse(responseBody);
+    }
+
     //  마운트시 : 이슈에 대한 데이터를 불러옴.
     useEffect(() => {
         // 특정 issue에 해당하는 데이터를 불러오는 api호출
@@ -498,9 +553,18 @@ export default function IssueModal(props: IssueModalProps) {
             {/*클로즈 박스*/}
 
             <div className={"issue-modal-close-box"}>
-                <div className={"icon more-btn more-btn-icon"}></div>
+                <div className={"icon more-btn more-btn-icon"}
+                     onClick={() => setMoreMenuClickState(prevState => !moreMenuClickSate)}></div>
                 <div className={"icon close-btn close-icon"} onClick={onIssueModalCloseBtnClickEventHandler}></div>
             </div>
+
+            {moreMenuClickSate && (
+                <div className={"issue-modal-more-menu-box"}>
+                    <div className={"issue-modal-menu-item"} onClick={onDeleteIssueBtnClickEventHandler}>{"이슈삭제"}</div>
+                </div>
+            )}
+
+
             <div className={"issue-modal-container"}>
                 <div className={"issue-modal-left-container"}>
 

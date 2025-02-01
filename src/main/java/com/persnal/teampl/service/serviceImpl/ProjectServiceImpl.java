@@ -1,5 +1,6 @@
 package com.persnal.teampl.service.serviceImpl;
 
+import com.persnal.teampl.common.Enum.project.ProjectType;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.ProjectObj;
 import com.persnal.teampl.dto.obj.temp.TeamInfo;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -60,7 +62,6 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
 
 
-
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
@@ -98,7 +99,6 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
 
 
-
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
@@ -126,14 +126,14 @@ public class ProjectServiceImpl implements ProjectService {
     public ResponseEntity<? super ApiResponse<GetPersonalPrjListResponse>> getPersonalPrjList(String email) {
         List<ProjectObj> list = null;
         try {
-            boolean isExistUser  = userRepository.existsById(email);
+            boolean isExistUser = userRepository.existsById(email);
 
             if (!isExistUser) return GetPersonalPrjListResponse.notExistUser();
 
             list = projectRepository.getPersonalProjectList(email);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }

@@ -1,4 +1,5 @@
 import {Project, ProjectTableData} from "../interface/types";
+import {modalStore} from "../store";
 
 export const getFormattedDate = (dateStr: string): string => {
     const date = new Date(dateStr);
