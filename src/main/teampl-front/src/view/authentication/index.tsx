@@ -7,7 +7,7 @@ import {ChangeEvent, useEffect, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api/authApi";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
-import {AuthCodeResponse, ResponseDto,SignInResponse} from "../../interface/response";
+import {AuthCodeResponse, ResponseDto, SignInResponse} from "../../interface/response";
 import ResponseCode from "../../common/enum/responseCode";
 import {useNavigate} from "react-router-dom";
 import {
@@ -19,6 +19,7 @@ import {
 } from "../../constant/path";
 import {useCookies} from "react-cookie";
 import {userEmailStore} from "../../store";
+import {forOwn} from "lodash";
 
 
 // component : 로그인 관련 컴포넌트
@@ -86,28 +87,28 @@ export default function Authentication() {
         const onSignUpBtnClickEventHandler = () => {
             if (!cookie.accessToken_Auth) setLogInCardState(!logInCardState);
             else {
-                const encodedIndicator = sessionStorage.getItem("userEmail");
+                const encodedIndicator = sessionStorage.getItem("identifier");
                 if (!encodedIndicator) return;
                 navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedIndicator)}`);
             }
 
         }
 
-        const signInResponse = (responseBody:SignInResponse | ResponseDto | null)=>{
-            const {code,message} = responseBody as ResponseDto;
+        const signInResponse = (responseBody: SignInResponse | ResponseDto | null) => {
+            const {code, message} = responseBody as ResponseDto;
             if (code === ResponseCode.SUCCESS) {
                 const {data} = responseBody as SignInResponse;
                 const now = Date.now();
 
-                const expires = new Date(now + data.expireTimeSec*1000);
-                setCookie("accessToken_Main", data.token, {expires, path:`/`});
+                const expires = new Date(now + data.expireTimeSec * 1000);
+                setCookie("accessToken_Main", data.token, {expires, path: `/`});
 
                 const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
-                localStorage.setItem("identifier", encodedUserEmail); //로컬스토리지에 식별자 저장 .
+                //localStorage.setItem("identifier", encodedUserEmail); //로컬스토리지에 식별자 저장 .
+                sessionStorage.setItem("identifier", encodedUserEmail);
                 navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
 
-            }
-            else if (code === ResponseCode.SIGN_IN_FAILED) alert(message);
+            } else if (code === ResponseCode.SIGN_IN_FAILED) alert(message);
             else if (code === ResponseCode.NOT_EXIST_USER) alert(message);
 
 
@@ -164,6 +165,7 @@ export default function Authentication() {
                             <div className={"sign-in-bottom-social-button-description"}>{"Google를 이용한 Login"}</div>
                         </div>
                     </div>
+
                     <div className={"sign-in-bottom-other-login-divider2-container"}>
                         <div className={"sign-in-bottom-other-login-divider2"}></div>
                     </div>
@@ -220,11 +222,11 @@ export default function Authentication() {
             const expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
             setCookie("accessToken_Auth", data.accessToken_Auth, {expires, path: `${AUTH_PATH()}/`});
 
-            setLoginUserEmail(data.email);  // 전역상태 저장.
+            setLoginUserEmail(data.email);
 
             // 세션스토리지에 url식별자를 저장하고,  이메일로 인증페이지에 대한 url을 함께 전송할 예졍.
             const encodedEmail = btoa(data.email);
-            sessionStorage.setItem("userEmail", encodedEmail);
+            sessionStorage.setItem("identifier", encodedEmail)
             navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedEmail)}`);
 
         }
@@ -235,6 +237,10 @@ export default function Authentication() {
 
         }
 
+        // 소셜 로그인창을 띄움
+        const onSocialGoogleBtnClickEventHandler = () => {
+            window.location.href="http://localhost:4000/oauth2/authorization/google";
+        }
         return (
             <div id={"sign-in-card-wrapper"}>
                 {/*top container*/}
@@ -276,7 +282,8 @@ export default function Authentication() {
                     <div className={"sign-up-middle-other-button-box"}>
                         <div className={"sign-up-middle-social-button"}>
 
-                            <div className={"social-sign-up-button cursor-pointer"}>
+                            <div className={"social-sign-up-button cursor-pointer"}
+                                 onClick={onSocialGoogleBtnClickEventHandler}>
                                 <div className={"social-sign-up-button-content-box"}>
                                     <div className={"social-sign-up-icon google-icon"}></div>
                                     <div

@@ -3,8 +3,8 @@ import InputComponent from "../../../component/inputCmponent/auth";
 import {ChangeEvent, useEffect, useState} from "react";
 import {userEmailStore} from "../../../store";
 import {useCookies} from "react-cookie";
-import {useNavigate} from "react-router-dom";
-import {AUTH_PATH, SIGN_IN_PATH} from "../../../constant/path";
+import {useNavigate, useParams} from "react-router-dom";
+import {AUTH_PATH, HOME_PATH, PERSONAL_PROJECT_HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {SignUpRequest} from "../../../interface/request";
 import {signUpRequest} from "../../../api/authApi";
 import {ResponseDto, SignUpResponse} from "../../../interface/response";
@@ -13,7 +13,8 @@ import ResponseCode from "../../../common/enum/responseCode";
 export default function PasswordRegistration() {
     // navigator
     const navigator = useNavigate();
-
+    // path variable
+    const {email} = useParams();
     //state : 비밀번호 입력 상태.
     const [password, setPassword] = useState<string>("");
     //state : 비밀번호 input 타입 상태.
@@ -23,9 +24,9 @@ export default function PasswordRegistration() {
     //state : 닉네임(아이디) 상태
     const [nickname, setNickname] = useState<string>("");
     // GlobalState: 유저이메일 전역상태
-    const {loginUserEmail,setLoginUserEmail} = userEmailStore();
+    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
     // state : 쿠킥 상태
-    const [cookie , setCookie] = useCookies();
+    const [cookie, setCookie] = useCookies();
 
     //eventHandler : 비밀번호 input 엘리먼드 변경 이벤트 처리 헨들러
     const onPasswordInputElementChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,28 +49,40 @@ export default function PasswordRegistration() {
         setNickname(value);
     }
     //eventHandler: 회원가입 버튼 클릭 이베트 헨들러
-    const onSignUpBtnClickEventHandler = () =>{
+    const onSignUpBtnClickEventHandler = () => {
         const accessToken_Auth = cookie.accessToken_Auth;
         if (!accessToken_Auth) return;
-        const requestBody:SignUpRequest = {password: password, nickname: nickname};// 객체화시켜서
-        signUpRequest(requestBody,accessToken_Auth)
+        const requestBody: SignUpRequest = {password: password, nickname: nickname};// 객체화시켜서
+        signUpRequest(requestBody, accessToken_Auth)
             .then(requestBody => signUpResponse(requestBody))
 
     }
 
     // function : 회원가입 응답결과 처리함수
 
-    const signUpResponse = (responseBody:SignUpResponse | ResponseDto | null)=>{
+    const signUpResponse = (responseBody: SignUpResponse | ResponseDto | null) => {
         if (!responseBody) return;
         const {code} = responseBody as ResponseDto;
 
         if (code === ResponseCode.INITIAL_SERVER_ERROR) return;
-        else if(code === ResponseCode.SUCCESS){
-            const {data}  = responseBody as SignUpResponse;
+        else if (code === ResponseCode.SUCCESS) {
+            const {data} = responseBody as SignUpResponse;
             const cookieExpireTime = new Date(new Date().getTime() + data.expireTimeSec * 1000);
-            setCookie("accessToken_Main", data.accessToken_Main, {expires:cookieExpireTime, path:`/`})  //메인 페스만 유효한 것으로수정
+            setCookie("accessToken_Main", data.accessToken_Main, {expires: cookieExpireTime, path: `/`})  //메인 페스만 유효한 것으로수정
             alert("회원가입이 되었습니다.")
-            // 메인페이지로 네비게이트
+
+            cookie.accessToken_Auth = null; // Auth 쿠키 제거
+
+            if (!email) return;
+            setLoginUserEmail(email); // 첫 회원 가입시 로그인 간주
+
+
+            //const encodedEmail = btoa(email);
+            console.log(email);
+            sessionStorage.setItem("identifier", email); // 세션스토리지에 식별자
+
+            const path = HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(email);
+            navigator(path);
         }
     }
     useEffect(() => {
@@ -112,7 +125,8 @@ export default function PasswordRegistration() {
 
                     <div className={"bottom-container"}>
                         <div className={"password-reg-button-container"}>
-                            <div onClick={onSignUpBtnClickEventHandler} className={"password-reg-sign-up-button"}>{"가입하기"}</div>
+                            <div onClick={onSignUpBtnClickEventHandler}
+                                 className={"password-reg-sign-up-button"}>{"가입하기"}</div>
                         </div>
 
                         <div className={"password-reg-etc-comment-container"}>

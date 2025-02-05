@@ -157,8 +157,8 @@ public class IssueController {
     @DeleteMapping("")
     public ResponseEntity<? super ApiResponse<DeleteIssueResponse>> deleteIssue(
             @AuthenticationPrincipal String email,
-            @RequestParam("issueNum") Integer issueNum,
-            @RequestParam("projectNum") Integer projectNum){
+            @RequestParam(value = "issueNum", required = true) Integer issueNum,
+            @RequestParam(value = "projectNum", required = true) Integer projectNum){
 
         return issueService.deleteIssue(email, issueNum, projectNum);
     }

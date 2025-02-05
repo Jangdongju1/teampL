@@ -31,6 +31,10 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath role = createString("role");
 
+    public final StringPath socialId = createString("socialId");
+
+    public final StringPath socialType = createString("socialType");
+
     public QUserEntity(String variable) {
         super(UserEntity.class, forVariable(variable));
     }

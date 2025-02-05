@@ -84,3 +84,7 @@ export const isLoginUserRequest = async (token: string) => {
         })
 }
 
+export const socialLoginRequest = ()=>{
+
+}
+

@@ -23,6 +23,10 @@ public class UserEntity {
     @Setter
     private String groupName;
     @Setter
+    private String socialType;
+    @Setter
+    private String socialId;
+    @Setter
     private String role;
 
     // 일대다 관계에서 부모가 주인이 아님을 선언해야 한다.

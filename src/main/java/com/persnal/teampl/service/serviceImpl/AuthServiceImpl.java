@@ -1,6 +1,7 @@
 package com.persnal.teampl.service.serviceImpl;
 
 import com.persnal.teampl.common.Enum.redis.RedisDataBaseNum;
+import com.persnal.teampl.common.Enum.user.UserRole;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.request.auth.SignUpRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
@@ -89,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
 
             UserEntity userEntity = UserEntity.fromRequest(password, nickname, email);
 
-            userEntity.setRole("ROLE_ADMIN"); //테스트로 권한을주고
+            userEntity.setRole(UserRole.USER.getRole()); //테스트로 권한을주고
 
             userRepository.save(userEntity);  // 저장을 하고
 

@@ -19,8 +19,7 @@ import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../../constant/p
 export default function PersonalProject() {
     //* navigate : 네비게이트 함수
     const navigator = useNavigate();
-    //* pathVariable
-    const {email} = useParams();
+    const indicator = sessionStorage.getItem("identifier"); // 이메일
     // global state : 유저의 이메일 상태
     const {loginUserEmail} = userEmailStore();
     // state : 쿠키 상태
@@ -191,8 +190,8 @@ export default function PersonalProject() {
 
 
     // path variable과 로그인한 유저의 이메일을 비교함.
-    if (!email) return null;
-    if (btoa(loginUserEmail) !== email) return null;
+    if (!indicator) return null;
+    if (btoa(loginUserEmail) !== indicator) return null;
 
     return (
         <div id={"personal-project-wrapper"}>

@@ -34,16 +34,21 @@ function App() {
     // global State: 모달상태
     const {isModalOpen} = modalStore();
     //* global State: 로그인된 유저의 이메일 상태
-    const {setLoginUserEmail} = userEmailStore();
+    const {loginUserEmail,setLoginUserEmail} = userEmailStore();
     //function : 로그인된 유저인지 확인 후 응답처리 함수.
     const loginUserResponse = (responseBody : LoginUserResponse | ResponseDto | null) =>{
         if (!responseBody) return;
         const {code} = responseBody as ResponseDto;
         if (code  !== ResponseCode.SUCCESS) return;
 
-        const identifier = localStorage.getItem("identifier");
+
+        // 로그인된 유저의 아이디를 반환는 방식으로 수정이 필요함.
+        const identifier = sessionStorage.getItem("identifier");
+
+
 
         if (!identifier) return;
+
 
         const userEmail = atob(identifier);
         setLoginUserEmail(userEmail);
@@ -53,7 +58,7 @@ function App() {
     // 로그한 유저인지 확인
     useEffect(() => {
         if (!cookies.accessToken_Main) {
-            if (localStorage.getItem("identifier")) localStorage.removeItem("identifier");
+            if (sessionStorage.getItem("identifier")) sessionStorage.removeItem("identifier");
         }
         isLoginUserRequest(cookies.accessToken_Main)
             .then(response => (loginUserResponse(response)));
