@@ -78,7 +78,7 @@
 
 ## 기능 및 화면소개
 
-  * SMTP프로토콜을 활용한 Eamil을 이용한 간편한 회원가입
+  * SMTP프로토콜을 활용한 Eamil을 이용한 간편한 회원가입 및 소셜 로그인 기능 (Google & Naver)
         <div>
             ![sign_up](https://github.com/user-attachments/assets/925a0b3c-fe8f-4fda-b3df-2c409013977f)
             ![auth](https://github.com/user-attachments/assets/861d8604-64da-4d94-b0f0-d79fafadbf8f)
