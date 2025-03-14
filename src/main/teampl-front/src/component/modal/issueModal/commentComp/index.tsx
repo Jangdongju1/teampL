@@ -5,7 +5,6 @@ import {useState} from "react";
 import Editor from "../../../editor";
 import DOMPurify from "dompurify";
 import {IssueComment} from "../../../../interface/types";
-import UserEmailStore from "../../../../store/userEmailStore";
 import dayjs from "dayjs";
 import {PatchIssueCommentRequest} from "../../../../interface/request";
 import {patchIssueCommentRequest} from "../../../../api/issueApi";
@@ -20,7 +19,7 @@ export default function CommentComp({data}: CommentProps) {
     // props
     const {commentNum, issueNum, content, email, writeDate, picture} = data;
     // login user
-    const {loginUserEmail} = UserEmailStore();
+    const loginUserEmail = sessionStorage.getItem("identifier");
     // cookie 상태
     const [cookies, setCookies] = useCookies();
     //state : 편집버튼 클릭 상태
@@ -38,18 +37,21 @@ export default function CommentComp({data}: CommentProps) {
 
     //eventHandler : 편집버튼 클릭 이벤트 헨들러.
     const onModificationBtnClickEventHandler = () => {
-        if (loginUserEmail !== email) return;
+        if (!loginUserEmail) return;
+        if (atob(loginUserEmail) !== email) return;
         setMBtnClickState(true);
     }
     // eventHandler : 댓글 삭제버튼 클릭 이벤트 헨들러
     const onDeleteBtnClickEventHandler = () => {
         // 댓글 삭제 api호출
     }
+
     //eventHandler : 저장버튼 클릭 이벤트 헨들러
     const onSaveBtnClickEventHandler = async () => {
         modifiedComment === "<p><br></p>" ? setCommentView("") : setCommentView(modifiedComment);
 
-        if (!accessToken || email !== loginUserEmail) return;
+        if (!accessToken || !loginUserEmail) return;
+        if(email !== atob(loginUserEmail)) return;
 
         const requestBody: PatchIssueCommentRequest = {issueNum,commentNum, comment: modifiedComment};
         const responseBody = await patchIssueCommentRequest(requestBody, accessToken);
@@ -139,7 +141,7 @@ export default function CommentComp({data}: CommentProps) {
                         <div className={"comment-comp-content comment-comp-info-font-style"}
                              dangerouslySetInnerHTML={{__html: protectedComment}}></div>
 
-                        {loginUserEmail === email ?
+                        {loginUserEmail === btoa(email) ?
                             <div className={"comment-comp-btn-box"}>
                                 <CommonBtn
                                     style={

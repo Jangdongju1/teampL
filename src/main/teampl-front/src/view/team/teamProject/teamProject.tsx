@@ -43,11 +43,11 @@ export default function TeamProject() {
     const {setTeamNumber} = teamParamStore();
     // 쿠키 상태
     const [cookies, setCookies] = useCookies();
-
     const accessToken = cookies.accessToken_Main;
-
+    // global state : 모달상태
     const {setIsModalOpen, setModalType} = modalStore();
-
+    // session storage : 로그인 한 유저
+    const loginUserEmail = sessionStorage.getItem("identifier");
 
 
 
@@ -62,7 +62,16 @@ export default function TeamProject() {
 
 
 
-    //function: 팀원 목록 요청에 대한 응답처리 함수.
+    // function : 로그인한 유저와 해당 팀 페이지의 주인이 같은지를 판단하는 함수
+    const isSelf = (): boolean =>{
+        let result = false;
+
+        if (!loginUserEmail || !email) return false;
+
+
+        return loginUserEmail === email;
+    }
+    // function: 팀원 목록 요청에 대한 응답처리 함수.
     const getTeamMemberResponse = (responseBody : GetTeamMemberResponse | ResponseDto | null)=>{
         if (!responseBody) return;
 
@@ -272,19 +281,23 @@ export default function TeamProject() {
 
 
                         <div className={"team-project-member-comment-box"}>
-                            <CommonBtn
-                                style={
-                                    {
-                                        size: {width: 120, height: 32},
-                                        btnName: "팀원 초대",
-                                        backgroundColor: "#0C66E4",
-                                        hoverColor: "#0052CC",
-                                        hoverStyle: "background",
-                                        fontSize: 16,
-                                        fontColor: "rgba(255,255,255,1)"
+
+                            {isSelf() && (
+                                <CommonBtn
+                                    style={
+                                        {
+                                            size: {width: 120, height: 32},
+                                            btnName: "팀원 초대",
+                                            backgroundColor: "#0C66E4",
+                                            hoverColor: "#0052CC",
+                                            hoverStyle: "background",
+                                            fontSize: 16,
+                                            fontColor: "rgba(255,255,255,1)"
+                                        }
                                     }
-                                }
-                                onClick={onTeamMemberInvitationBtnClickEventHandler}/>
+                                    onClick={onTeamMemberInvitationBtnClickEventHandler}/>
+                            ) }
+
                         </div>
 
                     </div>

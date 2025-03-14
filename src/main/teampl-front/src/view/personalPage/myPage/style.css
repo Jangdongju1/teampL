@@ -1,0 +1,96 @@
+#my-page-wrapper{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(249, 250, 251,1);
+    display: flex;
+    justify-content: center;
+}
+.my-page-container{
+    width: 812px;
+    display: flex;
+    flex-direction: column;
+}
+.my-page-common-info-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+    margin-bottom: 48px;
+}
+.my-page-common-info-title{
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.my-page-common-info{
+    width: inherit;
+    box-sizing: border-box;
+    /*height: 412px;*/
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #d7e2eb;
+    border-radius: 15px;
+    background-color: rgba(255,255,255,1);
+}
+.my-page-user-profile-image{
+    width: 124px;
+    height: 124px;
+    border-radius: 50% 50%;
+    border: 1px solid blue;
+}
+.my-page-user-nickname{
+    font-size: 1.37rem;
+}
+/*button 글자 start*/
+.style-bold{
+    font-weight: 700;
+}
+/*button 글자 end*/
+.my-page-modification-btn{
+    margin-top: 40px;
+    align-self: flex-end;
+}
+.my-page-user-profile-container{
+    position: relative;
+}
+.modification{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50%;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modification:hover{
+    cursor: pointer;
+}
+.modification-image{
+    width: 24px;
+    height: 24px;
+}
+.my-page-common-info-modification{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.my-page-nickname-modification-container{
+    margin-left: 105px;
+    display: flex;
+    gap: 15px;
+}
+.modification-btn-container{
+    margin-top: 16px;
+}
+.my-page-pass-container{
+    width: inherit;
+}
+.my-page-pass-title{
+    font-size: 1.15rem;
+    font-weight: 700;
+}

@@ -12,6 +12,7 @@ type CommonBtnProps = {
         fontSize?: number,
         fontColor?: string
         border?  : string
+        etcStyle? : string
     }
 }
 export default function CommonBtn({onClick, style}: CommonBtnProps) {
@@ -23,7 +24,8 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
         fontColor,
         hoverColor,
         hoverStyle,
-        border
+        border,
+        etcStyle
     } = style;
 
     // eventHandler : 마우스 엔터시 이벤트
@@ -59,7 +61,7 @@ export default function CommonBtn({onClick, style}: CommonBtnProps) {
 
     return (
         <>
-            <div className={"default-btn"}
+            <div className={`default-btn ${etcStyle? etcStyle : ""}`}
                  style={{
                      backgroundColor: backgroundColor,
                      width: `${size.width}px`,

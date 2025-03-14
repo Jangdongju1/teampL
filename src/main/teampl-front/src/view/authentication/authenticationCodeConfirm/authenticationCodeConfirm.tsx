@@ -3,13 +3,11 @@ import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from "re
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import {AUTH_PATH, PASSWORD_REGISTRATION_PATH, SIGN_IN_PATH} from "../../../constant/path";
-import {userEmailStore} from "../../../store";
 import {AuthCodeConfirmRequest} from "../../../interface/request";
 import {authCodeConfirmRequest} from "../../../api/authApi";
 import {ResponseDto} from "../../../interface/response";
 import AuthCodeConfirmResponse from "../../../interface/response/auth/authCodeConfirmResponse";
 import ResponseCode from "../../../common/enum/responseCode";
-import CryptoJS from "crypto-js/core";
 
 export default function ConfirmAuthCode() {
 
@@ -21,8 +19,8 @@ export default function ConfirmAuthCode() {
     const [codeBodies, setCodeBodies] = useState<string[]>(Array(3).fill(''));
     // state : 쿠키 상태
     const [cookie, setCookie] = useCookies();
-    // global state : 유저 이메일 전역상태
-    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
+    // sessionStorage : 유저 이메일 전역상태
+    const loginUserEmail = sessionStorage.getItem("identifier")
     // reference: 인증 코드 input head 및 body refer
     const headRefs = useRef<(HTMLInputElement | null)[]>([]);
     const bodyRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -98,9 +96,8 @@ export default function ConfirmAuthCode() {
 
         const {code} = responseBody as ResponseDto;
         if (code === ResponseCode.SUCCESS){
-
-            const encodedEmail = btoa(loginUserEmail);
-            navigator(`${AUTH_PATH()}/${PASSWORD_REGISTRATION_PATH(encodedEmail)}`);
+            if (!loginUserEmail) return;
+            navigator(`${AUTH_PATH()}/${PASSWORD_REGISTRATION_PATH(loginUserEmail)}`);
         }
         else if(code === ResponseCode.AUTHENTICATION_FAILED) alert("유효하지 않은 코드입니다.");
         else if (code === ResponseCode.EXPIRE_AUTH_CODE) alert("만료된 코드입니다.");
@@ -177,7 +174,7 @@ export default function ConfirmAuthCode() {
 
                         <div className={"code-confirm-userEmail-container"}>
                             {loginUserEmail && (
-                                <div className={"code-confirm-userEmail"}>{`E-mail : ${loginUserEmail}`}</div>
+                                <div className={"code-confirm-userEmail"}>{`E-mail : ${atob(loginUserEmail)}`}</div>
                             )}
 
                         </div>

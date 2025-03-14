@@ -5,26 +5,33 @@ import AuthContainer from "./layout/container/authContainer";
 import {
     AUTH_PATH,
     AUTHENTICATION_CODE_CONFIRM_PATH,
-    HOME_PATH,
-    PASSWORD_REGISTRATION_PATH, PERSONAL_PAGE_INVITATION, PERSONAL_PAGE_PATH,
+    HOME_PATH, MY_PAGE_PATH,
+    PASSWORD_REGISTRATION_PATH,
+    PERSONAL_PAGE_INVITATION,
+    PERSONAL_PAGE_PATH,
     PERSONAL_PROJECT_BOARD_PATH,
     PERSONAL_PROJECT_HOME_PATH,
-    SIGN_IN_PATH, TEAM_MAIN_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH, TEAM_PROJECT_PATH
+    SIGN_IN_PATH,
+    TEAM_MAIN_PATH,
+    TEAM_PATH,
+    TEAM_PROJECT_BOARD_PATH,
+    TEAM_PROJECT_PATH
 } from "./constant/path";
-import Authentication from "./view/authentication";
-import PasswordRegistration from "./view/authentication/passwordRegistration";
-import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm";
+import Authentication from "./view/authentication/authentication";
+import PasswordRegistration from "./view/authentication/authentication";
+import ConfirmAuthCode from "./view/authentication/authenticationCodeConfirm/authenticationCodeConfirm";
 import MainContainer from "./layout/container/mainContainer";
 import PersonalProject from "./view/personalPage/personalProject/personalProject";
 import KanbanBoard from "./view/kanbanBoard/kanbanBoard";
 import {useCookies} from "react-cookie";
-import {LoginUserResponse, ResponseDto} from "./interface/response";
-import ResponseCode from "./common/enum/responseCode";
-import {modalStore, userEmailStore} from "./store";
-import {isLoginUserRequest} from "./api/authApi";
+import {loginUserInfoStore, modalStore} from "./store";
 import TeamPage from "./view/team/teamPage";
 import TeamProject from "./view/team/teamProject/teamProject";
 import InvitationInfo from "./view/personalPage/teamInfo/invitationInfo";
+import {isLoginUserRequest} from "./api/authApi";
+import {LoginUserResponse, ResponseDto} from "./interface/response";
+import ResponseCode from "./common/enum/responseCode";
+import MyPage from "./view/personalPage/myPage/myPage";
 
 function App() {
     //navigator
@@ -33,39 +40,41 @@ function App() {
     const [cookies, setCookies] = useCookies();
     // global State: 모달상태
     const {isModalOpen} = modalStore();
-    //* global State: 로그인된 유저의 이메일 상태
-    const {loginUserEmail,setLoginUserEmail} = userEmailStore();
-    //function : 로그인된 유저인지 확인 후 응답처리 함수.
-    const loginUserResponse = (responseBody : LoginUserResponse | ResponseDto | null) =>{
+    // global State : 유저의 정보 상태
+    const {info, setInfo} = loginUserInfoStore();
+
+    // function : 로그인한 유저에 대한 정보 세팅
+    const loginUserInfoSetting = (responseBody: LoginUserResponse | ResponseDto | null) => {
         if (!responseBody) return;
-        const {code} = responseBody as ResponseDto;
-        if (code  !== ResponseCode.SUCCESS) return;
 
+        const {code, message} = responseBody as ResponseDto;
 
-        // 로그인된 유저의 아이디를 반환는 방식으로 수정이 필요함.
-        const identifier = sessionStorage.getItem("identifier");
+        if (code != ResponseCode.SUCCESS) {
+            alert(message);
+            return;
+        }
+        const {data} = responseBody as LoginUserResponse;
+        const {email, nickname, profileImg} = data;
 
-
-
-        if (!identifier) return;
-
-
-        const userEmail = atob(identifier);
-        setLoginUserEmail(userEmail);
+        // 상태 업데이트
+        const updateState: Record<string, string> = {email, nickname, profileImg}
+        setInfo(updateState);
 
     }
 
     // 로그한 유저인지 확인
     useEffect(() => {
-
         if (!cookies.accessToken_Main) {
             if (sessionStorage.getItem("identifier")) sessionStorage.removeItem("identifier");
+            return;
         }
-        isLoginUserRequest(cookies.accessToken_Main)
-            .then(response => (loginUserResponse(response)));
-        console.log("로그인유저 확인");
+        // 새로고침 해서 없어지면 실행되어 유저의 정보를 세팅함.
+        if (!info)
+            isLoginUserRequest(cookies.accessToken_Main).then(response => loginUserInfoSetting(response))
+
 
     }, [cookies.accessToken_Main]);
+
 
     return (
         <div>
@@ -80,16 +89,17 @@ function App() {
                 </Route>
 
                 <Route element={<MainContainer/>}>
-
                     <Route path={HOME_PATH()}>
                         <Route path={PERSONAL_PROJECT_HOME_PATH(":email")} element={<PersonalProject/>}/>
-                        <Route path={PERSONAL_PROJECT_BOARD_PATH( ":email",":projectNum")} element={<KanbanBoard/>}/>
+                        <Route path={PERSONAL_PROJECT_BOARD_PATH(":email", ":projectNum")} element={<KanbanBoard/>}/>
+                        <Route path={MY_PAGE_PATH(":email")} element={<MyPage/>}/>
 
 
                         <Route path={TEAM_PATH()}>
                             <Route path={TEAM_MAIN_PATH(":email")} element={<TeamPage/>}/>
                             <Route path={TEAM_PROJECT_PATH(":email", ":regNum")} element={<TeamProject/>}/>
-                            <Route path={TEAM_PROJECT_BOARD_PATH(":regNum", ":creator", ":projectNum")} element={<KanbanBoard/>}/>
+                            <Route path={TEAM_PROJECT_BOARD_PATH(":regNum", ":creator", ":projectNum")}
+                                   element={<KanbanBoard/>}/>
                         </Route>
 
                         <Route path={PERSONAL_PAGE_PATH()}>
@@ -97,7 +107,6 @@ function App() {
                         </Route>
 
                     </Route>
-
 
 
                 </Route>

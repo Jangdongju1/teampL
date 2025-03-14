@@ -1,7 +1,7 @@
 import "./style.css"
 import InputComponent from "../../inputCmponent/auth";
 import {ChangeEvent, useState} from "react";
-import {modalStore, personalPrjStore, teamProjectStore, teamStore, userEmailStore} from "../../../store";
+import {modalStore, personalPrjStore, teamProjectStore, teamStore} from "../../../store";
 import {CreateProjectRequest, CreateTeamRequest} from "../../../interface/request";
 import {useCookies} from "react-cookie";
 import {createProjectRequest, createTeamProjectRequest} from "../../../api/projectApi";
@@ -15,6 +15,7 @@ import teamParamStore from "../../../store/teamParamStore";
 import CreateTeamProjectRequest from "../../../interface/request/project/createTeamProjectRequest";
 import CreateTeamProjectResponse from "../../../interface/response/project/createTeamProjectResponse";
 import TeamProjectStore from "../../../store/teamProjectStore";
+import {createConnection} from "net";
 
 type HeaderBtnModalProps = {
     title: string,  // 모달의 제목
@@ -49,7 +50,8 @@ export default function CreationModal(props: HeaderBtnModalProps) {
     // state : description 인풋 상태
     const [descriptionState, setDescriptionState] = useState<string>("");
     // global state 로그인 유저 이메일
-    const {loginUserEmail} = userEmailStore();
+    const loginUserEmail =  sessionStorage.getItem("identifier");
+    //const {loginUserEmail} = userEmailStore();
     // global state : 팀프로젝트 생성을 위한 팀번호
     const {teamNumber} = teamParamStore();
 
@@ -118,13 +120,15 @@ export default function CreationModal(props: HeaderBtnModalProps) {
         const {data} = responseBody as CreateTeamResponse;
         // 상태 새팅
 
+        if (!loginUserEmail) return;
+
         const updateData: Team = {
             regNum: data.teamInfo.regNum,
             teamName: data.teamInfo.teamName,
             sequence: data.teamInfo.sequence,
             description: data.teamInfo.description,
             createDate: data.teamInfo.createDate,
-            email: loginUserEmail,
+            email: atob(loginUserEmail),
             projects: 0,
             members: 1
         }

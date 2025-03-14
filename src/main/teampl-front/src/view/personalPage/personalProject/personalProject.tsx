@@ -1,8 +1,8 @@
 import "./style.css";
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {useCookies} from "react-cookie";
-import {personalPrjStore, userEmailStore} from "../../../store";
-import {useNavigate, useParams} from "react-router-dom";
+import {personalPrjStore} from "../../../store";
+import {useNavigate} from "react-router-dom";
 import {getPrjListRequest} from "../../../api/projectApi";
 import {GetPrjListResponse, LoginUserResponse, ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
@@ -21,8 +21,6 @@ export default function PersonalProject() {
     //* navigate : 네비게이트 함수
     const navigator = useNavigate();
     const indicator = sessionStorage.getItem("identifier"); // 이메일
-    // global state : 유저의 이메일 상태
-    const {loginUserEmail} = userEmailStore();
     // state : 쿠키 상태
     const [cookies, setCookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
@@ -216,9 +214,8 @@ export default function PersonalProject() {
     }, []);
 
 
-    // path variable과 로그인한 유저의 이메일을 비교함.
+    // 로그인 했다면 sessionStorage에 값이 있을 것.
     if (!indicator) return null;
-    if (btoa(loginUserEmail) !== indicator) return null;
 
     return (
         <div id={"personal-project-wrapper"}>

@@ -1,7 +1,7 @@
 import "./style.css";
-import {modalStore, teamStore, userEmailStore} from "../../../store";
+import {modalStore} from "../../../store";
 import {ModalType} from "../../../common";
-import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import InitialsImg from "../../InitialsImg";
 import {SearchUser} from "../../../interface/types";
 import CommonBtn from "../../btn";
@@ -23,8 +23,9 @@ export default function InvitationModal() {
     const {regNum} = useParams();
     // globalState  : 모달 상태
     const {setModalType, setIsModalOpen} = modalStore();
-    // globalState : 로그인한 유저
-    const {loginUserEmail} = userEmailStore();
+    // sessionStorage : 로그인한 유저
+    const loginUserEmail = sessionStorage.getItem("identifier");
+    //const {loginUserEmail} = userEmailStore();
 
     // globalState : 팀 등록번호 관련 전역상태;
     const {teamNumber, setTeamNumber} = teamParamStore();
@@ -122,7 +123,8 @@ export default function InvitationModal() {
         setSearchWord(value);
 
         if (regex.test(value)) {
-            if (value === loginUserEmail) return;
+            if(!loginUserEmail) return;
+            if (value === atob(loginUserEmail)) return;
             debounceSearch(value);
         } else {
             debounceSearch.cancel();

@@ -2,7 +2,7 @@ import "./style.css"
 import SearchBar from "../../component/searchBar/searchBar";
 import {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {Body, Cell, Header, HeaderCell, HeaderRow, Row, Table} from "@table-library/react-table-library";
-import {teamStore, userEmailStore} from "../../store";
+import {teamStore} from "../../store";
 import {useCookies} from "react-cookie";
 import {getTeamListRequest} from "../../api/teamApi";
 import {GetTeamResponse, ResponseDto} from "../../interface/response";
@@ -30,8 +30,9 @@ export default function TeamPage() {
     const [cookies, setCookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
 
-    // global state 로그인한 유저의 이메일
-    const {loginUserEmail} = userEmailStore();
+    // sessionStorage: 로그인한 유저의 이메일
+    const loginUserEmail = sessionStorage.getItem("identifier");
+
 
     // 불필요한 계산 방지
     const tableData = useMemo(() => {

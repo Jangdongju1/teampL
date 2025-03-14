@@ -1,7 +1,6 @@
 import "./style.css";
 import InputComponent from "../../../component/inputCmponent/auth";
 import {ChangeEvent, useEffect, useState} from "react";
-import {userEmailStore} from "../../../store";
 import {useCookies} from "react-cookie";
 import {useNavigate, useParams} from "react-router-dom";
 import {AUTH_PATH, HOME_PATH, PERSONAL_PROJECT_HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
@@ -23,8 +22,6 @@ export default function PasswordRegistration() {
     const [passwordInputIcon, setPasswordInputIcon] = useState<"key-light-on-icon" | "key-light-off-icon">("key-light-off-icon");
     //state : 닉네임(아이디) 상태
     const [nickname, setNickname] = useState<string>("");
-    // GlobalState: 유저이메일 전역상태
-    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
     // state : 쿠킥 상태
     const [cookie, setCookie] = useCookies();
 
@@ -74,11 +71,8 @@ export default function PasswordRegistration() {
             cookie.accessToken_Auth = null; // Auth 쿠키 제거
 
             if (!email) return;
-            setLoginUserEmail(email); // 첫 회원 가입시 로그인 간주
+            //setLoginUserEmail(email); // 첫 회원 가입시 로그인 간주
 
-
-            //const encodedEmail = btoa(email);
-            console.log(email);
             sessionStorage.setItem("identifier", email); // 세션스토리지에 식별자
 
             const path = HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(email);

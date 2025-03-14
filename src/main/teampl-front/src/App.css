@@ -196,6 +196,9 @@
 .more-btn-icon{
     background-image: url("asset/more-btn.png");
 }
+.modification-icon{
+    background-image: url("asset/modification-image.png");
+}
 .divider {
     height: 0;
     border: 1px solid rgba(0, 0, 0, 0.3);

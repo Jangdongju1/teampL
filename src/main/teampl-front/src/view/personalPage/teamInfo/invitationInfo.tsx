@@ -9,7 +9,6 @@ import {getInvitationListRequest} from "../../../api/userApi";
 import {GetInvitationListResponse, RegistrationMemberResponse, ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
 import {Invitation} from "../../../interface/types";
-import {userEmailStore} from "../../../store";
 import {getFormattedDate} from "../../../util";
 import {RegistrationMemberRequest} from "../../../interface/request";
 import {registrationMemberRequest} from "../../../api/teamApi";
@@ -28,8 +27,7 @@ export default function InvitationInfo() {
     const [cookies, setCookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
 
-    // global State : 로그인한 유저의 상태
-    const {loginUserEmail} = userEmailStore();
+
 
 
     // function : 초대수락 에 대한 응답처리함수

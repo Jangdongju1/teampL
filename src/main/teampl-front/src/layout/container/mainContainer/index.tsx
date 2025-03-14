@@ -1,6 +1,6 @@
 import "./style.css";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import MainHeader from "../../header/mainHeader";
+import MainHeader from "../../header/mainHeader/mainHeader";
 import InitialsImg from "../../../component/InitialsImg";
 import {AUTH_PATH, HOME_PATH, SIGN_IN_PATH} from "../../../constant/path";
 import {useCookies} from "react-cookie";

@@ -1,10 +1,10 @@
 import "./style.css";
 import InitialsImg from "../../../component/InitialsImg";
 import {useNavigate, useParams} from "react-router-dom";
-import {modalStore, userEmailStore} from "../../../store";
+import {loginUserInfoStore, modalStore} from "../../../store";
 import headerMenuStore from "../../../store/headerMenuStore";
 import {
-    HOME_PATH,
+    HOME_PATH, MY_PAGE_PATH,
     PERSONAL_PAGE_INVITATION,
     PERSONAL_PAGE_PATH,
     PERSONAL_PROJECT_HOME_PATH,
@@ -19,7 +19,7 @@ export default function MainHeader() {
     // navigate 함수 : 페이지 이동
     const navigator = useNavigate();
     // global State : 모달창에 대한 전역상태
-    const {modalType, setIsModalOpen, setModalType} = modalStore();
+    const {setIsModalOpen, setModalType} = modalStore();
     // global State : 헤더 메뉴 오픈 상태
     const {
         currentBtnClickState,
@@ -30,13 +30,24 @@ export default function MainHeader() {
         setPersonalPrjBtnClickState
     } = headerMenuStore();
 
-    // global state : 로그인한 유저의 이메일 상태
-    const {loginUserEmail} = userEmailStore();
+    // sessionStorage : 로그인한 유저의 이메일 상태
+    const loginUserEmail = sessionStorage.getItem("identifier");
+    // global state : 유저의정보
+    const {info} = loginUserInfoStore();
+
+
 
 
     // state : 개인메뉴 클릭상태
     const [individualMenuClick, setIndividualMenuClick] =
         useState<boolean>(false);
+
+    // function : 개인정보 반환함수
+    const getUserInfo = (key : string)=>{
+        if(!info) return "";
+
+        return info[key]? info[key] : "";
+    }
 
 
     // function : 개인메뉴 외의 외부 클릭시 실행할 함수
@@ -48,9 +59,6 @@ export default function MainHeader() {
             setIndividualMenuClick(false);
         }
     }
-
-
-
 
     // eventHandler : 메뉴버튼 클릭시 중앙 이벤트 헨들러
     const onMenuBtnClickEventHandler = (btnType: string) => {
@@ -83,8 +91,8 @@ export default function MainHeader() {
     // eventHandler : 개인프로젝트 > 프로젝트 목록 버튼 클릭 이벤트 헨들러
     const onHomeBtnClickEventHandler = () => {
         onMenuBtnClickEventHandler("home");
-        const encodedEmail = btoa(loginUserEmail);
-        navigator(HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(encodedEmail));
+        if (!loginUserEmail) return;
+        navigator(HOME_PATH() + "/" + PERSONAL_PROJECT_HOME_PATH(loginUserEmail));
     }
     // eventHandler : 초대목록 클릭 이벤트 헨들러
     const onInvitationListClickEventHandler = ()=>{
@@ -92,6 +100,12 @@ export default function MainHeader() {
         const path  = HOME_PATH() + "/" + PERSONAL_PAGE_PATH() + "/" +  PERSONAL_PAGE_INVITATION(email);
         navigator(path);
         setIndividualMenuClick(false);
+    }
+    // eventHandler : 마이페이지 버튼 클릭 이벤트 헨들러
+    const onMyPageBtnClickEventHandler = ()=>{
+        if (!loginUserEmail) return;
+        const path = `${HOME_PATH()}/${MY_PAGE_PATH(loginUserEmail)}`;
+        navigator(path);
     }
 
     // component : 팀 메뉴 컴포넌트
@@ -105,9 +119,9 @@ export default function MainHeader() {
 
         // eventHandler : 나의 팀 버튼 클릭 이벤트 헨들러
         const onMyTeamBtnClickEventHandler = ()=>{
-            const encodedEmail = btoa(loginUserEmail);
+            if(!loginUserEmail) return;
             setTeamBtnClickState(false);
-            navigator(TEAM_MAIN_PATH(encodedEmail));
+            navigator(TEAM_MAIN_PATH(loginUserEmail));
 
         }
         return (
@@ -163,6 +177,7 @@ export default function MainHeader() {
         }
     }, []);
 
+
     return (
         <div id={"main-header-wrapper"}>
 
@@ -197,9 +212,18 @@ export default function MainHeader() {
                     <div className={"main-header-content2"}>
 
                         <div className={"main-header-individual-content-box"}>
-                            <InitialsImg name={"jdj881204@naver.com"} height={36} width={36} onClick={onIndividualIconClickEventHandler}/>
+
+                            <div className={"main-header-individual-content"}>
+                                <InitialsImg name={"jdj881204@naver.com"} height={36} width={36}
+                                             onClick={onIndividualIconClickEventHandler}/>
+                                <div className={"main-header-individual-content-user-nickname"}>
+                                    <span className={"user-nickname"}>{getUserInfo("nickname")}</span>
+                                    {" 님 반갑습니다."}
+                                </div>
+                            </div>
+
                             {individualMenuClick && (<div className={"main-header-individual-menu"}>
-                                <div className={"main-header-individual-menu-element"}>{'마이페이지'}</div>
+                                <div className={"main-header-individual-menu-element"} onClick={onMyPageBtnClickEventHandler}>{'마이페이지'}</div>
                                 <div className={"main-header-individual-menu-element"}
                                      onClick={onInvitationListClickEventHandler}>
                                     {'초대목록'}

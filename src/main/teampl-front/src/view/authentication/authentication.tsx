@@ -18,8 +18,6 @@ import {
     SIGN_IN_PATH
 } from "../../constant/path";
 import {useCookies} from "react-cookie";
-import {userEmailStore} from "../../store";
-import {forOwn} from "lodash";
 
 
 // component : 로그인 관련 컴포넌트
@@ -32,8 +30,7 @@ export default function Authentication() {
     const [cookie, setCookie] = useCookies();
     // state : 인증코드 페이지 식별자 상태
 
-    // global state : 전역상태  유저의 이메일을 인증 코드 컴포넌트로 전달
-    const {loginUserEmail, setLoginUserEmail} = userEmailStore();
+
 
 
     // effect : 토큰 체크로직
@@ -95,21 +92,25 @@ export default function Authentication() {
         }
 
         const signInResponse = (responseBody: SignInResponse | ResponseDto | null) => {
+            if(!responseBody) return;
+
             const {code, message} = responseBody as ResponseDto;
-            if (code === ResponseCode.SUCCESS) {
-                const {data} = responseBody as SignInResponse;
-                const now = Date.now();
 
-                const expires = new Date(now + data.expireTimeSec * 1000);
-                setCookie("accessToken_Main", data.token, {expires, path: `/`});
+            if (code !== ResponseCode.SUCCESS){
+                alert(message);
+                return;
+            }
 
-                const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
-                //localStorage.setItem("identifier", encodedUserEmail); //로컬스토리지에 식별자 저장 .
-                sessionStorage.setItem("identifier", encodedUserEmail);
-                navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
 
-            } else if (code === ResponseCode.SIGN_IN_FAILED) alert(message);
-            else if (code === ResponseCode.NOT_EXIST_USER) alert(message);
+            const {data} = responseBody as SignInResponse;
+            const now = Date.now();
+
+            const expires = new Date(now + data.expireTimeSec * 1000);
+            setCookie("accessToken_Main", data.token, {expires, path: `/`});
+
+            const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
+            sessionStorage.setItem("identifier", encodedUserEmail);
+            navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
 
 
         }
@@ -222,7 +223,7 @@ export default function Authentication() {
             const expires = new Date(new Date().getTime() + data.expireTimeSec * 1000);// 밀리세컨드 단위
             setCookie("accessToken_Auth", data.accessToken_Auth, {expires, path: `${AUTH_PATH()}/`});
 
-            setLoginUserEmail(data.email);
+            //setLoginUserEmail(data.email);
 
             // 세션스토리지에 url식별자를 저장하고,  이메일로 인증페이지에 대한 url을 함께 전송할 예졍.
             const encodedEmail = btoa(data.email);
