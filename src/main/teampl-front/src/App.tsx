@@ -57,11 +57,13 @@ function App() {
 
     // 로그한 유저인지 확인
     useEffect(() => {
+
         if (!cookies.accessToken_Main) {
             if (sessionStorage.getItem("identifier")) sessionStorage.removeItem("identifier");
         }
         isLoginUserRequest(cookies.accessToken_Main)
             .then(response => (loginUserResponse(response)));
+        console.log("로그인유저 확인");
 
     }, [cookies.accessToken_Main]);
 

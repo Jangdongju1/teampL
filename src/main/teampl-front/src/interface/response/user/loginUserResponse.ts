@@ -1,5 +1,9 @@
 import ResponseDto from "../ResponseDto";
 
 export default interface LoginUserResponse extends ResponseDto{
-    Data: {}
+    data: {
+        email : string,
+        nickname : string,
+        profileImg : string
+    }
 }

@@ -4,7 +4,7 @@ import {useCookies} from "react-cookie";
 import {personalPrjStore, userEmailStore} from "../../../store";
 import {useNavigate, useParams} from "react-router-dom";
 import {getPrjListRequest} from "../../../api/projectApi";
-import {GetPrjListResponse, ResponseDto} from "../../../interface/response";
+import {GetPrjListResponse, LoginUserResponse, ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
 import {Project, ProjectTableData} from "../../../interface/types";
 import {ProjectType} from "../../../common";
@@ -14,6 +14,7 @@ import useCSPagination from "../../../hook/pagination/client/pagination_client";
 import SearchBar from "../../../component/searchBar/searchBar";
 import {getTableData} from "../../../util";
 import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../../constant/path";
+import {isLoginUserRequest} from "../../../api/authApi";
 
 
 export default function PersonalProject() {
@@ -160,6 +161,24 @@ export default function PersonalProject() {
         updateProjectState(data.list);
 
     }
+    // function : 소설 로그인시 유저의 정보를 새로 가져와 저장 처리 해야함.
+    const socialLoginResponse = (responseBody : LoginUserResponse | ResponseDto | null) =>{
+        if(!responseBody) return;
+
+        const {code,  message} = responseBody as ResponseDto;
+
+        if(code != ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as LoginUserResponse;
+        const {email} = data;
+
+        const encodedEmail  = btoa(email);
+        sessionStorage.setItem("identifier", encodedEmail);
+
+    }
     // 마운트시 실행할 함수
     useEffect(() => {
         const fetchProjectData = async () => {
@@ -187,6 +206,14 @@ export default function PersonalProject() {
         const viewData = dataByMenu().filter(project => project.projectName.toLowerCase().includes(word));
         setTotalList(viewData);
     }, [searchWord]);
+
+    // 소셜 로그인을 하는 경우에 indicator가 null일 수 있음  >> 정상적인 로그인 절차가 아님
+    useEffect(() => {
+        if (!accessToken) return;
+        if(!indicator){
+            isLoginUserRequest(accessToken).then(response => socialLoginResponse(response))
+        }
+    }, []);
 
 
     // path variable과 로그인한 유저의 이메일을 비교함.
