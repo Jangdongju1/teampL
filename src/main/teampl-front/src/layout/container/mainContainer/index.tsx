@@ -13,6 +13,7 @@ import ProjectModal from "../../../component/modal/projectModal/projectModal";
 import KanbanStore from "../../../store/kanbanStore";
 import InvitationModal from "../../../component/modal/invitationModal/invitationModal";
 import {useModal} from "../../../hook/modal";
+import PassModification from "../../../component/modal/passwordModification/passModification";
 
 
 export default function MainContainer() {
@@ -157,6 +158,8 @@ export default function MainContainer() {
             )}
 
             {isModalOpen && modalType === ModalType.TEAM_MEMBER_INVITATION && (<InvitationModal/>)}
+
+            {isModalOpen && modalType === ModalType.PASS_MODIFICATION &&(<PassModification/>)}
 
 
 

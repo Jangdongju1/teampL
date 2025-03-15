@@ -1,10 +1,11 @@
 import "./style.css"
-import {loginUserInfoStore} from "../../../store";
+import {loginUserInfoStore, modalStore} from "../../../store";
 import CommonBtn from "../../../component/btn";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import InitialsImg from "../../../component/InitialsImg";
 import {useParams} from "react-router-dom";
 import InputComponent from "../../../component/inputCmponent/auth";
+import {ModalType} from "../../../common";
 
 
 export default function MyPage() {
@@ -13,10 +14,12 @@ export default function MyPage() {
     // path variable
     const {email} = useParams();
     // state : 각 수정사항에 대한 수정상태
-    const [modification, setModification] =
-        useState<Record<string, boolean>>({commonInfo: false, pass: false});
+    const [modification, setModification] = useState<boolean>(false);
     // state : 이메일상태
-    const [nickname, setNickname] = useState<string>("")
+    const [nickname, setNickname] = useState<string>("");
+    // global state : 모달상태
+    const {setModalType, setIsModalOpen} = modalStore();
+
 
 
     // function : 유저 정보를 가져오는 함수
@@ -30,11 +33,7 @@ export default function MyPage() {
     const onCommonInfoModificationBtnClickEventHandler = () => {
         if (!email) return;
         if (getUserInfo("email") !== atob(email)) return;
-
-        setModification(prevState => ({
-            ...prevState,
-            commonInfo: !prevState.commonInfo
-        }));
+        setModification(prevState => !prevState);
     }
 
 
@@ -42,6 +41,11 @@ export default function MyPage() {
     const inputOnChangeEventHandler = (e: ChangeEvent<HTMLInputElement>, setter: React.Dispatch<React.SetStateAction<string>>) => {
         const value = e.target.value;
         setter(value);
+    }
+    // eventHandler : 비밀번호 변경 버튼 클릭 이벤트 헨들러
+    const onPassModificationBtnClickEventHandler = ()=>{
+        setModalType(ModalType.PASS_MODIFICATION);
+        setIsModalOpen(true);
     }
 
     // 마운트시 실행함수 : 닉네임 수정 input 에 현재 닉네임을 세팅함
@@ -58,13 +62,13 @@ export default function MyPage() {
                         {getUserInfo("profileImg") ? <div className={"my-page-user-profile-image"}></div> :
                             <div className={"my-page-user-profile-container"}>
                                 <InitialsImg name={getUserInfo("email")} width={124} height={124}/>
-                                {modification.commonInfo && (<div className={"modification"}>
+                                {modification && (<div className={"modification"}>
                                     <div className={"icon modification-image modification-icon"}></div>
                                 </div>)}
                             </div>
                         }
 
-                        {modification.commonInfo ? <div className={"my-page-common-info-modification"}>
+                        {modification ? <div className={"my-page-common-info-modification"}>
                                 <div className={"my-page-nickname-modification-container"}>
                                     <InputComponent type={"text"}
                                                     value={nickname}
@@ -77,7 +81,7 @@ export default function MyPage() {
                                             style={
                                                 {
                                                     size: {width: 100, height: 46},
-                                                    btnName: modification.commonInfo ? "수정완료" : "수정",
+                                                    btnName: "수정하기",
                                                     backgroundColor: "#0C66E4",
                                                     hoverColor: "#0052CC",
                                                     hoverStyle: "background",
@@ -104,7 +108,7 @@ export default function MyPage() {
                                 style={
                                     {
                                         size: {width: 100, height: 46},
-                                        btnName: modification.commonInfo ? "수정완료" : "수정",
+                                        btnName: modification? "수정완료" : "수정",
                                         backgroundColor: "#0C66E4",
                                         hoverColor: "#0052CC",
                                         hoverStyle: "background",
@@ -123,6 +127,24 @@ export default function MyPage() {
 
                 <div className={"my-page-pass-container"}>
                     <div className={"my-page-pass-title"}>{"비밀번호"}</div>
+                    <div className={"my-page-pass"}>
+                        <div className={"my-page-info-name"}>{"비밀번호"}</div>
+
+                        <CommonBtn
+                            style={
+                                {
+                                    size: {width: 130, height: 46},
+                                    btnName: "비밀번호 변경",
+                                    backgroundColor: "rgba(251, 251, 253)",
+                                    hoverStyle: "background",
+                                    fontSize: 16,
+                                    fontColor: "rgba(0,0,0,1)",
+                                    border:"1px solid #d7e2eb",
+                                    etcStyle: "style-bold"
+                                }
+                            }
+                            onClick={onPassModificationBtnClickEventHandler}/>
+                    </div>
                 </div>
 
             </div>

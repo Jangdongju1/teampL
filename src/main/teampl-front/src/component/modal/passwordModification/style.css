@@ -1,0 +1,44 @@
+#pass-mod-wrapper{
+    /*width: 100%;*/
+    max-width: 500px;
+    background-color: rgba(255,255,255,1);
+    border-radius: 15px;
+
+
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 요소의 중앙을 기준으로 이동 */
+    z-index: 1011;
+}
+.pass-mod-top-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 18px 36px;
+
+    border-bottom: 1px solid #dcdcdc;
+}
+.pass-mod-middle-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+    box-sizing: border-box;
+    padding: 25px 36px 15px;
+}
+.pass-mod-modal-close{
+    width: 16px;
+    height: 16px;
+}
+.pass-mod-modal-close:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.07);
+}
+.pass-mod-bottom-container{
+    display: flex;
+    column-gap: 12px;
+    justify-content: flex-end;
+    padding: 40px 36px;
+}

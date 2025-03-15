@@ -5,6 +5,7 @@ enum ModalType {
     CREATE_TEAM = "CT",
     CREATE_TEAM_PROJECT ="CTP",
     TEAM_MEMBER_INVITATION="TI",
+    PASS_MODIFICATION= "PM",
     NONE=""
 
 }
