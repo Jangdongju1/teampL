@@ -25,7 +25,7 @@ public class JwtProvider implements WebTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    @Value("${secret.key}")
+    @Value("${key}")
     private String key;
     private SecretKey SECRET_KEY;
 

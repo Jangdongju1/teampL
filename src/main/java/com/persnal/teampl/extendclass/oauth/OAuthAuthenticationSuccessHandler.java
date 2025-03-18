@@ -35,32 +35,52 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserEntity user = ((OAuth2UserImpl) authentication.getPrincipal()).getUser();
         String encodedEmail = Base64.getEncoder().encodeToString(user.getEmail().getBytes(StandardCharsets.UTF_8));
+        String accessToken = "";
+        String url = "";
 
 
         if (user.getRole().equals(UserRole.GUEST.getRole())) {
-            String accessToken = jwtProvider.createWebToken(user.getEmail(), user.getRole(), expireTimeSec_Auth);
+            accessToken = jwtProvider.createWebToken(user.getEmail(), user.getRole(), expireTimeSec_Auth);
 
 
             // 쿠키를 설정하고
             Cookie authCookie = new Cookie("accessToken_Auth", accessToken);
-            authCookie.setHttpOnly(true);  // 자바스크립트에서 쿠키값을 읽을 수 있도록 해야함.
-            authCookie.setMaxAge(expireTimeSec_Auth);
+            //authCookie.setHttpOnly(true);  // 자바스크립트에서 쿠키값을 읽을 수 있도록 해야함.
+            authCookie.setMaxAge(expireTimeSec_Auth);  // 유효시간
             authCookie.setPath("/");
 
             response.addCookie(authCookie);
 
             // ROLE  == GUEST 인경우 (처음 가입) >> 회원가입페이지
-            String url = "http://localhost:3000/auth/reg-password/"+ encodedEmail;
 
-            String redirectUrl = UriComponentsBuilder.fromUriString(url)
-                    .build()
-                    .encode(StandardCharsets.UTF_8)
+            url = UriComponentsBuilder
+                    .fromUriString("http://localhost:3000/auth/reg-password/{encodedEmail}")
+                    .buildAndExpand(encodedEmail)
                     .toUriString();
 
-            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+            getRedirectStrategy().sendRedirect(request, response, url);
 
-        }else {
+        } else {
             // userRole  == user 인 경우  >> 메인페이지
+            accessToken = jwtProvider.createWebToken(user.getEmail(), user.getRole(), expireTimeSec_Main);
+
+            // 쿠키설정
+            Cookie mainCookie = new Cookie("accessToken_Main", accessToken);
+            mainCookie.setMaxAge(expireTimeSec_Main);
+            mainCookie.setPath("/");
+
+            response.addCookie(mainCookie);
+
+
+            url = UriComponentsBuilder
+                    .fromUriString("http://localhost:3000/teamPL/{encodedEmail}/personal-project")
+                    .buildAndExpand(encodedEmail)
+                    .toUriString();
+
+
+            getRedirectStrategy().sendRedirect(request, response, url);
+
+
         }
 
     }

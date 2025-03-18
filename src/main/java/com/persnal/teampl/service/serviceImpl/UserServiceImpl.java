@@ -5,13 +5,12 @@ import com.persnal.teampl.common.Enum.redis.RedisDataBaseNum;
 import com.persnal.teampl.common.Enum.team.InvitationStatus;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.SearchUserObj;
+import com.persnal.teampl.dto.response.user.*;
+import com.persnal.teampl.service.FileService;
 import com.persnal.teampl.vo.invitation.InvitationInfo;
 import com.persnal.teampl.vo.invitation.InvitationList;
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.ResponseDto;
-import com.persnal.teampl.dto.response.user.GetInvitationListResponse;
-import com.persnal.teampl.dto.response.user.GetSearchUserResponse;
-import com.persnal.teampl.dto.response.user.LoginUserResponse;
 import com.persnal.teampl.entities.UserEntity;
 import com.persnal.teampl.repository.jpa.UserRepository;
 import com.persnal.teampl.service.RedisCacheService;
@@ -20,12 +19,12 @@ import com.persnal.teampl.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,23 +32,27 @@ public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private final UserRepository userRepository;
     private final RedisCacheService redisCacheService;
+    private final FileService fileService;
 
 
     @Override
     public ResponseEntity<? super ApiResponse<LoginUserResponse>> isLoginUser(String email) {
+        UserEntity user = null;
         try {
-            boolean isExist = userRepository.existsByEmail(email);
-            if (!isExist) return LoginUserResponse.notExistUser();
+            user = userRepository.findByEmail(email);
 
-        }catch (Exception e){
-            logger.error(GlobalVariable.LOG_PATTERN,this.getClass().getName(), Utils.getStackTrace(e));
+            if (user == null) return LoginUserResponse.notExistUser();
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return LoginUserResponse.success();
+        return LoginUserResponse.success(user.getEmail(), user.getNickname(), user.getProfileImg());
+
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<GetSearchUserResponse>> userSearch(String email,String word) {
+    public ResponseEntity<? super ApiResponse<GetSearchUserResponse>> userSearch(String email, String word) {
         List<SearchUserObj> list = null;
         try {
             UserEntity userEntity = userRepository.findByEmail(word);
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
             list = new ArrayList<>();
 
             // like 검색으로 바꾸어 여러명의 사용자를 반환하도록 바꿀 수 있으므로 list로 반환할 예정임.
-            if (userEntity != null && !userEntity.getEmail().equals(email)){
+            if (userEntity != null && !userEntity.getEmail().equals(email)) {
 
 
                 SearchUserObj user = SearchUserObj.builder()
@@ -69,8 +72,8 @@ public class UserServiceImpl implements UserService {
                 list.add(user);
             }
 
-        }catch (Exception e){
-            logger.error(GlobalVariable.LOG_PATTERN,this.getClass().getName(), Utils.getStackTrace(e));
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
         return GetSearchUserResponse.success(list);
@@ -82,19 +85,19 @@ public class UserServiceImpl implements UserService {
         try {
             String key = GlobalVariable.PREFIX_RECEIVER + email;
 
-            String invitations  = redisCacheService.findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
+            String invitations = redisCacheService.findByKey(key, RedisDataBaseNum.INVITATION_MEMBER.getValue());
 
-            InvitationList data = invitations != null? new Gson().fromJson(invitations, InvitationList.class) : new InvitationList();
+            InvitationList data = invitations != null ? new Gson().fromJson(invitations, InvitationList.class) : new InvitationList();
 
-            list  = new ArrayList<>();
+            list = new ArrayList<>();
 
-            if (data.getList() != null && !data.getList().isEmpty()){
-                for (Integer dataKey : data.getList().keySet()){
+            if (data.getList() != null && !data.getList().isEmpty()) {
+                for (Integer dataKey : data.getList().keySet()) {
                     Set<InvitationInfo> inviters = data.getList().get(dataKey);
 
                     if (inviters == null) continue;
 
-                    for (InvitationInfo invitationInfo : inviters){
+                    for (InvitationInfo invitationInfo : inviters) {
                         if (invitationInfo.getIsConfirm() == InvitationStatus.CONFIRM.getValue()) continue;
                         list.add(invitationInfo);
                     }
@@ -103,10 +106,51 @@ public class UserServiceImpl implements UserService {
             }
 
 
-        }catch (Exception e){
-            logger.error(GlobalVariable.LOG_PATTERN,this.getClass().getName(), Utils.getStackTrace(e));
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
         return GetInvitationListResponse.success(list);
+    }
+
+
+    @Override
+    public ResponseEntity<? super ApiResponse<ProfileImgUploadResponse>> patchProfileImg(String email, MultipartFile file) {
+        String imageUrl = "";
+        try {
+            UserEntity user = userRepository.findByEmail(email);
+
+            if (user == null) return ProfileImgUploadResponse.notExistUser();
+
+            imageUrl = fileService.upload(file,email);
+
+            user.setProfileImg(imageUrl);
+
+            userRepository.save(user);
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+
+        }
+        return ProfileImgUploadResponse.success(imageUrl);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<ProfileImgUrlResponse>> getProfileImgUrl(String email, String filename) {
+        Resource image = null;
+        try {
+            UserEntity user = userRepository.findByEmail(email);
+
+            if (user == null) ProfileImgUrlResponse.notExistUser();
+
+            image = fileService.getImage(filename);
+
+
+        } catch (Exception e) {
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return ProfileImgUrlResponse.success(image);
     }
 }

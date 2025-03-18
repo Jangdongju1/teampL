@@ -38,7 +38,8 @@
     width: 124px;
     height: 124px;
     border-radius: 50% 50%;
-    border: 1px solid blue;
+    background-position: 50% 50% !important;
+    background-size: 100% 100% !important;
 }
 .my-page-user-nickname{
     font-size: 1.37rem;
@@ -107,5 +108,7 @@
     border: 1px solid #d7e2eb;
     border-radius: 15px;
     background-color: rgba(255,255,255,1);
-
+}
+.profileImg-uploader{
+    display: none;
 }

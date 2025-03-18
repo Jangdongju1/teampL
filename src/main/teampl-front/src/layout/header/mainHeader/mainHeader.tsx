@@ -12,6 +12,7 @@ import {
 } from "../../../constant/path";
 import ModalType from "../../../common/enum/modalType";
 import {useEffect, useState} from "react";
+import {useCookies} from "react-cookie";
 
 export default function MainHeader() {
     // path variable
@@ -34,7 +35,8 @@ export default function MainHeader() {
     const loginUserEmail = sessionStorage.getItem("identifier");
     // global state : 유저의정보
     const {info} = loginUserInfoStore();
-
+    // cookie상태
+    const [cookies,setCookies ,removeCookies] = useCookies();
 
 
 
@@ -106,6 +108,11 @@ export default function MainHeader() {
         if (!loginUserEmail) return;
         const path = `${HOME_PATH()}/${MY_PAGE_PATH(loginUserEmail)}`;
         navigator(path);
+    }
+    // eventHandler : 로그아웃 버튼 클릭 이벤트 헨들러
+    const onLogOutBtnClickEventHandler = ()=>{
+        removeCookies("accessToken_Main", {path : "/"})
+        navigator("/");
     }
 
     // component : 팀 메뉴 컴포넌트
@@ -214,8 +221,13 @@ export default function MainHeader() {
                         <div className={"main-header-individual-content-box"}>
 
                             <div className={"main-header-individual-content"}>
-                                <InitialsImg name={"jdj881204@naver.com"} height={36} width={36}
-                                             onClick={onIndividualIconClickEventHandler}/>
+                                {getUserInfo("profileImg")? <div className={"main-header-user-profile-img"}
+                                                                 style={{backgroundImage : `url(${getUserInfo("profileImg")})`}}
+                                                                 onClick={onIndividualIconClickEventHandler}></div> :
+                                    <InitialsImg name={"jdj881204@naver.com"} height={36} width={36}
+                                                 onClick={onIndividualIconClickEventHandler}/>
+                                }
+
                                 <div className={"main-header-individual-content-user-nickname"}>
                                     <span className={"user-nickname"}>{getUserInfo("nickname")}</span>
                                     {" 님 반갑습니다."}
@@ -223,10 +235,18 @@ export default function MainHeader() {
                             </div>
 
                             {individualMenuClick && (<div className={"main-header-individual-menu"}>
-                                <div className={"main-header-individual-menu-element"} onClick={onMyPageBtnClickEventHandler}>{'마이페이지'}</div>
+                                <div className={"main-header-individual-menu-element"}
+                                     onClick={onMyPageBtnClickEventHandler}>{'마이페이지'}
+                                </div>
+
                                 <div className={"main-header-individual-menu-element"}
                                      onClick={onInvitationListClickEventHandler}>
                                     {'초대목록'}
+                                </div>
+
+                                <div className={"main-header-individual-menu-element"}
+                                     onClick={onLogOutBtnClickEventHandler}>
+                                    {'로그아웃'}
                                 </div>
                             </div>)}
 

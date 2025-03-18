@@ -58,11 +58,15 @@ export default function InputComponent(props: InputProps) {
                     </div>
                 )}
             </div>
+            {message != undefined && (<div className={"input-box-message"} style={{color : error? "red" : "rgba(0, 0, 0, 0.5)"}}>
+                {message}
+            </div>)}
+
             {description && (<div className={"input-box-message"}>
                 {description}
                 {descriptionBtn && (<span className={"input-box-message description-btn"}>{descriptionBtn}</span>)}
             </div>)}
-            {message != undefined && (<div className={"input-box-message"}>{""}</div>)}
+
 
         </div>
     )

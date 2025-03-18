@@ -58,3 +58,4 @@ export const POST_REGISTRATION_MEMBER = () => "/registration-member";
 // user
 export const GET_SEARCH_USER = (word: string) => `/search-user?word=${word}`;
 export const GET_INVITATION_LIST = () => `/invitation-list`;
+export const PATCH_PROFILE_IMAGE= ()=>`/profile-image`

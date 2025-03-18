@@ -41,12 +41,4 @@ public class AuthController {
                                                                       @Validated @RequestBody SignUpRequest request) {
         return authService.signUp(email, request);
     }
-
-//    // 구글의 콜백
-//    @GetMapping("/oauth2/{registrationId}")
-//    public ResponseEntity<? super ApiResponse<SignInResponse>> getAuthCode() {
-//        System.out.println("리다이렉트");
-//        return null;
-//    }
-
 }

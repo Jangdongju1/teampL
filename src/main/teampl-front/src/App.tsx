@@ -34,8 +34,6 @@ import ResponseCode from "./common/enum/responseCode";
 import MyPage from "./view/personalPage/myPage/myPage";
 
 function App() {
-    //navigator
-    const navigator = useNavigate();
     //state : 쿠킥상태
     const [cookies, setCookies] = useCookies();
     // global State: 모달상태
@@ -60,6 +58,10 @@ function App() {
         const updateState: Record<string, string> = {email, nickname, profileImg}
         setInfo(updateState);
 
+        // 세션스토리지 업데이트
+        const encodedEmail = btoa(email);
+        sessionStorage.setItem("identifier", encodedEmail);
+
     }
 
     // 로그한 유저인지 확인
@@ -70,7 +72,7 @@ function App() {
         }
         // 새로고침 해서 없어지면 실행되어 유저의 정보를 세팅함.
         if (!info)
-            isLoginUserRequest(cookies.accessToken_Main).then(response => loginUserInfoSetting(response))
+            isLoginUserRequest(cookies.accessToken_Main).then(response => loginUserInfoSetting(response));
 
 
     }, [cookies.accessToken_Main]);

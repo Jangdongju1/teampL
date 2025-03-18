@@ -28,15 +28,18 @@ export default function Authentication() {
     const [logInCardState, setLogInCardState] = useState<boolean>(false);
     // state : 쿠기 상태
     const [cookie, setCookie] = useCookies();
+    const accessToken = cookie.accessToken_Main;
     // state : 인증코드 페이지 식별자 상태
+    const identifier = sessionStorage.getItem("identifier");
 
 
-
-
-    // effect : 토큰 체크로직
+    // 토큰과 세션스토리지를 체크하고 둘다 존재하는 경우에는 홈화면으로 이동함.
     useEffect(() => {
-        if (!cookie.accessToken_Auth) navigator(`${AUTH_PATH()}/${SIGN_IN_PATH()}`)
-    }, [cookie]);
+        if (!accessToken || !identifier) return;
+
+        navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(identifier)}`)
+    }, [accessToken, identifier]);
+
 
 
     const SignInCard = () => {
@@ -92,11 +95,11 @@ export default function Authentication() {
         }
 
         const signInResponse = (responseBody: SignInResponse | ResponseDto | null) => {
-            if(!responseBody) return;
+            if (!responseBody) return;
 
             const {code, message} = responseBody as ResponseDto;
 
-            if (code !== ResponseCode.SUCCESS){
+            if (code !== ResponseCode.SUCCESS) {
                 alert(message);
                 return;
             }
@@ -110,7 +113,7 @@ export default function Authentication() {
 
             const encodedUserEmail = btoa(userId)  // 이메일 인코딩.
             sessionStorage.setItem("identifier", encodedUserEmail);
-            navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`)
+            navigator(`${HOME_PATH()}/${PERSONAL_PROJECT_HOME_PATH(encodedUserEmail)}`);
 
 
         }
@@ -240,7 +243,7 @@ export default function Authentication() {
 
         // 소셜 로그인창을 띄움
         const onSocialGoogleBtnClickEventHandler = () => {
-            window.location.href="http://localhost:4000/oauth2/authorization/google";
+            window.location.href = "http://localhost:4000/oauth2/authorization/google";
         }
         return (
             <div id={"sign-in-card-wrapper"}>

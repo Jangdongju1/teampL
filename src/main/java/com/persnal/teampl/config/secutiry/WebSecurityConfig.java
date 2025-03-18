@@ -90,6 +90,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/", "/api/v1/auth/auth-code").permitAll()   // 인증코드 발급
                         .requestMatchers(HttpMethod.GET, "api/v1/auth/oauth2/**").permitAll()  // 테스트용 코드
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-in").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/file/uploads/**").permitAll()
                         .anyRequest().authenticated();
             });
 
