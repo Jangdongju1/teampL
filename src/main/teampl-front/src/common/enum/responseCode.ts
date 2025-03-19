@@ -8,7 +8,8 @@ enum ResponseCode {
     EXIST_USER = "EU",
     EXPIRE_AUTH_CODE = "EAC",
     ALREADY_SENT = "AS",
-    NOT_EXIST_USER="NEU"
+    NOT_EXIST_USER = "NEU",
+    PASSWORD_NOT_MATCHED = "PN"
 }
 
 export default ResponseCode;

@@ -15,6 +15,7 @@ import java.util.Set;
 public class UserEntity {
     @Id
     private String email;
+    @Setter
     private String password;
     @Setter
     private String nickname;

@@ -23,6 +23,9 @@ import GetSearchUserResponse from "./user/getSearchUserResponse";
 import GetInvitationListResponse from "./user/getInvitationListResponse";
 import RegistrationMemberResponse from "./team/registrationMemberResponse";
 import PatchIssueInChargeResponse from "./issue/patchIssueInChargeResponse";
+import ProfileImgUploadResponse from "./user/profileImgUploadResponse";
+import PatchPasswordResponse from "./user/patchPasswordResponse";
+
 export type {
     AuthCodeResponse,
     ResponseDto,
@@ -48,5 +51,7 @@ export type {
     GetSearchUserResponse,
     GetInvitationListResponse,
     RegistrationMemberResponse,
-    PatchIssueInChargeResponse
+    PatchIssueInChargeResponse,
+    ProfileImgUploadResponse,
+    PatchPasswordResponse
 }

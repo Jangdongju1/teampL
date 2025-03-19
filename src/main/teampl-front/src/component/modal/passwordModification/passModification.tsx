@@ -3,6 +3,14 @@ import InputComponent from "../../inputCmponent/auth";
 import React, {ChangeEvent, useState} from "react";
 import CommonBtn from "../../btn";
 import {modalStore} from "../../../store";
+import {PatchPasswordRequest} from "../../../interface/request";
+import {patchPasswordRequest} from "../../../api/userApi";
+import {useCookies} from "react-cookie";
+import {PatchPasswordResponse, ResponseDto} from "../../../interface/response";
+import ResponseCode from "../../../common/enum/responseCode";
+import {ModalType} from "../../../common";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 export default function PassModification() {
     //state : 현재 비밀번호 샹태
@@ -13,6 +21,9 @@ export default function PassModification() {
     const [passConfirm, setPassConfirm] = useState<string>("");
     //global state : 모달상태
     const {setModalType, setIsModalOpen} = modalStore();
+    // 엑세스 토큰
+    const [cookies] = useCookies();
+    const accessToken = cookies.accessToken_Main;
 
     // state : 각 인풋의 에러상태 및 에러메세지 상태
     const [errors, setErrors] =
@@ -21,6 +32,33 @@ export default function PassModification() {
             pass: {error: false, message: ""},
             passConfirm: {error: false, message: ""}
         })
+
+
+    //function : 비밀번호 변경 요청에 대한 응답처리 함수.
+    const patchPasswordResponse = (responseBody : PatchPasswordResponse | ResponseDto | null)=>{
+        if (!responseBody) return;
+
+        const {code,message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            if(code === ResponseCode.PASSWORD_NOT_MATCHED){
+                // 비밀번호 불일치의 경우
+                setErrors({
+                    ...errors,
+                    currentPass : {error : true, message : "비밀번호 불일치."}
+                });
+                return;
+            }
+            alert(message);
+            return;
+        }
+
+        // 성공시
+        alert("비밀번호 변경이 완료되었습니다.");
+        setModalType(ModalType.NONE);
+        setIsModalOpen(false);
+
+    }
 
     //eventHandler : 각각의 인풋에 대한 체인지 이벤트
     const onInputChangeEventHandler = (e: ChangeEvent<HTMLInputElement>,
@@ -101,12 +139,12 @@ export default function PassModification() {
 
         }
 
+        if (!accessToken) return;
+
         // 현재 비밀번호 일치여부 체크해야함.
+        const requestBody : PatchPasswordRequest = {currentPassword : currentPass , passwordToChange : pass};
 
-
-        // 비밀번호 변경 api 호출
-
-
+        patchPasswordRequest(requestBody, accessToken).then(response => patchPasswordResponse(response));
 
     }
     return (

@@ -15,6 +15,8 @@ public interface ResponseCode {
     String NOT_EXIST_TEAM = "NET";
     String EXPIRE_AUTH_CODE="EAC";
     String ALREADY_SENT = "AS";
+    String PASSWORD_NOT_MATCHED = "PN";
+
 
     // http code 401
     String SIGN_IN_FAILED = "SF";

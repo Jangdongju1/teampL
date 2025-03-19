@@ -1,17 +1,15 @@
 package com.persnal.teampl.controller;
 
+import com.persnal.teampl.dto.request.user.PatchNicknameRequest;
+import com.persnal.teampl.dto.request.user.PatchPasswordRequest;
 import com.persnal.teampl.dto.response.ApiResponse;
-import com.persnal.teampl.dto.response.user.GetInvitationListResponse;
-import com.persnal.teampl.dto.response.user.GetSearchUserResponse;
-import com.persnal.teampl.dto.response.user.LoginUserResponse;
+import com.persnal.teampl.dto.response.user.*;
 import com.persnal.teampl.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -37,5 +35,21 @@ public class UserController {
     public ResponseEntity<? super ApiResponse<GetInvitationListResponse>> getInvitationList(
             @AuthenticationPrincipal String email) {
         return userService.getInvitationList(email);
+    }
+
+    @PatchMapping("/nickname")
+    public ResponseEntity<? super ApiResponse<PatchNicknameResponse>> patchNickname(
+            @AuthenticationPrincipal String email,
+            @RequestBody @Validated PatchNicknameRequest req){
+
+        return userService.patchNickname(email, req);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<? super ApiResponse<PatchPasswordResponse>> patchPassword(
+            @AuthenticationPrincipal String email,
+            @RequestBody @Validated PatchPasswordRequest req){
+
+        return userService.patchPassword(email,req);
     }
 }

@@ -5,6 +5,8 @@ import com.persnal.teampl.common.Enum.redis.RedisDataBaseNum;
 import com.persnal.teampl.common.Enum.team.InvitationStatus;
 import com.persnal.teampl.common.global.GlobalVariable;
 import com.persnal.teampl.dto.obj.SearchUserObj;
+import com.persnal.teampl.dto.request.user.PatchNicknameRequest;
+import com.persnal.teampl.dto.request.user.PatchPasswordRequest;
 import com.persnal.teampl.dto.response.user.*;
 import com.persnal.teampl.service.FileService;
 import com.persnal.teampl.vo.invitation.InvitationInfo;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +36,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisCacheService redisCacheService;
     private final FileService fileService;
+    private final PasswordEncoder passwordEncoder;
+
 
 
     @Override
@@ -137,20 +142,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<? super ApiResponse<ProfileImgUrlResponse>> getProfileImgUrl(String email, String filename) {
-        Resource image = null;
+    public ResponseEntity<? super ApiResponse<PatchNicknameResponse>> patchNickname(String email, PatchNicknameRequest req) {
+        String changedNickname = req.getNickname();
         try {
             UserEntity user = userRepository.findByEmail(email);
 
-            if (user == null) ProfileImgUrlResponse.notExistUser();
+            if (user == null) return PatchNicknameResponse.notExistUser();
 
-            image = fileService.getImage(filename);
+            user.setNickname(req.getNickname());
+
+            userRepository.save(user);
 
 
-        } catch (Exception e) {
+        }catch (Exception e){
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();
         }
-        return ProfileImgUrlResponse.success(image);
+        return PatchNicknameResponse.success(changedNickname);
+    }
+
+    @Override
+    public ResponseEntity<? super ApiResponse<PatchPasswordResponse>> patchPassword(String email, PatchPasswordRequest req) {
+        try {
+            UserEntity user = userRepository.findByEmail(email);
+
+            if (user == null) return PatchPasswordResponse.notExistUser();
+
+            // 비밀번호 불일치의 경우.
+            if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) return PatchPasswordResponse.passwordNotMatched();
+
+            user.setPassword(passwordEncoder.encode(req.getPasswordToChange()));
+
+            userRepository.save(user);
+
+        }catch (Exception e){
+            logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(),Utils.getStackTrace(e));
+            return ResponseDto.initialServerError();
+        }
+        return PatchPasswordResponse.success();
     }
 }

@@ -7,12 +7,12 @@ import {useParams} from "react-router-dom";
 import InputComponent from "../../../component/inputCmponent/auth";
 import {ModalType} from "../../../common";
 import {useCookies} from "react-cookie";
-import {profileImgUploadRequest} from "../../../api/userApi";
+import {patchNicknameRequest, profileImgUploadRequest} from "../../../api/userApi";
 import ProfileImgUploadResponse from "../../../interface/response/user/profileImgUploadResponse";
 import {ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
-import ProfileImgUrlResponse from "../../../interface/response/user/profileImgUrlResponse";
-import * as url from "node:url";
+import {PatchNicknameRequest} from "../../../interface/request";
+import PatchNicknameResponse from "../../../interface/response/user/patchNicknameResponse";
 
 
 export default function MyPage() {
@@ -34,6 +34,24 @@ export default function MyPage() {
     const [cookies] = useCookies();
     const accessToken = cookies.accessToken_Main;
 
+    // function : 유저의 닉네임 수정 요청에 대한 응답처리 함수.
+    const patchNicknameResponse = (responseBody: PatchNicknameResponse | ResponseDto | null) => {
+        if (!responseBody) return;
+
+        const {code, message} = responseBody as ResponseDto;
+
+        if (code !== ResponseCode.SUCCESS){
+            alert(message);
+            return;
+        }
+
+        const {data} = responseBody as PatchNicknameResponse;
+
+        const {changedNickname} = data;
+
+        setInfo({...info, nickname : changedNickname});
+
+    }
 
     // function : 유저 정보를 가져오는 함수
     const getUserInfo = (key: string) => {
@@ -118,6 +136,12 @@ export default function MyPage() {
             alert("accessToken is expired");
             return;
         }
+
+        if (!accessToken) return;
+
+        const requestBody: PatchNicknameRequest = {nickname};
+
+        patchNicknameRequest(requestBody, accessToken).then(response => patchNicknameResponse(response))
 
 
     }

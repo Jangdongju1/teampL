@@ -34,11 +34,10 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    public static ResponseEntity<ResponseDto> resourceNotFound() {
-        ResponseDto response = new ResponseDto(ResponseCode.NOT_EXIST_RESOURCE, ResponseMessage.NOT_EXIST_RESOURCE);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    public static ResponseEntity<ResponseDto> passwordNotMatched(){
+        ResponseDto response = new ResponseDto(ResponseCode.PASSWORD_NOT_MATCHED, ResponseMessage.PASSWORD_NOT_MATCHED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-
 
     public static ResponseEntity<ResponseDto> initialServerError() {
         ResponseDto response = new ResponseDto(ResponseCode.INITIAL_SERVER_ERROR, ResponseMessage.INITIAL_SERVER_ERROR);

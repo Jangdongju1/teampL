@@ -17,5 +17,6 @@ public interface ResponseMessage {
     String NOT_EXIST_ISSUE = "Issue does not exist.";
     String NOT_EXIST_TEAM = "This Team does not exist.";
     String NOT_VALID_ARGUMENT ="Argument is not valid.";
+    String PASSWORD_NOT_MATCHED = "Password does not match.";
 
 }

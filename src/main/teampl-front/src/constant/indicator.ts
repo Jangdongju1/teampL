@@ -42,9 +42,8 @@ export const PATCH_ISSUE_COMMENT = () => "/issue-comment";
 export const GET_TOTAL_COMMENT_COUNT =
     (issueNum: number) => `/total-comments-count/${issueNum}`;
 export const PATCH_DRAG_ISSUE_STATUS = () => "/drag/issue-status";
-export const PATCH_ISSUE_IN_CHARGE = ()=>"/in-charge";
-export const DELETE_ISSUE = (issueNum :string, projectNum : string)=> `?issueNum=${issueNum}&projectNum=${projectNum}`;
-
+export const PATCH_ISSUE_IN_CHARGE = () => "/in-charge";
+export const DELETE_ISSUE = (issueNum: string, projectNum: string) => `?issueNum=${issueNum}&projectNum=${projectNum}`;
 
 
 // team
@@ -58,4 +57,6 @@ export const POST_REGISTRATION_MEMBER = () => "/registration-member";
 // user
 export const GET_SEARCH_USER = (word: string) => `/search-user?word=${word}`;
 export const GET_INVITATION_LIST = () => `/invitation-list`;
-export const PATCH_PROFILE_IMAGE= ()=>`/profile-image`
+export const PATCH_PROFILE_IMAGE = () => `/profile-image`
+export const PATCH_NICKNAME = () => `/nickname`;
+export const PATCH_PASSWORD = () => `/password`;

@@ -19,6 +19,9 @@ import GetSearchUserRequest from "./user/getSearchUserRequest";
 import InvitationMemberRequest from "./team/invitationMemberRequest";
 import RegistrationMemberRequest from "./team/registrationMemberRequest";
 import PatchIssueInChargeRequest from "./issue/patchIssueInChargeRequest";
+import PatchNicknameRequest from "./user/patchNicknameRequest";
+import PatchPasswordRequest from "./user/patchPasswordRequest";
+
 export type {
     AuthCodeRequest,
     AuthCodeConfirmRequest,
@@ -41,5 +44,7 @@ export type {
     InvitationMemberRequest,
     RegistrationMemberRequest,
     PatchIssueInChargeRequest,
+    PatchNicknameRequest,
+    PatchPasswordRequest
 
 }

@@ -1,9 +1,20 @@
-import {DOMAIN, GET_INVITATION_LIST, GET_SEARCH_USER, PATCH_PROFILE_IMAGE} from "../constant/indicator";
+import {
+    DOMAIN,
+    GET_INVITATION_LIST,
+    GET_SEARCH_USER,
+    PATCH_NICKNAME,
+    PATCH_PASSWORD,
+    PATCH_PROFILE_IMAGE
+} from "../constant/indicator";
 import axios from "axios";
-import {GetInvitationListResponse, GetSearchUserResponse, ResponseDto} from "../interface/response";
-import ProfileImgUploadResponse from "../interface/response/user/profileImgUploadResponse";
-import {createPaginationContext} from "@table-library/react-table-library/common/context";
-import ProfileImgUrlResponse from "../interface/response/user/profileImgUrlResponse";
+import {
+    GetInvitationListResponse,
+    GetSearchUserResponse, PatchPasswordResponse,
+    ProfileImgUploadResponse,
+    ResponseDto
+} from "../interface/response";
+import {PatchNicknameRequest, PatchPasswordRequest} from "../interface/request";
+import PatchNicknameResponse from "../interface/response/user/patchNicknameResponse";
 
 const BASE_URL = "/api/v1/user"
 const apiEndPoint = (indicator: string) => `${DOMAIN}${BASE_URL}${indicator}`;
@@ -88,19 +99,54 @@ export const profileImgUploadRequest = async (data: FormData, accessToken: strin
             return null;
         }
     }
-
 }
 
-export const profileImgTest = async (url:string, accessToken:string)=>{
+// 닉네임 변경 요청
+export const patchNicknameRequest = async (requestBody: PatchNicknameRequest, accessToken: string) => {
     try {
-        //const requestUrl = (filename:string)=>`localhost:4000/file/uploads/${filename}`;
+        const result =
+            await axios.patch(apiEndPoint(PATCH_NICKNAME()), requestBody, Authorization(accessToken));
 
-        const result = await axios.get(url,Authorization(accessToken));
-
-        const responseBody : ProfileImgUrlResponse = result.data;
+        const responseBody: PatchNicknameResponse = result.data;
         return responseBody;
-    }catch (error){
-        return null;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Unexpected Axios Error!!", error.message);
+                return null;
+            }
+
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.error(error);
+            return null;
+        }
+    }
+}
+
+// 비밀번호 변경 요청.
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequest, accessToken: string) => {
+    try {
+        const result =
+            await axios.patch(apiEndPoint(PATCH_PASSWORD()), requestBody, Authorization(accessToken));
+
+        const responseBody: PatchPasswordResponse = result.data;
+        return responseBody;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (!error.response) {
+                console.log("Unexpected Axios Error!!", error.message);
+                return null;
+            }
+
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        } else {
+            console.error(error);
+            return null;
+        }
     }
 }
 
