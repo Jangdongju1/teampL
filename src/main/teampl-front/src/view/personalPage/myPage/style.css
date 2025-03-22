@@ -90,6 +90,9 @@
 }
 .my-page-pass-container{
     width: inherit;
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
 }
 .my-page-pass-title{
     font-size: 1.15rem;

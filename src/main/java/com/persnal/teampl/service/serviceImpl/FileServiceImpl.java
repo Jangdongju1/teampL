@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,13 +75,17 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Resource getImage(String fileName) {
+    public ResponseEntity<Resource> getImage(String fileName) {
         Resource resource = null;
         try {
             resource = new UrlResource("file:" + fileSavePath + fileName);
+
+            if (!resource.exists()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return resource;
+        return ResponseEntity.status(HttpStatus.OK).body(resource);
     }
 }

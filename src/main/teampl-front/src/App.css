@@ -199,6 +199,9 @@
 .modification-icon{
     background-image: url("asset/modification-image.png");
 }
+.templates-banner{
+    background-image: url("asset/templates-banner.png");
+}
 .divider {
     height: 0;
     border: 1px solid rgba(0, 0, 0, 0.3);

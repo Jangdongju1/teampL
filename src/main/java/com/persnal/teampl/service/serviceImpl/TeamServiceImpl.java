@@ -100,7 +100,6 @@ public class TeamServiceImpl implements TeamService {
 
             list = memberRepository.getTeamMemberList(email, regNum);
 
-            System.out.println(list.size());
         } catch (Exception e) {
             logger.error(GlobalVariable.LOG_PATTERN, this.getClass().getName(), Utils.getStackTrace(e));
             return ResponseDto.initialServerError();

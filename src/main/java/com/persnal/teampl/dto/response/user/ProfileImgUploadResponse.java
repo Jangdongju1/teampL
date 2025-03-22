@@ -13,7 +13,6 @@ public class ProfileImgUploadResponse {
     private final String imageUrl;
 
     public ProfileImgUploadResponse(String imageUrl) {
-
         this.imageUrl = imageUrl;
     }
 

@@ -2,7 +2,6 @@ package com.persnal.teampl.controller;
 
 import com.persnal.teampl.dto.response.ApiResponse;
 import com.persnal.teampl.dto.response.user.ProfileImgUploadResponse;
-import com.persnal.teampl.dto.response.user.ProfileImgUrlResponse;
 import com.persnal.teampl.service.FileService;
 import com.persnal.teampl.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +22,14 @@ public class fileController {
 
     @PatchMapping("/profile-image")
     public ResponseEntity<? super ApiResponse<ProfileImgUploadResponse>> patchProfileImage(
-            @AuthenticationPrincipal String email, @RequestParam("profileImg") MultipartFile profileImg) {
+            @AuthenticationPrincipal String email,
+            @RequestParam("profileImg") MultipartFile profileImg) {
 
         return userService.patchProfileImg(email, profileImg);
     }
 
     @GetMapping(value = "/uploads/{filename}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Resource getProfileImg(
-            @AuthenticationPrincipal String email,
-            @PathVariable("filename") String filename) {
+    public ResponseEntity<Resource> getProfileImg(@PathVariable(value = "filename", required = true) String filename) {
         return fileService.getImage(filename);
     }
 }

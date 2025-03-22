@@ -1,7 +1,7 @@
 import "./style.css"
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import SearchBar from "../../../component/searchBar/searchBar";
-import {kanbanStore, modalStore, teamProjectStore} from "../../../store";
+import {modalStore, teamProjectStore} from "../../../store";
 import {useNavigate, useParams} from "react-router-dom";
 import {ProjectTableData, TeamInfo, TeamMember} from "../../../interface/types";
 import {useTheme} from "@table-library/react-table-library/theme";
@@ -16,8 +16,7 @@ import GetTeamProjectListResponse from "../../../interface/response/project/getT
 import {ResponseDto} from "../../../interface/response";
 import ResponseCode from "../../../common/enum/responseCode";
 import {getFormattedDate, getTableData} from "../../../util";
-import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH, TEAM_PROJECT_PATH} from "../../../constant/path";
-import teamMemberMock from "../../../mock/teamMember.mock";
+import {HOME_PATH, TEAM_PATH, TEAM_PROJECT_BOARD_PATH} from "../../../constant/path";
 import {getTeamMemberListRequest} from "../../../api/teamApi";
 import GetTeamMemberResponse from "../../../interface/response/team/getTeamMemberResponse";
 import InitialsImg from "../../../component/InitialsImg";
