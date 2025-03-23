@@ -3,7 +3,7 @@ import FlowChartDataListMock from "../../mock/flowChartDataList.mock";
 import FlowChart from "../../component/flowChart/flowchart";
 import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent/auth";
-import {ChangeEvent, useEffect, useRef, useState} from "react";
+import {ChangeEvent, useEffect, useRef, useState, KeyboardEvent} from "react";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api/authApi";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
@@ -41,7 +41,6 @@ export default function Authentication() {
     }, [accessToken, identifier]);
 
 
-
     const SignInCard = () => {
         // state : 유저 아이디 상태
         const [userId, setUserId] = useState<string>("");
@@ -62,9 +61,9 @@ export default function Authentication() {
         const [passErrorMassage, setPassErrorMessage] = useState<string>("");
 
         // useRef : 엔터키 입력시 타 엘리먼트를 가리키기 위한. ref
-        const passRef  = useRef<HTMLInputElement>(null);
+        const idRef = useRef<HTMLInputElement>(null);
+        const passRef = useRef<HTMLInputElement>(null);
         const loginBtnRef = useRef<HTMLDivElement>(null);
-
 
 
         // eventHandler : userId  input엘리먼트 체인지 이벤트 헨들러
@@ -97,6 +96,32 @@ export default function Authentication() {
                 navigator(`${AUTH_PATH()}/${AUTHENTICATION_CODE_CONFIRM_PATH(encodedIndicator)}`);
             }
 
+        }
+
+        // eventHandler : id, password에 대한 onKeyDownHandler
+        const onIdKeyDownEventHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+            const key = e.key;
+
+            if (key !== "Enter") return;
+
+            const passElement = passRef.current;
+
+            if (!passElement) return;
+
+            passElement.focus();
+
+        }
+
+        const onPassKeyDownEventHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+            const key = e.key;
+
+            if (key !== "Enter") return;
+
+            const btnElement = loginBtnRef.current;
+
+            if (!btnElement) return;
+
+            btnElement.click();
         }
 
         const signInResponse = (responseBody: SignInResponse | ResponseDto | null) => {
@@ -141,17 +166,26 @@ export default function Authentication() {
                     <div className={"sign-up-top-comment-box1"}>{"계속하려면 로그인하세요."}</div>
 
                     <div className={"sign-in-top-input-container"}>
-                        <InputComponent label={"업무용 이메일"} type={"text"} value={userId}
+                        <InputComponent label={"업무용 이메일"}
+                                        type={"text"}
+                                        value={userId}
                                         onChange={onUserIdInputElementChangeEventHandler} error={idError}
+                                        onKeyDown={onIdKeyDownEventHandler}
                                         message={idErrorMessage}/>
-                        <InputComponent label={"비밀번호"} type={type} value={pass}
+
+                        <InputComponent ref={passRef}
+                                        label={"비밀번호"}
+                                        type={type}
+                                        value={pass}
                                         onChange={onPasswordInputElementChangeEventHandler} error={passError}
+                                        onKeyDown={onPassKeyDownEventHandler}
                                         icon={icon}
                                         onButtonClick={onPasswordInputElementIconClickEventHandler}
                                         message={passErrorMassage}/>
                     </div>
                     <div className={"sign-in-top-login-button-container"}>
-                        <div className={"sign-in-top-login-button"} onClick={onLogInBtnClickEventHandler}>{"로그인"}</div>
+                        <div ref={loginBtnRef} className={"sign-in-top-login-button"}
+                             onClick={onLogInBtnClickEventHandler}>{"로그인"}</div>
                     </div>
                 </div>
 

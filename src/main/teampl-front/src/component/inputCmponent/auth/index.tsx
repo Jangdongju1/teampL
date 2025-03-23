@@ -1,6 +1,6 @@
 //component :  input컴포넌트
 import "./style.css";
-import {ChangeEvent, KeyboardEvent} from "react";
+import {ChangeEvent, forwardRef, KeyboardEvent} from "react";
 
 interface InputProps {
     label?: string,
@@ -23,7 +23,7 @@ interface InputProps {
     emphasis?: boolean
 }
 
-export default function InputComponent(props: InputProps) {
+const InputComponent = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) => {
     const {type, placeholder, value, error} = props;
     const {
         label,
@@ -35,6 +35,8 @@ export default function InputComponent(props: InputProps) {
         emphasis
     } = props
     const {onChange, onKeyDown, onButtonClick} = props;
+
+
     return (
         <div className={"input-box"}>
             <div className={"input-label"}>
@@ -47,20 +49,24 @@ export default function InputComponent(props: InputProps) {
                      width: cssOption ? cssOption.width : undefined,
                      height: cssOption ? cssOption.height : undefined
                  }}>
-                <input className={`input`}
+                <input ref={ref} className={`input`}
                        style={{fontSize: cssOption?.fontSize ? cssOption.fontSize : undefined}}
                        type={type}
                        placeholder={placeholder}
-                       value={value} onChange={onChange}/>
+                       value={value}
+                       onChange={onChange}
+                       onKeyDown={onKeyDown}/>
                 {onButtonClick != undefined && (
                     <div className={"icon-button"}>
-                        {icon !== undefined && (<div className={`icon ${icon}`} onClick={onButtonClick}>{""}</div>)}
+                        {icon !== undefined && (<div className={`icon ${icon}`}
+                                                     onClick={onButtonClick}/>)}
                     </div>
                 )}
             </div>
-            {message != undefined && (<div className={"input-box-message"} style={{color : error? "red" : "rgba(0, 0, 0, 0.5)"}}>
-                {message}
-            </div>)}
+            {message != undefined && (
+                <div className={"input-box-message"} style={{color: error ? "red" : "rgba(0, 0, 0, 0.5)"}}>
+                    {message}
+                </div>)}
 
             {description && (<div className={"input-box-message"}>
                 {description}
@@ -70,4 +76,6 @@ export default function InputComponent(props: InputProps) {
 
         </div>
     )
-}
+})
+
+export default InputComponent;
