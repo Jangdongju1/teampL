@@ -202,6 +202,9 @@
 .templates-banner{
     background-image: url("asset/templates-banner.png");
 }
+.issue-stat-icon{
+    background-image: url("asset/stat_icon.png");
+}
 .divider {
     height: 0;
     border: 1px solid rgba(0, 0, 0, 0.3);

@@ -625,7 +625,7 @@ export default function IssueModal(props: IssueModalProps) {
                                            compType={"priority"}/>
 
                         <ModalCompBtnStyle labelName={"상태"}
-                                           labelIcon={""}
+                                           labelIcon={"issue-stat-icon"}
                                            hooks={{
                                                value: status,
                                                setValue: setStatus,

@@ -3,7 +3,7 @@ import FlowChartDataListMock from "../../mock/flowChartDataList.mock";
 import FlowChart from "../../component/flowChart/flowchart";
 import FlowchartReverse from "../../component/flowChart/flowchart_reverse";
 import InputComponent from "../../component/inputCmponent/auth";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
 import ImageSlide from "../../component/imageSlide";
 import {authCodeRequest, signInRequest} from "../../api/authApi";
 import {AuthCodeRequest, SignInRequest} from "../../interface/request";
@@ -60,6 +60,11 @@ export default function Authentication() {
         const [passError, setPassError] = useState<boolean>(false);
         // state : pass error message 상태
         const [passErrorMassage, setPassErrorMessage] = useState<string>("");
+
+        // useRef : 엔터키 입력시 타 엘리먼트를 가리키기 위한. ref
+        const passRef  = useRef<HTMLInputElement>(null);
+        const loginBtnRef = useRef<HTMLDivElement>(null);
+
 
 
         // eventHandler : userId  input엘리먼트 체인지 이벤트 헨들러

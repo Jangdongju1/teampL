@@ -59,7 +59,11 @@
     height: 540px;
     max-height: 540px;
     display: flex;
+    row-gap: 5px;
     flex-direction: column;
     overflow-y: auto;
     background-color: #F6F7FB;
+
+    box-sizing: border-box;
+    padding: 5px;
 }
